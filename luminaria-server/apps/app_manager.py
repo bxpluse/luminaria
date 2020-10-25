@@ -1,11 +1,12 @@
-from common.enums import APP, COMMAND, APPSTATUS
-from database.apps_model import AppsModel
-from common.db_util import create_db, db_exists
-from apps.updater.main import ExchangeUpdater
-from apps.logviewer.main import LogViewer
 from apps.backup.main import BackupDatabase
+from apps.logviewer.main import LogViewer
 from apps.monitor.main import RCListener
+from apps.updater.main import ExchangeUpdater
+from common.db_util import create_db, db_exists
+from common.enums import APP, APPSTATUS
+from database.apps_model import AppsModel
 from database.local_config_model import LocalConfigModel
+
 
 class AppManager:
 
@@ -45,9 +46,15 @@ class AppManager:
         return res
 
     def get_app_status(self, app_id):
-        return self.apps[APP(app_id)].status.value
+        app = self.apps[APP(app_id)]
+        base_data = {'status': app.status.value, 'debugging': app.debugging}
+        additional_data = app.get_data()
+        return {**base_data, **additional_data}
 
     def execute(self, app_id, command, data=None):
+        app = self.apps[APP(app_id)]
         if command == 'run':
-            self.apps[APP(app_id)].run(**data)
+            app.run(**data)
+        elif command == 'debug':
+            app.debugging = data['isDebug']
         return {}

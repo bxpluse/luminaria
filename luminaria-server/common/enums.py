@@ -24,6 +24,7 @@ class APPSTATUS(Enum):
     READY = 'Ready'
     INPROGRESS = 'Inprogress'
     UNKNOWN = 'Unknown'
+    ERROR = 'Error'
 
 
 class ENVIRONMENT(Enum):

@@ -35,7 +35,7 @@ def get_all_apps():
 
 @app.route('/status/<string:app_id>', methods=['POST'])
 def get_app_status(app_id):
-    return {'status': manager.get_app_status(app_id)}
+    return manager.get_app_status(app_id)
 
 
 @app.route('/updater/exchanges/<string:exchange>', methods=['POST'])

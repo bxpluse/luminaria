@@ -1,4 +1,5 @@
 import praw
+import threading
 from apscheduler.schedulers.background import BackgroundScheduler
 from database.comment_frequency_model import CommentFrequencyModel
 from apps.monitor.preloader import load_all_symbols, load_blacklist
@@ -22,15 +23,25 @@ class RCListener(App):
                                   client_secret=CLIENT_SECRET,
                                   user_agent="Test Script")
         self.data = {}  # key=symbol, value=times_mentioned
+
+        self.scheduler = BackgroundScheduler({'apscheduler.timezone': 'America/Toronto'})
+        self.scheduler.start()
         self.show_config()
 
     def run(self):
-        if self.status == APPSTATUS.READY:
-            super().start()
-            scheduler = BackgroundScheduler()
-            scheduler.add_job(self.commit_to_db, trigger='cron', minute='*/15')
-            scheduler.start()
+        super().start()
+        job = self.scheduler.add_job(self.commit_to_db, trigger='cron', minute='*/' + str(self.INTERVAL))
+        self.info('Stream starting up with schedule: ' + str(self.scheduler.get_jobs()))
+        try:
             self.stream()
+        except Exception as e:
+            self.status = APPSTATUS.ERROR
+            job.remove()
+            self.info("ERROR: " + (repr(e)))
+            self.info("Jobs after catching exception: " + str(self.scheduler.get_jobs()))
+            self.info("Restarting ...")
+            timer = threading.Timer(60, self.run)
+            timer.start()
         super().stop()
 
     def show_config(self):
@@ -41,6 +52,7 @@ class RCListener(App):
         self.info('------------------------------------------------')
 
     def stream(self):
+        self.info('Stream online')
         for comment in self.REDDIT.subreddit(self.SUBREDDITS).stream.comments(skip_existing=True):
             words = comment.body.split()
             seen_symbols = set()
@@ -53,6 +65,13 @@ class RCListener(App):
                     self.data[word] += 1
 
     def commit_to_db(self):
+        self.debug('committing rows: ' + str(len(self.data)))
         if len(self.data) > 0:
             self.COMMENT_FREQUENCY_MODEL.insert_interval(**self.data)
             self.data.clear()
+
+    def get_data(self):
+        next_run = ''
+        if len(self.scheduler.get_jobs()) == 1:
+            next_run = self.scheduler.get_jobs()[0].next_run_time
+        return {'ram': self.data, 'next_run': str(next_run)}

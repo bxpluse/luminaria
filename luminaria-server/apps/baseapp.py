@@ -19,6 +19,7 @@ class App:
             self.status = APPSTATUS.READY
         self.signal = None
         self.messenger = None
+        self.debugging = False
 
     def start(self):
         """ Called when an App is run. """
@@ -40,9 +41,20 @@ class App:
     def get_status(self):
         return self.status.value
 
+    def get_data(self):
+        return {}
+
     def info(self, message):
         """ Prints or logs information depending on environment. """
         if ENV == ENVIRONMENT.PROD:
             log(self.APP_ID, message)
         elif ENV == ENVIRONMENT.DEV:
             print(message)
+
+    def debug(self, message):
+        """ Prints or logs information depending on environment. """
+        if self.debugging:
+            if ENV == ENVIRONMENT.PROD:
+                log(self.APP_ID, message)
+            elif ENV == ENVIRONMENT.DEV:
+                print(message)
