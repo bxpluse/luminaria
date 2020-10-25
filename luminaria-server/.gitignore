@@ -1,0 +1,8 @@
+/venv
+/.idea
+/__pycache__
+
+**/*.sqlite3
+**/*.csv
+/static/*.txt
+/backup_folder/

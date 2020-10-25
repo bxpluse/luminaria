@@ -1,0 +1,2 @@
+class DAOException(Exception):
+    pass
