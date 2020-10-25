@@ -11,7 +11,7 @@ class Test extends React.Component {
     }
 
     activateLasers() {
-        fetch('http://127.0.0.1:5000/test', {
+        fetch('http:/host:port/test', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

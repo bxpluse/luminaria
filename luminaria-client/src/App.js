@@ -1,14 +1,12 @@
 import React from 'react';
 import './App.css';
-import Test from "./Test";
+import Navigation from './Navigation';
 
 function App() {
     return (
         <div className="App">
-            <header className="App-header">
-                <p>TEST</p>
-            </header>
-            <Test/>
+            <Navigation/>
+            <footer className="footer bg-light"/>
         </div>
     );
 }

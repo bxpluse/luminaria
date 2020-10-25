@@ -1,0 +1,33 @@
+.App-header {
+    background-color: #000000;
+    min-height: 20vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+}
+
+.header-link:hover {
+    text-decoration: none;
+    color: white;
+}
+
+.header-link {
+    color: white;
+}
+
+#header {
+    background-size: 300px 20px;
+    position: relative;
+}
+
+#title {
+    position: relative;
+    color: #ffffff;
+    font-size: 160%;
+    z-index: 1;
+}
+
+#canvas {
+    position: absolute;
+}
