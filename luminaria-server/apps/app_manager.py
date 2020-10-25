@@ -34,9 +34,13 @@ class AppManager:
     def get_all_apps(self):
         res = self.apps_model.get_all_apps()
         for key, value in res.items():
-            if key in self.apps:
-                res[key]['status'] = self.apps[key].status.value
-            else:
+            try:
+                app = APP(key)
+                if app in self.apps:
+                    res[key]['status'] = self.apps[app].status.value
+                else:
+                    res[key]['status'] = APPSTATUS.UNKNOWN.value
+            except ValueError:
                 res[key]['status'] = APPSTATUS.UNKNOWN.value
         return res
 
