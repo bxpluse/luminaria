@@ -1,7 +1,8 @@
 import os
-from vars import ROOT_DIR
-from constants import LOGFILE
+
 from apps.baseapp import App
+from constants import LOGFILE
+from vars import ROOT_DIR
 
 
 class LogViewer(App):

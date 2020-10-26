@@ -1,5 +1,7 @@
-from peewee import *
 from datetime import date, datetime
+
+from peewee import *
+
 from database.base_model import BaseModel
 
 

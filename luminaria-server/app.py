@@ -1,6 +1,7 @@
 from flask import Flask, request, send_file
-from flask_socketio import SocketIO
 from flask_cors import CORS
+from flask_socketio import SocketIO
+
 from apps.app_manager import AppManager
 from common.logger import log
 from common.messenger import Messenger

@@ -3,9 +3,10 @@ Logs information to a textfile.
 """
 
 import os
+from datetime import datetime
+
 from constants import LOGFILE
 from vars import ROOT_DIR
-from datetime import datetime
 
 FILE = os.path.join(ROOT_DIR, LOGFILE)
 

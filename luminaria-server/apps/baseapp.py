@@ -1,7 +1,7 @@
+from common.enums import APPTYPE
 from common.enums import ENVIRONMENT, APPSTATUS
 from common.logger import log
 from vars import ENV
-from common.enums import APPTYPE
 
 
 class App:
@@ -20,6 +20,7 @@ class App:
         self.signal = None
         self.messenger = None
         self.debugging = False
+        self.first_start = True
 
     def start(self):
         """ Called when an App is run. """

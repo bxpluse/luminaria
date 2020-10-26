@@ -1,12 +1,14 @@
-import praw
 import threading
+
+import praw
 from apscheduler.schedulers.background import BackgroundScheduler
-from database.comment_frequency_model import CommentFrequencyModel
+
+from apps.baseapp import App
 from apps.monitor.preloader import load_all_symbols, load_blacklist
+from common.enums import APPSTATUS
 from common.util import parse_word
 from config import CLIENT_ID, CLIENT_SECRET
-from apps.baseapp import App
-from common.enums import APPSTATUS
+from database.comment_frequency_model import CommentFrequencyModel
 
 
 class RCListener(App):
@@ -31,18 +33,19 @@ class RCListener(App):
     def run(self):
         super().start()
         job = self.scheduler.add_job(self.commit_to_db, trigger='cron', minute='*/' + str(self.INTERVAL))
-        self.info('Stream starting up with schedule: ' + str(self.scheduler.get_jobs()))
+        if self.first_start:
+            self.info('Stream starting up with schedule: ' + str(self.scheduler.get_jobs()))
         try:
             self.stream()
         except Exception as e:
             self.status = APPSTATUS.ERROR
+            self.first_start = False
             job.remove()
             self.info("ERROR: " + (repr(e)))
             self.info("Jobs after catching exception: " + str(self.scheduler.get_jobs()))
             self.info("Restarting ...")
             timer = threading.Timer(60, self.run)
             timer.start()
-        super().stop()
 
     def show_config(self):
         self.info('----------------Loading config------------------')

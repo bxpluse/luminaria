@@ -1,9 +1,10 @@
 import os
-from shutil import copyfile
 from datetime import date, datetime
+from shutil import copyfile
+
+from apps.baseapp import App
 from constants import BACKUP_DIR
 from vars import ROOT_DIR, DATABASE_NAME
-from apps.baseapp import App
 
 
 class BackupDatabase(App):
@@ -16,7 +17,7 @@ class BackupDatabase(App):
         self.master_db = os.path.join(ROOT_DIR, DATABASE_NAME)
         os.makedirs(self.dir_path, exist_ok=True)
 
-    def run(self, **kwargs):
+    def run(self):
         super().start()
         file_name = self.get_copy_name()
         backup_file = os.path.join(self.dir_path, file_name)

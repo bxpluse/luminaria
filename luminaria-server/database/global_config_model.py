@@ -1,4 +1,5 @@
 from peewee import *
+
 from database.base_model import BaseModel
 
 

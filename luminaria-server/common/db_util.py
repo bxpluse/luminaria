@@ -1,11 +1,12 @@
 import os
 import sqlite3
-from vars import ROOT_DIR, DB
+
 from constants import DATABASE_NAME
 from database.apps_model import AppsModel
 from database.comment_frequency_model import CommentFrequencyModel
 from database.global_config_model import GlobalConfigModel
 from database.local_config_model import LocalConfigModel
+from vars import ROOT_DIR, DB
 
 
 def db_exists():
