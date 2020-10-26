@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, send_file
 from flask_socketio import SocketIO
 from flask_cors import CORS
 from apps.app_manager import AppManager
@@ -49,12 +49,20 @@ def get_all_exchanges(exchange=None):
         return {}
 
 
-@app.route('/log-viewer/<string:command>', methods=['POST'])
-def exec_logviewer(command):
+@app.route('/log-viewer/tail', methods=['POST'])
+def exec_logviewer():
     data = request.get_json()
     num_lines = data['numLines']
     res = manager.log_viewer.run(lines=num_lines)
     return {'lines': res}
+
+
+@app.route('/download_db', methods=['POST', 'GET'])
+def download_db():
+    if request.method == 'GET':
+        return {'filename': manager.db_backup.get_copy_name()}
+    else:
+        return send_file(manager.db_backup.master_db, as_attachment=True)
 
 
 @app.route('/exec/<string:app_id>/<string:command>', methods=['POST'])
