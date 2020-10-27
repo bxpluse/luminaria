@@ -6,7 +6,8 @@ export const STATUS = Object.freeze(
         'STARTED': 'Running',
         'READY': 'Ready',
         'INPROGRESS': 'Inprogress',
-        'UNKNOWN': 'Unknown'
+        'UNKNOWN': 'Unknown',
+        'ERROR': 'Error'
     }
 )
 

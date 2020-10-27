@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import Home from "./pages/Home";
 import LogViewer from "./apps/logviewer/LogViewer";
@@ -10,86 +10,74 @@ import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import RCStreamer from "./apps/rc-streamer/RCStreamer";
 import Socket from "./components/Socket";
+import Backup from './apps/backup/Backup';
 
-class Navigation extends React.Component {
+function Navigation() {
 
-    render() {
-        return (
-            <React.Fragment>
-                <Router>
-
-                    <Header/>
-                    <Socket/>
-                    <CustomNavBar/>
-
-
-                    <div className="content py-5 bg-light">
-                        <Switch>
-                            <Route path="/updater">
-                                <Updater />
-                            </Route>
-                            <Route path="/logs">
-                                <LogViewer />
-                            </Route>
-                            <Route path="/rc-streamer">
-                                <RCStreamer />
-                            </Route>
-                            <Route path="/">
-                                <Home />
-                            </Route>
-                        </Switch>
-                    </div>
-                </Router>
-            </React.Fragment>
-
-        );
-    }
+    return (
+        <React.Fragment>
+            <Router>
+                <Header/>
+                <Socket/>
+                <CustomNavBar/>
+                <div className="content py-5 bg-light">
+                    <Switch>
+                        <Route path="/updater">
+                            <Updater />
+                        </Route>
+                        <Route path="/logs">
+                            <LogViewer />
+                        </Route>
+                        <Route path="/rc-streamer">
+                            <RCStreamer />
+                        </Route>
+                        <Route path="/backup">
+                            <Backup />
+                        </Route>
+                        <Route path="/">
+                            <Home />
+                        </Route>
+                    </Switch>
+                </div>
+                <footer className="footer bg-light"/>
+            </Router>
+        </React.Fragment>
+    );
 }
 
-class CustomNavBar extends React.Component {
+function CustomNavBar() {
 
-    constructor(props){
-        super(props);
-        this.state = {
-            fireworks: {}
-        }
-        this.festival = this.festival.bind(this);
-    }
+    const [fireworks, setFireworks] = useState({
+        fire() {}
+    });
 
-    componentDidMount() {
+    useEffect(() => {
         import('./components/Fireworks').then(Fireworks => {
-            this.setState({
-                fireworks: Fireworks
-            });
+            setFireworks(Fireworks);
         });
-    }
+    }, []);
 
-    festival() {
-        for(let i = 0; i < 6; i++){
-            setTimeout(
-                () => this.state.fireworks.fire(),
-                Math.random() * 750
-            );
-        }
-    }
-
-
-
-    render() {
-        return (
-            <Navbar className={'custom-nav-bar navbar-expand-lg navbar-dark bg-dark'} bg="light" variant="light">
-                <Link to="/">
-                    <Navbar.Brand>Home</Navbar.Brand>
-                </Link>
-                <Nav className="mr-auto">
-                    <Nav.Link onClick={this.festival}>Festival</Nav.Link>
-                </Nav>
-                <Form inline>
-                    <FormControl type="text" placeholder="Search" className="mr-sm-2" disabled={true}/>
-                </Form>
-            </Navbar>
-        );
-    }
+    return (
+        <Navbar className={'custom-nav-bar navbar-expand-lg navbar-dark bg-dark'} bg="light" variant="light">
+            <Link to="/">
+                <Navbar.Brand>Home</Navbar.Brand>
+            </Link>
+            <Nav className="mr-auto">
+                <Nav.Link
+                    onClick={() => {
+                        for(let i = 0; i < 6; i++){
+                            setTimeout(
+                                () => fireworks.fire(),
+                                Math.random() * 750
+                            );
+                        }}
+                }>Festival</Nav.Link>
+            </Nav>
+            <Form inline>
+                <FormControl type="text" placeholder="Search" className="mr-sm-2" disabled={true}/>
+            </Form>
+        </Navbar>
+    );
 }
 
 

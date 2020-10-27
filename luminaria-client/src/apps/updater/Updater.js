@@ -1,61 +1,78 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Container from "react-bootstrap/Container";
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import Config from "../../config"
 import CardColumns from "react-bootstrap/CardColumns";
 import Spinner from 'react-bootstrap/Spinner'
 import '../../pages/Home.css';
-import { STATUS } from '../../Enums'
+import {STATUS} from '../../Enums'
+import Request from "../../Requests";
 
-class Updater extends React.Component {
+function Updater() {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            exchanges: []
-        }
+    const [exchanges, setExchanges] = useState([]);
+
+    window.scrollTo(0, 0)
+
+    useEffect(() => {
+        Request.POST_JSON('/updater/exchanges', {}).then(data => {
+            setExchanges(data['exchanges']);
+        });
+    });
+
+    const exchangesComponents = [];
+    for (const exchange of exchanges){
+        exchangesComponents.push(
+            <UpdateCard key={exchange} exchange={exchange}/>);
     }
 
-    componentDidMount() {
-        window.scrollTo(0, 0)
+    return (
+        <Container>
+            <div>
+                <CardColumns>
+                    {exchangesComponents}
+                </CardColumns>
+            </div>
+        </Container>
+    )
 
-        fetch(Config.HOST + '/updater/exchanges', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-        }).then(response => {
-            return response.json();
-        }).then(data => {
-            this.setState({
-                exchanges: data.exchanges
-            });
-        })
-    }
-
-
-
-    render() {
-        const exchanges = [];
-        for (const exchange of this.state.exchanges){
-            exchanges.push(
-                <UpdateCard key={exchange} exchange={exchange}/>
-            );
-        }
-
-        return (
-            <Container>
-                <div>
-                    <CardColumns>
-                        {exchanges}
-                    </CardColumns>
-                </div>
-            </Container>
-        );
-    }
 }
+
+function UpdateCard(props) {
+
+    const [status, setStatus] = useState(STATUS.READY);
+
+    function updateExchange(exchange) {
+        setStatus(STATUS.INPROGRESS);
+        Request.POST_JSON('/updater/exchanges/' + exchange, {}).then(() => {
+            setStatus(STATUS.READY);
+        });
+    }
+
+    let button;
+    if(status === STATUS.READY){
+        button = <Button onClick={() => updateExchange(props.exchange)} variant="info">Update</Button>;
+    } else{
+        button = <React.Fragment>
+            <Spinner animation="border" variant="primary"/>
+            <span className={'px-3'}>Updating...</span>
+        </React.Fragment>
+    }
+
+    return (
+        <Form className='card p-5 orange shadow-sm'>
+            <Form.Group controlId="exampleForm.ControlSelect1">
+                <Form.Label>Update Exchange</Form.Label>
+                <Form.Control type="text" value={props.exchange} disabled={true}/>
+            </Form.Group>
+            {button}
+        </Form>
+    );
+
+}
+
+
+/*
 
 class UpdateCard extends React.Component {
 
@@ -75,17 +92,12 @@ class UpdateCard extends React.Component {
         this.setState({
             status: STATUS.INPROGRESS
         })
-        fetch(Config.HOST + '/updater/exchanges/' + exchange, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-        }).then(response => {
+
+        Request.POST_JSON('/updater/exchanges/', {}).then(data => {
             this.setState({
                 status: STATUS.READY
             })
-        })
+        });
     }
 
     render() {
@@ -111,5 +123,6 @@ class UpdateCard extends React.Component {
     }
 }
 
+ */
 
 export default Updater;

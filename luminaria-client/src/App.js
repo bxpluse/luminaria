@@ -6,7 +6,6 @@ function App() {
     return (
         <div className="App">
             <Navigation/>
-            <footer className="footer bg-light"/>
         </div>
     );
 }

@@ -2,12 +2,12 @@ import React from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import openSocket  from "socket.io-client";
 import 'react-toastify/dist/ReactToastify.css';
-import Config from "../config";
+import CONFIG from "../Config";
 
 
 function Socket() {
 
-    const socket = openSocket.connect(Config.HOST);
+    const socket = openSocket.connect(CONFIG.HOST);
 
     socket.on('toast-message', (data) => {
         toast.warn(data.message, {
@@ -38,8 +38,6 @@ function Socket() {
             />
         </div>
     );
-
-
 }
 
 
