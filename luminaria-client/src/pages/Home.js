@@ -51,16 +51,27 @@ function AppCard(props) {
         variant = 'info'
     } else if (props.app.status === "Error") {
         variant = 'danger'
+    } else if (props.app.status === "Link") {
+        variant = 'dark'
     } else {
         variant = 'warning'
     }
 
+    const is_link = props.app['link_to'] !== null;
+
     return (
         <Card className={'mt-5 shadow dashboard-card'}>
-            <Link className={'app-link'} to={'/' + props.app.url}>
-                <Card.Img variant="top" src={props.app.image} />
-                <Badge className={'element2 badge-pill'} variant={variant}>{props.app.status}</Badge>
-            </Link>
+            {is_link ? (
+                <a className={'app-link'} href={props.app['link_to']} target='_blank' rel='noopener noreferrer'>
+                    <Card.Img variant="top" src={props.app.image} />
+                    <Badge className={'element2 badge-pill'} variant={variant}>{props.app.status}</Badge>
+                </a>
+            ) : (
+                <Link className={'app-link'} to={props.app['url']}>
+                    <Card.Img variant="top" src={props.app.image} />
+                    <Badge className={'element2 badge-pill'} variant={variant}>{props.app.status}</Badge>
+                </Link>
+            )}
             <Card.Body>
                 <Link className={'element1 app-link'} to="/">
                     <Card.Title>{props.app.name}</Card.Title>
