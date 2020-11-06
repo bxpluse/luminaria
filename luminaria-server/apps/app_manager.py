@@ -46,6 +46,9 @@ class AppManager:
             except ValueError:
                 app_entry['status'] = APPSTATUS.UNKNOWN.value
 
+            is_link = LinkModel.select_link_by_app_id(app_entry['id']) is not None
+            if is_link:
+                app_entry['status'] = APPSTATUS.LINK.value
             app_entry['link_to'] = LinkModel.select_link_by_app_id(app_entry['id'])
 
         return res
