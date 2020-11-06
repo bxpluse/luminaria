@@ -6,6 +6,7 @@ from common.db_util import create_db, db_exists
 from common.enums import APP, APPSTATUS
 from database.apps_model import AppsModel
 from database.local_config_model import LocalConfigModel
+from database.link_model import LinkModel
 
 
 class AppManager:
@@ -35,14 +36,18 @@ class AppManager:
     def get_all_apps(self):
         res = self.apps_model.get_all_apps()
         for key, value in res.items():
+            app_entry = res[key]
             try:
                 app = APP(key)
                 if app in self.apps:
-                    res[key]['status'] = self.apps[app].status.value
+                    app_entry['status'] = self.apps[app].status.value
                 else:
-                    res[key]['status'] = APPSTATUS.UNKNOWN.value
+                    app_entry['status'] = APPSTATUS.UNKNOWN.value
             except ValueError:
-                res[key]['status'] = APPSTATUS.UNKNOWN.value
+                app_entry['status'] = APPSTATUS.UNKNOWN.value
+
+            app_entry['link_to'] = LinkModel.select_link_by_app_id(app_entry['id'])
+
         return res
 
     def get_app_status(self, app_id):
