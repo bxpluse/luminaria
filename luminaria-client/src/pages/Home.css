@@ -64,14 +64,14 @@
     object-fit: cover;
 }
 
-.element1 {
+.appcard {
     display:inline-block;
     margin-right:1em;
     position:relative;
     padding-top:20px;
 }
 
-.element2 {
+.app-badge {
     position: absolute;
     right: 10px;
     top:10px;

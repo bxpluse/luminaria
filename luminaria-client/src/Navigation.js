@@ -5,21 +5,38 @@ import LogViewer from "./apps/logviewer/LogViewer";
 import Header from "./pages/Header";
 import Updater from "./apps/updater/Updater";
 import Navbar from "react-bootstrap/Navbar";
+import NavDropdown from "react-bootstrap/NavDropdown";
 import Nav from "react-bootstrap/Nav";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import RCStreamer from "./apps/rc-streamer/RCStreamer";
 import Socket from "./components/Socket";
 import Backup from './apps/backup/Backup';
+import Request from "./Requests";
 
 function Navigation() {
+
+    const [apps, setApps] = useState({});
+
+    useEffect(() => {
+        Request.POST_JSON('/get-all-apps', {}).then(data => {
+            const applications = [];
+            for (const [, app] of Object.entries(data)) {
+                applications.push(app);
+            }
+            applications.sort(function(a, b){
+                return a.order - b.order;
+            });
+            setApps(applications);
+        });
+    }, []);
 
     return (
         <React.Fragment>
             <Router>
                 <Header/>
                 <Socket/>
-                <CustomNavBar/>
+                <CustomNavBar apps={apps}/>
                 <div className="content py-5 bg-light">
                     <Switch>
                         <Route path="/updater">
@@ -35,7 +52,7 @@ function Navigation() {
                             <Backup />
                         </Route>
                         <Route path="/">
-                            <Home />
+                            <Home apps={apps} />
                         </Route>
                     </Switch>
                 </div>
@@ -45,7 +62,7 @@ function Navigation() {
     );
 }
 
-function CustomNavBar() {
+function CustomNavBar(props) {
 
     const [fireworks, setFireworks] = useState({
         fire() {}
@@ -57,12 +74,34 @@ function CustomNavBar() {
         });
     }, []);
 
+    const links = [];
+    for(let i = 0; i < props.apps.length; i++){
+        const app = props.apps[i];
+        const is_link = app['link_to'] !== null;
+        if(is_link){
+            links.push(
+                <NavDropdown.Item
+                    href={app['link_to']}
+                    target='_blank'
+                    rel='noopener noreferrer'>
+                    {app['name']}
+                </NavDropdown.Item>,
+                <NavDropdown.Divider />
+            )
+        }
+    }
+    if(links.length > 0){
+        links.pop();
+    }
+
     return (
         <Navbar className={'custom-nav-bar navbar-expand-lg navbar-dark bg-dark'} bg="light" variant="light">
+
             <Link to="/">
                 <Navbar.Brand>Home</Navbar.Brand>
             </Link>
-            <Nav className="mr-auto">
+
+            <Nav>
                 <Nav.Link
                     onClick={() => {
                         for(let i = 0; i < 6; i++){
@@ -71,11 +110,22 @@ function CustomNavBar() {
                                 Math.random() * 750
                             );
                         }}
-                }>Festival</Nav.Link>
+                    }>Festival
+                </Nav.Link>
             </Nav>
-            <Form inline>
-                <FormControl type="text" placeholder="Search" className="mr-sm-2" disabled={true}/>
-            </Form>
+
+            <Nav>
+                <NavDropdown title="External Links">
+                    {links}
+                </NavDropdown>
+            </Nav>
+
+            <Nav className="ml-auto">
+                <Form inline>
+                    <FormControl type="text" placeholder="Search" className="mr-sm-2" disabled={true}/>
+                </Form>
+            </Nav>
+
         </Navbar>
     );
 }

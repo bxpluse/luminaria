@@ -1,32 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import Card from 'react-bootstrap/Card';
 import CardColumns from 'react-bootstrap/CardColumns'
 import Container from 'react-bootstrap/Container'
 import Badge from 'react-bootstrap/Badge'
 import {Link} from 'react-router-dom'
 import './Home.css';
-import Request from "../Requests";
 
-function Home() {
-
-    const [apps, setApps] = useState({});
-
-    useEffect(() => {
-        Request.POST_JSON('/get-all-apps', {}).then(data => {
-            const applications = [];
-            for (const [, app] of Object.entries(data)) {
-                applications.push(app);
-            }
-            applications.sort(function(a, b){
-                return a.order - b.order;
-            });
-            setApps(applications);
-        });
-    }, []);
+function Home(props) {
 
     const applications = [];
-    for(let i = 0; i < apps.length; i++){
-        const app = apps[i];
+    for(let i = 0; i < props.apps.length; i++){
+        const app = props.apps[i];
         applications.push(
             <AppCard key={app.id} app={app} order={app.order}/>
         )
@@ -64,16 +48,16 @@ function AppCard(props) {
             {is_link ? (
                 <a className={'app-link'} href={props.app['link_to']} target='_blank' rel='noopener noreferrer'>
                     <Card.Img variant="top" src={props.app.image} />
-                    <Badge className={'element2 badge-pill'} variant={variant}>{props.app.status}</Badge>
+                    <Badge className={'app-badge badge-pill'} variant={variant}>{props.app.status}</Badge>
                 </a>
             ) : (
                 <Link className={'app-link'} to={props.app['url']}>
                     <Card.Img variant="top" src={props.app.image} />
-                    <Badge className={'element2 badge-pill'} variant={variant}>{props.app.status}</Badge>
+                    <Badge className={'app-badge badge-pill'} variant={variant}>{props.app.status}</Badge>
                 </Link>
             )}
             <Card.Body>
-                <Link className={'element1 app-link'} to="/">
+                <Link className={'appcard app-link'} to="/">
                     <Card.Title>{props.app.name}</Card.Title>
                 </Link>
                 <Card.Text>
