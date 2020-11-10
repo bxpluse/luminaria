@@ -7,6 +7,8 @@ import Request from "../../Requests";
 
 function Backup() {
 
+    window.scrollTo(0, 0)
+
     return (
         <Container>
             <Jumbotron>

@@ -7,12 +7,11 @@ import Spinner from 'react-bootstrap/Spinner'
 import '../../pages/Home.css';
 import {STATUS} from '../../Enums'
 import Request from "../../Requests";
+import Jumbotron from "react-bootstrap/Jumbotron";
 
 function Updater() {
 
     const [exchanges, setExchanges] = useState([]);
-
-    window.scrollTo(0, 0)
 
     useEffect(() => {
         Request.POST_JSON('/updater/exchanges', {}).then(data => {
@@ -28,11 +27,13 @@ function Updater() {
 
     return (
         <Container>
-            <div>
+            <Jumbotron>
+                <h1>Exchange Updater</h1>
+                <br />
                 <CardColumns>
                     {exchangesComponents}
                 </CardColumns>
-            </div>
+            </Jumbotron>
         </Container>
     )
 

@@ -7,6 +7,7 @@ import FormControl from 'react-bootstrap/FormControl'
 import InputGroup from 'react-bootstrap/InputGroup'
 import {STATUS} from '../../Enums'
 import Request from "../../Requests";
+import Jumbotron from "react-bootstrap/Jumbotron";
 
 function RCStreamer() {
 
@@ -47,27 +48,31 @@ function RCStreamer() {
 
     return (
         <Container>
-            {button}
-            <br/><br/>
-            <Form>
-                <Form.Check type="checkbox" label="Debugging" checked={debugging} onChange={() => {
-                    toggleDebug(!debugging);
-                    setDebugging(!debugging);
-                }}/>
+            <Jumbotron>
+                <h1>RC Streamer</h1>
+                <br/>
+                {button}
                 <br/><br/>
-                <InputGroup className="mb-3">
-                    <InputGroup.Prepend>
-                        <InputGroup.Text id="basic-addon1">Next Run Time</InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <FormControl value={nextRun} disabled={true}/>
-                </InputGroup>
-                <InputGroup className="mb-3">
-                    <InputGroup.Prepend>
-                        <InputGroup.Text id="basic-addon1">Data on RAM</InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <FormControl as="textarea" value={JSON.stringify(ram)} disabled={true}/>
-                </InputGroup>
-            </Form>
+                <Form>
+                    <Form.Check type="checkbox" label="Debugging" checked={debugging} onChange={() => {
+                        toggleDebug(!debugging);
+                        setDebugging(!debugging);
+                    }}/>
+                    <br/><br/>
+                    <InputGroup className="mb-3">
+                        <InputGroup.Prepend>
+                            <InputGroup.Text id="basic-addon1">Next Run Time</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl value={nextRun} disabled={true}/>
+                    </InputGroup>
+                    <InputGroup className="mb-3">
+                        <InputGroup.Prepend>
+                            <InputGroup.Text id="basic-addon1">Data on RAM</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl as="textarea" value={JSON.stringify(ram)} disabled={true}/>
+                    </InputGroup>
+                </Form>
+            </Jumbotron>
         </Container>
     );
 }
