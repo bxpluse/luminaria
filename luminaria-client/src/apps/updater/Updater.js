@@ -17,7 +17,7 @@ function Updater() {
         Request.POST_JSON('/updater/exchanges', {}).then(data => {
             setExchanges(data['exchanges']);
         });
-    });
+    }, []);
 
     const exchangesComponents = [];
     for (const exchange of exchanges){
