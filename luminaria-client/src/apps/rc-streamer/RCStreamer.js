@@ -18,7 +18,7 @@ function RCStreamer() {
 
     useEffect(() => {
         Request.POST_JSON('/status/rc-streamer', {}).then(data => {
-            if(data['status'] === STATUS.READY){
+            if(data['status'] === STATUS.READY || data['status'] === STATUS.STOPPED){
                 setReady(true);
             } else {
                 setReady(false);

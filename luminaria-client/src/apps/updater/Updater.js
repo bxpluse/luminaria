@@ -62,7 +62,7 @@ function UpdateCard(props) {
 
     return (
         <Form className='card p-5 orange shadow-sm'>
-            <Form.Group controlId="exampleForm.ControlSelect1">
+            <Form.Group>
                 <Form.Label>Update Exchange</Form.Label>
                 <Form.Control type="text" value={props.exchange} disabled={true}/>
             </Form.Group>

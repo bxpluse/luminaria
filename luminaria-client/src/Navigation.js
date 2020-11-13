@@ -13,6 +13,7 @@ import RCStreamer from "./apps/rc-streamer/RCStreamer";
 import Socket from "./components/Socket";
 import Backup from './apps/backup/Backup';
 import Request from "./Requests";
+import IPOStatus from "./apps/ipos/IPOStatus";
 
 function Navigation() {
 
@@ -51,6 +52,9 @@ function Navigation() {
                         <Route path="/backup">
                             <Backup />
                         </Route>
+                        <Route path="/ipos">
+                            <IPOStatus />
+                        </Route>
                         <Route path="/">
                             <Home apps={apps} />
                         </Route>
@@ -81,12 +85,13 @@ function CustomNavBar(props) {
         if(is_link){
             links.push(
                 <NavDropdown.Item
+                    key={i}
                     href={app['link_to']}
                     target='_blank'
                     rel='noopener noreferrer'>
                     {app['name']}
                 </NavDropdown.Item>,
-                <NavDropdown.Divider />
+                <NavDropdown.Divider key={i}/>
             )
         }
     }
