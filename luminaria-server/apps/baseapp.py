@@ -21,6 +21,7 @@ class App:
         self.messenger = None
         self.debugging = False
         self.first_start = True
+        self.scheduler = None
 
     def start(self):
         """ Called when an App is run. """
@@ -59,3 +60,6 @@ class App:
                 log(self.APP_ID, message)
             elif ENV == ENVIRONMENT.DEV:
                 print(message)
+
+    def execute(self, command, **kwargs):
+        pass

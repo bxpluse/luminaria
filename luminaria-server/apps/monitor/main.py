@@ -1,11 +1,11 @@
 import threading
 
 import praw
-from apscheduler.schedulers.background import BackgroundScheduler
 
 from apps.baseapp import App
 from apps.monitor.preloader import load_all_symbols, load_blacklist
 from common.enums import APPSTATUS
+from common.enums import APPTYPE
 from common.util import parse_word
 from config import CLIENT_ID, CLIENT_SECRET
 from database.comment_frequency_model import CommentFrequencyModel
@@ -16,7 +16,7 @@ class RCListener(App):
 
     def __init__(self, subs, interval):
 
-        super().__init__()
+        super().__init__(app_type=APPTYPE.STREAMING)
         self.SYMBOLS = load_all_symbols() - load_blacklist()
         self.INTERVAL = interval
         self.COMMENT_FREQUENCY_MODEL = CommentFrequencyModel()
@@ -25,9 +25,6 @@ class RCListener(App):
                                   client_secret=CLIENT_SECRET,
                                   user_agent="Test Script")
         self.data = {}  # key=symbol, value=times_mentioned
-
-        self.scheduler = BackgroundScheduler({'apscheduler.timezone': 'America/Toronto'})
-        self.scheduler.start()
         self.show_config()
 
     def run(self):

@@ -6,6 +6,7 @@ class APP(Enum):
     LOG_VIEWER = 'log-viewer'
     DB_BACKUP = 'db-backup'
     RC_STREAMER = 'rc-streamer'
+    IPO_LISTENER = 'ipo-listener'
 
 
 class APPTYPE(Enum):
