@@ -3,7 +3,7 @@ from collections import defaultdict
 from apps.baseapp import App
 from database.comment_frequency_model import CommentFrequencyModel
 from playhouse.shortcuts import model_to_dict
-from vars import DB
+from vars import DB1
 
 class WordCloud(App):
     """
@@ -27,11 +27,11 @@ class WordCloud(App):
         #for key, value in res.items():
         #    print(key, value)
 
-        cursor = DB.execute_sql('''select *, sum(times_mentioned) as total
+        cursor = DB1.execute_sql('''select *, sum(times_mentioned) as total
                                 from COMMENT_FREQUENCY where date=?
                                 group by symbol
                                 order by total desc'''
-                                , (date.today(),))
+                                 , (date.today(),))
 
         for row in cursor.fetchall():
             print(row)

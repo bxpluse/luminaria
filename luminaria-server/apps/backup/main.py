@@ -4,7 +4,7 @@ from shutil import copyfile
 
 from apps.baseapp import App
 from constants import BACKUP_DIR
-from vars import ROOT_DIR, DATABASE_NAME
+from vars import ROOT_DIR, DATABASE1_NAME
 
 
 class BackupDatabase(App):
@@ -14,7 +14,7 @@ class BackupDatabase(App):
     def __init__(self):
         super().__init__()
         self.dir_path = os.path.join(ROOT_DIR, BACKUP_DIR)
-        self.master_db = os.path.join(ROOT_DIR, DATABASE_NAME)
+        self.master_db = os.path.join(ROOT_DIR, DATABASE1_NAME)
         os.makedirs(self.dir_path, exist_ok=True)
 
     def run(self):
@@ -27,4 +27,4 @@ class BackupDatabase(App):
     @staticmethod
     def get_copy_name():
         cur_time = str(date.today()) + '_' + str(datetime.now().strftime("%H-%M"))
-        return 'database_' + cur_time + '.sqlite3'
+        return 'db1_' + cur_time + '.sqlite3'

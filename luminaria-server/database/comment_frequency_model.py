@@ -26,6 +26,11 @@ class CommentFrequencyModel(BaseModel):
                 times_mentioned=value,
             )
 
+    @staticmethod
+    def get_first_record_by_symbol(symbol):
+        res = CommentFrequencyModel.select().where(CommentFrequencyModel.symbol == symbol).get()
+        return res
+
 
 if __name__ == "__main__":
     model = CommentFrequencyModel()
