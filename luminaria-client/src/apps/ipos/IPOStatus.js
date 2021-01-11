@@ -12,8 +12,7 @@ function IPOStatus() {
     const [ready, setReady] = useState(null);
     const [strings, setStrings] = useState([]);
     const [company, setCompany] = useState("");
-    const [site, setSite] = useState([]);
-   // window.scrollTo(0, 0)
+    const [sites, setSites] = useState([]);
 
     useEffect(() => {
         Request.POST_JSON('/status/ipo-listener', {}).then(data => {
@@ -46,6 +45,7 @@ function IPOStatus() {
     let j = 1;
     const rowsAnnounced = [];
     const rowsWaiting = [];
+    const links = [];
 
     strings.map((s) => {
 
@@ -82,6 +82,17 @@ function IPOStatus() {
         return 1;
     });
 
+    sites.map((site) => {
+        const match = /[.](.*?)[.]/g.exec(site);
+        links.push(
+            <div>
+                <a href={site} target='_blank' rel='noopener noreferrer'>Link to {match[1]} calendar</a>
+                <br/>
+            </div>
+        )
+        return 1;
+    });
+
     const handleSubmit = (evt) => {
         const string = company.trim();
         if(string !== ""){
@@ -100,8 +111,8 @@ function IPOStatus() {
                 <br />
 
                 <br />
-                <a href={site} target='_blank' rel='noopener noreferrer'>LINK to IPO Page</a>
-                <br /><br />
+                {links}
+                <br />
 
                 <Form inline onSubmit={handleSubmit}>
                     <Form.Control
@@ -152,7 +163,7 @@ function IPOStatus() {
     function refresh(){
         Request.POST_JSON('/exec/ipo-listener/get', {}).then(data => {
             setStrings(data['res']);
-            setSite(data['site']);
+            setSites(data['sites']);
         });
     }
 
