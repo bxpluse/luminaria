@@ -10,12 +10,17 @@ def load_all_symbols():
     :return: A set of all tickers in exchanges.
     """
     symbols = set()
+    filepath = os.path.join(ROOT_DIR, STATIC_DIR)
     exchanges_path = os.path.join(ROOT_DIR, STATIC_DIR, EXCHANGES_DIR)
     for filename in os.listdir(exchanges_path):
         with open(os.path.join(exchanges_path, filename), newline='') as csvfile:
             reader = csv.reader(csvfile, delimiter=',')
             for row in reader:
                 symbols.add(row[0].strip())
+    with open(os.path.join(filepath, WHITELIST_FILENAME), 'a+') as file:
+        file.seek(0)
+        for word in file:
+            symbols.add(word.strip())
     return symbols
 
 
@@ -34,5 +39,6 @@ def load_blacklist():
     with open(os.path.join(filepath, WHITELIST_FILENAME), 'a+') as file:
         file.seek(0)
         for word in file:
-            blacklist.remove(word.strip())
+            if word in blacklist:
+                blacklist.remove(word.strip())
     return blacklist
