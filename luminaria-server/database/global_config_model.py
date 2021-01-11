@@ -6,6 +6,8 @@ from database.base_model import BaseModel
 class GlobalConfigModel(BaseModel):
     parameter = CharField(unique=True)
     value = CharField()
+    description = CharField(null=True)
+    name = CharField(null=True)
 
     class Meta:
         table_name = 'GLOBAL_CONFIG'

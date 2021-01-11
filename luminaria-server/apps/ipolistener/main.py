@@ -11,11 +11,13 @@ from database.local_config_model import LocalConfigModel
 
 class IPOListener(App):
     APP_ID = 'ipo-listener'
-    SITE = ''
 
     def __init__(self):
         super().__init__(app_type=APPTYPE.STREAMING)
-        self.SITE = LocalConfigModel.retrieve("IPO_CALENDAR_URL")
+        self.MAIN_SITE = LocalConfigModel.retrieve("IPO_CALENDAR_MARKETWATCH")
+        self.SITES = [self.MAIN_SITE,
+                      LocalConfigModel.retrieve("IPO_CALENDAR_YAHOO"),
+                      LocalConfigModel.retrieve("IPO_CALENDAR_NASDAQ")]
 
     def run(self):
         super().start()
@@ -33,7 +35,7 @@ class IPOListener(App):
 
     def search(self):
         terms = IPOStringModel.get_all_not_found_strings()
-        response = requests.get(self.SITE)
+        response = requests.get(self.MAIN_SITE)
         cleaned = response.content.decode('utf-8').lower()
         for term in terms:
             res = cleaned.find(term.lower())
@@ -52,7 +54,7 @@ class IPOListener(App):
 
     def get_data(self):
         res = IPOStringModel.get_all_not_dismissed_strings()
-        return {'res': res, 'site': self.SITE}
+        return {'res': res, 'sites': self.SITES}
 
     def execute(self, command, **kwargs):
         string = kwargs['string']
