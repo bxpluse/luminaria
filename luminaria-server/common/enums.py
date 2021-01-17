@@ -36,3 +36,16 @@ class ENVIRONMENT(Enum):
 
 class COMMAND(Enum):
     RUN = 0
+
+
+class TimeFrame(Enum):
+    MONTH_START = 0
+    MONTH_END = 1
+    WEEK_START = 2
+    WEEK_END = 3
+
+
+class SeriesAttribute:
+    DATE = 2
+    ADJUSTED_CLOSE = 10
+    VOLUME = 11
