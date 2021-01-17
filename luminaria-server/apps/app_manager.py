@@ -76,5 +76,8 @@ class AppManager:
         elif command == 'get':
             return app.get_data()
         else:
-            app.execute(command, **data)
+            if data is None:
+                app.execute(command, **{})
+            else:
+                app.execute(command, **data)
         return {}

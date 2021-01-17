@@ -75,3 +75,10 @@ class RCListener(App):
         if len(self.scheduler.get_jobs()) == 1:
             next_run = self.scheduler.get_jobs()[0].next_run_time
         return {'ram': self.data, 'next_run': str(next_run)}
+
+    def load_preloader(self):
+        self.SYMBOLS = load_all_symbols() - load_blacklist()
+
+    def execute(self, command, **kwargs):
+        if command == 'reload_symbols':
+            self.load_preloader()
