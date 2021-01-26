@@ -22,12 +22,12 @@ function Backup() {
             </Jumbotron>
 
             <Jumbotron>
-                <h1>Copy DB</h1>
+                <h1>Copy DB (Disabled)</h1>
                 <p>
                     Copy a copy of the current database to the backup folder.
                 </p>
                 <p>
-                    <Button variant="primary" onClick={() => {copy()}}>Copy</Button>
+                    <Button variant="primary" disabled="true" onClick={() => {copy()}}>Copy</Button>
                 </p>
             </Jumbotron>
         </Container>
@@ -35,18 +35,16 @@ function Backup() {
 }
 
 function download(){
-    Request.GET_JSON('/download_db').then(data => {
+    Request.GET_JSON('/get/db-backup/file-name').then(data => {
         const filename = data['filename'];
-        Request.GET_FILE('/download_db').then(blob => {
+        Request.GET_FILE('/blob/db-backup/download').then(blob => {
             saveAs(blob, filename);
         });
     });
 }
 
 function copy() {
-    Request.POST_JSON('/updater/exchanges', {}).then(() => {
 
-    });
 }
 
 

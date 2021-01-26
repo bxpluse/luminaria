@@ -14,7 +14,7 @@ function Updater() {
     const [exchanges, setExchanges] = useState([]);
 
     useEffect(() => {
-        Request.POST_JSON('/updater/exchanges', {}).then(data => {
+        Request.GET_JSON('/get/updater/available-exchanges').then(data => {
             setExchanges(data['exchanges']);
         });
     }, []);
@@ -45,7 +45,7 @@ function UpdateCard(props) {
 
     function updateExchange(exchange) {
         setStatus(STATUS.INPROGRESS);
-        Request.POST_JSON('/updater/exchanges/' + exchange, {}).then(() => {
+        Request.POST_JSON('/exec/updater/update-exchange', {exchange: exchange}).then(() => {
             setStatus(STATUS.READY);
         });
     }
@@ -72,58 +72,5 @@ function UpdateCard(props) {
 
 }
 
-
-/*
-
-class UpdateCard extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            status: STATUS.READY
-        }
-        this.updateExchange = this.updateExchange.bind(this);
-    }
-
-    componentWillUnmount() {
-        this.setState = (state,callback)=>{};
-    }
-
-    updateExchange(exchange) {
-        this.setState({
-            status: STATUS.INPROGRESS
-        })
-
-        Request.POST_JSON('/updater/exchanges/', {}).then(data => {
-            this.setState({
-                status: STATUS.READY
-            })
-        });
-    }
-
-    render() {
-        let button;
-        if(this.state.status === STATUS.READY){
-            button = <Button onClick={() => this.updateExchange(this.props.exchange)} variant="info">Update</Button>;
-        } else{
-            button = <React.Fragment>
-                <Spinner animation="border" variant="primary"/>
-                <span className={'px-3'}>Updating...</span>
-            </React.Fragment>
-        }
-
-        return (
-            <Form className='card p-5 orange shadow-sm'>
-                <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Form.Label>Update Exchange</Form.Label>
-                    <Form.Control type="text" value={this.props.exchange} disabled={true}/>
-                </Form.Group>
-                {button}
-            </Form>
-        );
-    }
-}
-
- */
 
 export default Updater;

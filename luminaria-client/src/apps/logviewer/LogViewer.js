@@ -41,7 +41,7 @@ function LogViewer() {
 }
 
 async function getLogs() {
-    return await Request.POST_JSON('/log-viewer/tail', {numLines: 100}).then(data => {
+    return await Request.POST_JSON('/exec/log-viewer/tail', {numLines: 100}).then(data => {
         return data.lines;
     });
 }
