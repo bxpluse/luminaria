@@ -18,10 +18,8 @@ class App:
         elif self.app_type == APPTYPE.EXECUTABLE:
             self.status = APPSTATUS.READY
         self.signal = None
-        self.messenger = None
         self.debugging = False
         self.first_start = True
-        self.scheduler = None
 
     def start(self):
         """ Called when an App is run. """

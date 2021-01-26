@@ -11,7 +11,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, cors_allowed_origins="*", cookie=False)
 CORS(app)
 messenger = Messenger(socketio)
-manager = AppManager(messenger=messenger)
+manager = AppManager()
 log('Flask', 'Deployed')
 
 

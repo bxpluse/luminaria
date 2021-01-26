@@ -1,11 +1,13 @@
 import threading
 
 import praw
+from apscheduler.schedulers.background import BackgroundScheduler
 
 from apps.baseapp import App
 from apps.monitor.preloader import load_all_symbols, load_blacklist
 from common.enums import APPSTATUS
 from common.enums import APPTYPE
+from config import SCHEDULER_TIME_ZONE
 from common.util import parse_word
 from config import CLIENT_ID, CLIENT_SECRET
 from database.comment_frequency_model import CommentFrequencyModel
@@ -25,6 +27,8 @@ class RCListener(App):
                                   client_secret=CLIENT_SECRET,
                                   user_agent="Test Script")
         self.data = {}  # key=symbol, value=times_mentioned
+        self.scheduler = BackgroundScheduler({'apscheduler.timezone': SCHEDULER_TIME_ZONE})
+        self.scheduler.start()
         self.show_config()
 
     def run(self):
@@ -41,7 +45,7 @@ class RCListener(App):
             self.info("ERROR: " + (repr(e)))
             self.info("Jobs after catching exception: " + str(self.scheduler.get_jobs()))
             self.info("Restarting ...")
-            timer = threading.Timer(60, self.run)
+            timer = threading.Timer(30, self.run)
             timer.start()
 
     def show_config(self):
@@ -58,11 +62,16 @@ class RCListener(App):
             seen_symbols = set()
             for word in words:
                 word = parse_word(word)
-                if word in self.SYMBOLS and word not in seen_symbols:
+                if self.allowed_symbol(word) and word not in seen_symbols:
                     seen_symbols.add(word)
                     if word not in self.data:
                         self.data[word] = 0
                     self.data[word] += 1
+
+    def allowed_symbol(self, word):
+        if word in self.SYMBOLS:
+            return True
+        return False
 
     def commit_to_db(self):
         self.debug('committing rows: ' + str(len(self.data)))

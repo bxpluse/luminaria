@@ -1,10 +1,12 @@
 import threading
 
 import requests
+from apscheduler.schedulers.background import BackgroundScheduler
 
 from apps.baseapp import App
 from common.enums import APPSTATUS
 from common.enums import APPTYPE
+from config import SCHEDULER_TIME_ZONE
 from database.ipo_strings_model import IPOStringModel
 from database.local_config_model import LocalConfigModel
 
@@ -14,6 +16,8 @@ class IPOListener(App):
 
     def __init__(self):
         super().__init__(app_type=APPTYPE.STREAMING)
+        self.scheduler = BackgroundScheduler({'apscheduler.timezone': SCHEDULER_TIME_ZONE})
+        self.scheduler.start()
         self.MAIN_SITE = LocalConfigModel.retrieve("IPO_CALENDAR_MARKETWATCH")
         self.SITES = [self.MAIN_SITE,
                       LocalConfigModel.retrieve("IPO_CALENDAR_YAHOO"),
@@ -21,7 +25,7 @@ class IPOListener(App):
 
     def run(self):
         super().start()
-        job = self.scheduler.add_job(self.search, trigger='cron', hour='*/4')
+        job = self.scheduler.add_job(self.search, trigger='cron', hour='*/6')
         try:
             self.search()
         except Exception as e:

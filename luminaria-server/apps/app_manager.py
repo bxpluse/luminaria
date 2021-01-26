@@ -1,5 +1,3 @@
-from apscheduler.schedulers.background import BackgroundScheduler
-
 from apps.backup.main import BackupDatabase
 from apps.ipolistener.main import IPOListener
 from apps.logviewer.main import LogViewer
@@ -14,7 +12,7 @@ from database.local_config_model import LocalConfigModel
 
 class AppManager:
 
-    def __init__(self, messenger=None):
+    def __init__(self):
 
         if not db_exists():
             create_db()
@@ -34,12 +32,6 @@ class AppManager:
             APP.RC_STREAMER: self.rc_listener,
             APP.IPO_LISTENER: self.ipo_listener
         }
-
-        scheduler = BackgroundScheduler({'apscheduler.timezone': 'America/Toronto'})
-        for app in self.apps.values():
-            app.messenger = messenger
-            app.scheduler = scheduler
-        scheduler.start()
 
     def get_all_apps(self):
         res = self.apps_model.get_all_apps()
