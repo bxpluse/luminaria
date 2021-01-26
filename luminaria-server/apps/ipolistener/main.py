@@ -1,10 +1,7 @@
-import threading
-
 import requests
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from apps.baseapp import App
-from common.enums import APPSTATUS
 from common.enums import APPTYPE
 from config import SCHEDULER_TIME_ZONE
 from database.ipo_strings_model import IPOStringModel
@@ -25,35 +22,34 @@ class IPOListener(App):
 
     def run(self):
         super().start()
-        job = self.scheduler.add_job(self.search, trigger='cron', hour='*/6')
-        try:
-            self.search()
-        except Exception as e:
-            self.status = APPSTATUS.ERROR
-            job.remove()
-            self.info("ERROR: " + (repr(e)))
-            self.info("Jobs after catching exception: " + str(self.scheduler.get_jobs()))
-            self.info("Restarting ...")
-            timer = threading.Timer(60, self.run)
-            timer.start()
+        self.scheduler.add_job(self.search, trigger='cron', second='*/6')
+        # Search once on restarting application
+        self.search()
 
     def search(self):
-        terms = IPOStringModel.get_all_not_found_strings()
-        response = requests.get(self.MAIN_SITE)
-        cleaned = response.content.decode('utf-8').lower()
-        for term in terms:
-            res = cleaned.find(term.lower())
-            if res >= 0:
-                IPOStringModel.update_string_as_found(term)
-                self.info("Company IPO announced: " + term)
+        try:
+            terms = IPOStringModel.get_all_not_found_strings()
+            response = requests.get(self.MAIN_SITE)
+            cleaned = response.content.decode('utf-8').lower()
+            for term in terms:
+                res = cleaned.find(term.lower())
+                if res >= 0:
+                    IPOStringModel.update_string_as_found(term)
+                    self.info("Company IPO announced: " + term)
+        except Exception as e:
+            self.info("ERROR: " + (repr(e)))
+            self.info("Jobs after catching exception: " + str(self.scheduler.get_jobs()))
 
-    def add_string(self, string):
+    @staticmethod
+    def add_string(string):
         IPOStringModel.insert_string_if_not_exists(string)
 
-    def remove_string(self, string):
+    @staticmethod
+    def remove_string(string):
         IPOStringModel.remove_string_if_not_found(string)
 
-    def dismiss_string(self, string):
+    @staticmethod
+    def dismiss_string(string):
         IPOStringModel.update_string_as_dismissed(string)
 
     def get_data(self):
@@ -68,3 +64,4 @@ class IPOListener(App):
             self.remove_string(string)
         elif command == 'dismiss':
             self.dismiss_string(string)
+        return {}
