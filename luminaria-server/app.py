@@ -20,15 +20,6 @@ def main():
     return 'Luminarias Server'
 
 
-@app.route('/test', methods=['POST'])
-def test():
-    if request.method == 'POST':
-        data = request.get_json()
-        if data['order'] == 'fire':
-            res = {'message': 'activating lasers ...'}
-            return res
-
-
 @app.route('/get-all-apps', methods=['POST'])
 def get_all_apps():
     return manager.get_all_apps()
@@ -39,40 +30,27 @@ def get_app_status(app_id):
     return manager.get_app_status(app_id)
 
 
-@app.route('/updater/exchanges/<string:exchange>', methods=['POST'])
-@app.route('/updater/exchanges', methods=['POST'])
-def get_all_exchanges(exchange=None):
-    if exchange is None:
-        return {'exchanges': manager.exchange_updater.EXCHANGES}
-    else:
-        manager.exchange_updater.run(exchange)
-        messenger.toast(str(exchange) + " exchange has finished updating")
-        return {}
+@app.route('/get/<string:app_id>/<string:command>', methods=['GET'])
+def get(app_id, command):
+    res = manager.get(app_id, command)
+    if '<MESSAGE>' in res:
+        messenger.toast(res['<MESSAGE>'])
+    return res
 
 
-@app.route('/log-viewer/tail', methods=['POST'])
-def exec_logviewer():
-    data = request.get_json()
-    num_lines = data['numLines']
-    res = manager.log_viewer.run(lines=num_lines)
-    return {'lines': res}
-
-
-@app.route('/download_db', methods=['POST', 'GET'])
-def download_db():
-    if request.method == 'GET':
-        return {'filename': manager.db_backup.get_copy_name()}
-    else:
-        return send_file(manager.db_backup.master_db, as_attachment=True)
+@app.route('/blob/<string:app_id>/<string:command>', methods=['POST'])
+def download_db(app_id, command):
+    return send_file(manager.blob(app_id, command), as_attachment=True)
 
 
 @app.route('/exec/<string:app_id>/<string:command>', methods=['POST'])
 def execute(app_id, command):
     data = request.get_json()
     res = manager.execute(app_id, command, data)
+    if '<MESSAGE>' in res:
+        messenger.toast(res['<MESSAGE>'])
     return res
 
 
 if __name__ == '__main__':
-    # app.run()
     socketio.run(app)

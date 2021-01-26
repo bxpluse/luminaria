@@ -37,9 +37,6 @@ class App:
             self.info("~ Finished {0}".format(self.APP_ID))
             self.status = APPSTATUS.READY
 
-        #if self.messenger is not None:
-        #    self.messenger.status(self.APP_ID, self.status.value)
-
     def get_status(self):
         return self.status.value
 
@@ -61,5 +58,11 @@ class App:
             elif ENV == ENVIRONMENT.DEV:
                 print(message)
 
+    def get(self, command):
+        return {}
+
+    def blob(self, command):
+        return ''
+
     def execute(self, command, **kwargs):
-        pass
+        return {}

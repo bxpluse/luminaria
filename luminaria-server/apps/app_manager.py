@@ -67,6 +67,16 @@ class AppManager:
         additional_data = app.get_data()
         return {**base_data, **additional_data}
 
+    def get(self, app_id, command):
+        app = self.apps[APP(app_id)]
+        res = app.get(command)
+        return res
+
+    def blob(self, app_id, command):
+        app = self.apps[APP(app_id)]
+        file_path = app.blob(command)
+        return file_path
+
     def execute(self, app_id, command, data=None):
         app = self.apps[APP(app_id)]
         if command == 'run':
@@ -77,7 +87,7 @@ class AppManager:
             return app.get_data()
         else:
             if data is None:
-                app.execute(command, **{})
+                return app.execute(command, **{})
             else:
-                app.execute(command, **data)
+                return app.execute(command, **data)
         return {}

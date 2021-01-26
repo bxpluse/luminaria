@@ -20,7 +20,8 @@ class LogViewer(App):
     def run(self, lines=20):
         with open(self.LOG, 'rb') as f:
             byts = self.tail(f, lines)
-        return byts.decode("utf-8")
+        decoded = byts.decode("utf-8")
+        return {'lines': decoded}
 
     def tail(self, f, lines):
         total_lines_wanted = lines
@@ -42,3 +43,8 @@ class LogViewer(App):
             block_number -= 1
         all_read_text = b''.join(reversed(blocks))
         return b'\n'.join(all_read_text.splitlines()[-total_lines_wanted:])
+
+    def execute(self, command, **kwargs):
+        if command == 'tail':
+            num_lines = kwargs['numLines']
+            return self.run(num_lines)

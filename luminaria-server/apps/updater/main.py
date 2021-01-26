@@ -43,3 +43,16 @@ class ExchangeUpdater(App):
         r = requests.get(url, headers=headers)
         with open('{0}.csv'.format(file_path), 'wb') as output:
             output.write(r.content)
+
+    def get(self, command):
+        if command == 'available-exchanges':
+            return {'exchanges': self.EXCHANGES}
+
+    def execute(self, command, **kwargs):
+        if command == 'update-exchange':
+            exchange = kwargs['exchange']
+            # self.run(exchange)
+            # message = str(exchange) + " exchange has finished updating"
+            message = 'Updater has sunset'
+            return {'<MESSAGE>': message}
+        return {}
