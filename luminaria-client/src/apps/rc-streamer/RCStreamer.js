@@ -53,6 +53,10 @@ function RCStreamer() {
                 <br/>
                 {button}
                 <br/><br/>
+                <Button variant="primary" onClick={() => {dump()}}>
+                    Dump to File
+                </Button>
+                <br/><br/>
                 <Form>
                     <Form.Check type="checkbox" label="Debugging" checked={debugging} onChange={() => {
                         toggleDebug(!debugging);
@@ -79,6 +83,10 @@ function RCStreamer() {
 
 function start(){
     Request.POST_JSON('/exec/rc-streamer/run', {}).then(() => {});
+}
+
+function dump(){
+    Request.POST_JSON('/exec/rc-streamer/dump-to-file', {}).then(() => {});
 }
 
 function toggleDebug(isDebug){
