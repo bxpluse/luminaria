@@ -1,25 +1,30 @@
+import json
+import os
 import threading
 
 import praw
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from apps.baseapp import App
-from apps.monitor.preloader import load_all_symbols, load_blacklist
+from common.symbols import load_symbols, load_blacklist, load_whitelist
 from common.enums import APPSTATUS
 from common.enums import APPTYPE
-from config import SCHEDULER_TIME_ZONE
 from common.util import parse_word
 from config import CLIENT_ID, CLIENT_SECRET
+from config import SCHEDULER_TIME_ZONE
+from constants import STATIC_DIR
+from vars import ROOT_DIR
 from database.comment_frequency_model import CommentFrequencyModel
 
 
 class RCListener(App):
     APP_ID = 'rc-streamer'
+    DUMP_FILE = 'dump.json'
 
     def __init__(self, subs, interval):
 
         super().__init__(app_type=APPTYPE.STREAMING)
-        self.SYMBOLS = load_all_symbols() - load_blacklist()
+        self.SYMBOLS = set()
         self.INTERVAL = interval
         self.COMMENT_FREQUENCY_MODEL = CommentFrequencyModel()
         self.SUBREDDITS = subs
@@ -27,6 +32,8 @@ class RCListener(App):
                                   client_secret=CLIENT_SECRET,
                                   user_agent="Test Script")
         self.data = {}  # key=symbol, value=times_mentioned
+        self.restore_from_file()
+        self.load_preloader()
         self.scheduler = BackgroundScheduler({'apscheduler.timezone': SCHEDULER_TIME_ZONE})
         self.scheduler.start()
         self.show_config()
@@ -51,7 +58,7 @@ class RCListener(App):
     def show_config(self):
         self.info('----------------Loading config------------------')
         self.info('  Interval:      ' + str(self.INTERVAL) + ' min')
-        self.info('  Symbols:       ' + str(len(self.SYMBOLS)) + ' monitoring')
+        self.info('  Num Symbols:   ' + str(len(self.SYMBOLS)))
         self.info('  Subreddits:    ' + str(self.SUBREDDITS))
         self.info('------------------------------------------------')
 
@@ -61,17 +68,14 @@ class RCListener(App):
             words = comment.body.split()
             seen_symbols = set()
             for word in words:
+                if len(word) > 10:
+                    continue
                 word = parse_word(word)
-                if self.allowed_symbol(word) and word not in seen_symbols:
+                if word in self.SYMBOLS and word not in seen_symbols:
                     seen_symbols.add(word)
                     if word not in self.data:
                         self.data[word] = 0
                     self.data[word] += 1
-
-    def allowed_symbol(self, word):
-        if word in self.SYMBOLS:
-            return True
-        return False
 
     def commit_to_db(self):
         self.debug('committing rows: ' + str(len(self.data)))
@@ -85,9 +89,26 @@ class RCListener(App):
             next_run = self.scheduler.get_jobs()[0].next_run_time
         return {'ram': self.data, 'next_run': str(next_run)}
 
+    def restore_from_file(self):
+        file_path = os.path.join(ROOT_DIR, STATIC_DIR, self.DUMP_FILE)
+        if os.path.isfile(file_path):
+            with open(file_path) as f:
+                data = json.load(f)
+                self.data = data
+            os.remove(file_path)
+
+    def dump_to_file(self):
+        s = json.dumps(self.data)
+        file_path = os.path.join(ROOT_DIR, STATIC_DIR, self.DUMP_FILE)
+        with open(file_path, 'w+') as f:
+            f.write(s)
+
     def load_preloader(self):
-        self.SYMBOLS = load_all_symbols() - load_blacklist()
+        self.SYMBOLS = (load_symbols() - load_blacklist()) | load_whitelist()
 
     def execute(self, command, **kwargs):
-        if command == 'reload_symbols':
+        if command == 'reload-symbols':
             self.load_preloader()
+        elif command == 'dump-to-file':
+            self.dump_to_file()
+        return {}

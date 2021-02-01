@@ -1,9 +1,9 @@
-import re
-
-
 def parse_word(word):
-    word = word.strip()
-    word = re.sub('[^A-Za-z0-9]+', '', word)
+    # word = word.strip()
+    # word = re.sub('[^A-Za-z0-9]+', '', word)
+    # word = re.sub(r'^\W+', '', word)
+    strp_chars = ' ~!@#$%^&*()_+-=[]{};:<>,./?|\n'
+    word = word.strip(strp_chars)
     return word
 
 
