@@ -1,5 +1,5 @@
 import os
-
+from common.enums import APP
 from apps.baseapp import App
 from constants import LOGFILE
 from vars import ROOT_DIR
@@ -10,7 +10,7 @@ class LogViewer(App):
         View logs.
     """
 
-    APP_ID = 'log-viewer'
+    APP_ID = APP.LOG_VIEWER.value
     BLOCK_SIZE = 1024
 
     def __init__(self):

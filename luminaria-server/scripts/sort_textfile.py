@@ -1,4 +1,3 @@
-
 import os
 
 from constants import STATIC_DIR

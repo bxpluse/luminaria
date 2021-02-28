@@ -2,6 +2,7 @@ import requests
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from apps.baseapp import App
+from common.enums import APP
 from common.enums import APPTYPE
 from config import SCHEDULER_TIME_ZONE
 from database.ipo_strings_model import IPOStringModel
@@ -9,7 +10,8 @@ from database.local_config_model import LocalConfigModel
 
 
 class IPOListener(App):
-    APP_ID = 'ipo-listener'
+
+    APP_ID = APP.IPO_LISTENER.value
 
     def __init__(self):
         super().__init__(app_type=APPTYPE.STREAMING)

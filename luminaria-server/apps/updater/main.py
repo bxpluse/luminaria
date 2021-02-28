@@ -1,6 +1,6 @@
 import os
 import time
-
+from common.enums import APP
 import requests
 
 from apps.baseapp import App
@@ -14,7 +14,7 @@ class ExchangeUpdater(App):
         Updates CSV file of exchanges.
     """
 
-    APP_ID = 'updater'
+    APP_ID = APP.EXCHANGE_UPDATER.value
     EXCHANGES = ['NASDAQ', 'NYSE', 'AMEX', 'NYSEARCA']
     STATUS = {}
 

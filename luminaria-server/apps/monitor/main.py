@@ -1,7 +1,7 @@
 import json
 import os
 import threading
-
+from common.enums import APP
 import praw
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -18,7 +18,7 @@ from database.comment_frequency_model import CommentFrequencyModel
 
 
 class RCListener(App):
-    APP_ID = 'rc-streamer'
+    APP_ID = APP.RC_STREAMER.value
     DUMP_FILE = 'dump.json'
 
     def __init__(self, subs, interval):

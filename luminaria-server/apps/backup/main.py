@@ -2,12 +2,13 @@ import os
 from datetime import date, datetime
 
 from apps.baseapp import App
+from common.enums import APP
 from vars import ROOT_DIR, DATABASE1_NAME
 
 
 class BackupDatabase(App):
 
-    APP_ID = 'db-backup'
+    APP_ID = APP.DB_BACKUP.value
 
     def __init__(self):
         super().__init__()

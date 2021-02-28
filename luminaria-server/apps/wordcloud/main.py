@@ -3,6 +3,7 @@ from collections import defaultdict
 from apps.baseapp import App
 from database.comment_frequency_model import CommentFrequencyModel
 from playhouse.shortcuts import model_to_dict
+from common.enums import APP
 from vars import DB1
 
 class WordCloud(App):
