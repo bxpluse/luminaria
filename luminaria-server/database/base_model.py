@@ -33,7 +33,7 @@ class StaticModel(Model):
         cls.create_table([table])
 
 
-class StreanModel(Model):
+class StreamModel(Model):
     class Meta:
         database = DB_STREAM
         table_name = 'STREAM_MODEL'

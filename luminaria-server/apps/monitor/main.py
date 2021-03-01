@@ -78,7 +78,6 @@ class RCListener(App):
                     self.data[word] += 1
 
     def commit_to_db(self):
-        self.debug('committing rows: ' + str(len(self.data)))
         if len(self.data) > 0:
             self.COMMENT_FREQUENCY_MODEL.insert_interval(**self.data)
             self.data.clear()

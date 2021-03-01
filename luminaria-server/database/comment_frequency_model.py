@@ -2,10 +2,10 @@ from datetime import date, datetime
 
 from peewee import *
 
-from database.base_model import StreanModel
+from database.base_model import StreamModel
 
 
-class CommentFrequencyModel(StreanModel):
+class CommentFrequencyModel(StreamModel):
     date = DateField()
     time = TimeField()
     symbol = CharField()
@@ -18,13 +18,14 @@ class CommentFrequencyModel(StreanModel):
     def insert_interval(**kwargs):
         today = date.today()
         now = datetime.now()
-        for key, value in kwargs.items():
-            CommentFrequencyModel.create(
-                date=today,
-                time=now,
-                symbol=key,
-                times_mentioned=value,
-            )
+        with CommentFrequencyModel._meta.database.atomic():
+            for key, value in kwargs.items():
+                CommentFrequencyModel.create(
+                    date=today,
+                    time=now,
+                    symbol=key,
+                    times_mentioned=value,
+                )
 
     @staticmethod
     def get_first_record_by_symbol(symbol):
@@ -59,5 +60,13 @@ cursor = DB1.execute_sql('''select symbol, sum(times_mentioned)
 
 
 if __name__ == "__main__":
-    model = CommentFrequencyModel()
-    model.regenerate(CommentFrequencyModel)
+    import string
+    import random
+    args = {}
+
+    for i in range(0, 10000):
+        rand_symbol = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(6))
+        tm = 99
+        args[rand_symbol] = tm
+
+    CommentFrequencyModel.insert_interval(**args)

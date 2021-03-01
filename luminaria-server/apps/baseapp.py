@@ -48,14 +48,6 @@ class App:
         elif ENV == ENVIRONMENT.DEV:
             print(message)
 
-    def debug(self, message):
-        """ Prints or logs information depending on environment. """
-        if self.debugging:
-            if ENV == ENVIRONMENT.PROD:
-                log(self.APP_ID, message)
-            elif ENV == ENVIRONMENT.DEV:
-                print(message)
-
     def get(self, command):
         return {}
 
