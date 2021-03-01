@@ -2,10 +2,10 @@ from datetime import date, datetime
 
 from peewee import *
 
-from database.base_model import BaseModel
+from database.base_model import StreanModel
 
 
-class CommentFrequencyModel(BaseModel):
+class CommentFrequencyModel(StreanModel):
     date = DateField()
     time = TimeField()
     symbol = CharField()
