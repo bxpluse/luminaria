@@ -44,7 +44,7 @@ function Navigation() {
                             <Updater />
                         </Route>
                         <Route path="/logs">
-                            <LogViewer />
+                            <LogViewer apps={apps} />
                         </Route>
                         <Route path="/rc-streamer">
                             <RCStreamer />
@@ -120,7 +120,7 @@ function CustomNavBar(props) {
             </Nav>
 
             <Nav>
-                <NavDropdown title="External Links">
+                <NavDropdown id="nav-dropdown" title="External Links">
                     {links}
                 </NavDropdown>
             </Nav>
