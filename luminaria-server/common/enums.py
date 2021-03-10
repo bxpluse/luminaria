@@ -8,6 +8,7 @@ class APP(Enum):
     DB_BACKUP = 'db-backup'
     RC_STREAMER = 'rc-streamer'
     IPO_LISTENER = 'ipo-listener'
+    TOP_TEN = 'top-ten'
 
 
 class APPTYPE(Enum):

@@ -3,6 +3,7 @@ from apps.ipolistener.main import IPOListener
 from apps.logviewer.main import LogViewer
 from apps.monitor.main import RCListener
 from apps.updater.main import ExchangeUpdater
+from apps.topten.main import TopTen
 from common.db_util import create_db, db_exists
 from common.enums import APP, APPSTATUS
 from database.apps_model import AppsModel
@@ -24,13 +25,15 @@ class AppManager:
         self.db_backup = BackupDatabase()
         self.rc_listener = RCListener(subs=LocalConfigModel.retrieve('SUBREDDITS_TO_MONITOR'), interval=15)
         self.ipo_listener = IPOListener()
+        self.top_ten = TopTen()
 
         self.apps = {
             APP.EXCHANGE_UPDATER: self.exchange_updater,
             APP.LOG_VIEWER: self.log_viewer,
             APP.DB_BACKUP: self.db_backup,
             APP.RC_STREAMER: self.rc_listener,
-            APP.IPO_LISTENER: self.ipo_listener
+            APP.IPO_LISTENER: self.ipo_listener,
+            APP.TOP_TEN: self.top_ten
         }
 
     def get_all_apps(self):

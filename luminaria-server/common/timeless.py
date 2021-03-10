@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 import random
 
-
 TIME_FORMAT = '%Y-%m-%d'
 
 
@@ -45,17 +44,29 @@ def random_month():
     return str(month)
 
 
-def is_weekend(date: str):
+def is_weekend(date):
     """
     Checks if a date is a weekend.
-    :param date: String formatted as TIME_FORMAT
+    :param date: A date in TIME_FORMAT
     :return: bool
     """
-    d = datetime.strptime(date, TIME_FORMAT)
-    week_num = d.weekday()
+    if type(date) == str:
+        d = datetime.strptime(date, TIME_FORMAT)
+        week_num = d.weekday()
+    else:
+        week_num = date.weekday()
     if week_num < 5:
         return False
     return True
+
+
+def day_of_week(date):
+    """
+    Get day of the week.
+    """
+    day_dict = {0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday',
+                4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
+    return day_dict[date.weekday()]
 
 
 def next_day(date: str):
@@ -63,14 +74,17 @@ def next_day(date: str):
     :param date: Current date
     :return: Next day
     """
-    tommorrow = datetime.strptime(date, TIME_FORMAT) + timedelta(days=1)
-    return tommorrow.strftime(TIME_FORMAT)
+    tomorrow = datetime.strptime(date, TIME_FORMAT) + timedelta(days=1)
+    return tomorrow.strftime(TIME_FORMAT)
 
 
-def prev_day(date: str):
+def prev_day(date):
     """
     :param date: Current date
-    :return: Previous day
+    :return: Previous day. Same data type as passed in.
     """
-    tommorrow = datetime.strptime(date, TIME_FORMAT) + timedelta(days=-1)
-    return tommorrow.strftime(TIME_FORMAT)
+    if type(date) == str:
+        tomorrow = datetime.strptime(date, TIME_FORMAT) + timedelta(days=-1)
+        return tomorrow.strftime(TIME_FORMAT)
+    tomorrow = date + timedelta(days=-1)
+    return tomorrow

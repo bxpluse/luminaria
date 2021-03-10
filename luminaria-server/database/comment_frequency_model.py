@@ -40,12 +40,13 @@ class CommentFrequencyModel(StreamModel):
             .group_by(CommentFrequencyModel.symbol)\
             .order_by(fn.sum(CommentFrequencyModel.times_mentioned).desc())\
             .limit(limit)
-        """
-        \
-            .where(CommentFrequencyModel.date == day)\
-            
-        """
         return query
+
+    @staticmethod
+    def get_total_mentions_on_day(day):
+        query = CommentFrequencyModel.select(fn.sum(CommentFrequencyModel.times_mentioned).alias('total')) \
+            .where(CommentFrequencyModel.date == day)
+        return query.get()
 
 
 """
