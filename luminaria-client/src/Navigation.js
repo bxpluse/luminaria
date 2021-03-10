@@ -14,6 +14,7 @@ import Socket from "./components/Socket";
 import Backup from './apps/backup/Backup';
 import Request from "./Requests";
 import IPOStatus from "./apps/ipos/IPOStatus";
+import TopTen from "./apps/top-ten/TopTen";
 
 function Navigation() {
 
@@ -54,6 +55,9 @@ function Navigation() {
                         </Route>
                         <Route path="/ipos">
                             <IPOStatus />
+                        </Route>
+                        <Route path="/top-ten">
+                            <TopTen />
                         </Route>
                         <Route path="/">
                             <Home apps={apps} />
