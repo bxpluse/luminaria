@@ -15,6 +15,7 @@ import Backup from './apps/backup/Backup';
 import Request from "./Requests";
 import IPOStatus from "./apps/ipos/IPOStatus";
 import TopTen from "./apps/top-ten/TopTen";
+import News from "./apps/news/News";
 
 function Navigation() {
 
@@ -58,6 +59,9 @@ function Navigation() {
                         </Route>
                         <Route path="/top-ten">
                             <TopTen />
+                        </Route>
+                        <Route path="/news">
+                            <News />
                         </Route>
                         <Route path="/">
                             <Home apps={apps} />
