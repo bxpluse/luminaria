@@ -1,10 +1,10 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
-import CardColumns from 'react-bootstrap/CardColumns'
 import Container from 'react-bootstrap/Container'
 import Badge from 'react-bootstrap/Badge'
 import {Link} from 'react-router-dom'
 import './Home.css';
+import Masonry from "react-masonry-css";
 
 function Home(props) {
 
@@ -18,9 +18,13 @@ function Home(props) {
 
     return (
         <Container>
-            <CardColumns>
+            <Masonry
+                breakpointCols={4}
+                horizontalOrder={true}
+                className="masonry-grid"
+                columnClassName="masonry-grid_column">
                 {applications}
-            </CardColumns>
+            </Masonry>
         </Container>
     );
 }
