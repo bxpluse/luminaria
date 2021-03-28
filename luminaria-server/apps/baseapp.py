@@ -11,7 +11,7 @@ class App:
 
     APP_ID = 'base_app'
 
-    def __init__(self, app_type=APPTYPE.EXECUTABLE):
+    def __init__(self, app_type=APPTYPE.EXECUTABLE, cache=None):
         self.app_type = app_type
         if self.app_type == APPTYPE.STREAMING:
             self.status = APPSTATUS.STOPPED
@@ -20,6 +20,7 @@ class App:
         self.signal = None
         self.debugging = False
         self.first_start = True
+        self.cache = cache
 
     def start(self):
         """ Called when an App is run. """
@@ -34,6 +35,19 @@ class App:
         elif self.app_type == APPTYPE.EXECUTABLE:
             self.info("~ Finished {0}".format(self.APP_ID))
             self.status = APPSTATUS.READY
+
+    def try_cache(self, hash_id):
+        if self.has_cache():
+            res = self.cache.fetch(hash_id)
+            return res
+        return None
+
+    def store_to_cache(self, command, data, response):
+        if self.has_cache():
+            self.cache.store(command, data, response)
+
+    def has_cache(self):
+        return self.cache is not None
 
     def get_status(self):
         return self.status.value

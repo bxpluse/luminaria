@@ -2,6 +2,7 @@ import json
 from datetime import date
 
 from apps.baseapp import App
+from common.cache import Cache
 from common.enums import APP
 from common.timeless import prev_day, is_weekend, day_of_week
 from database.comment_frequency_model import CommentFrequencyModel
@@ -12,7 +13,8 @@ class TopTen(App):
     APP_ID = APP.TOP_TEN.value
 
     def __init__(self):
-        super().__init__()
+        cache = Cache(30)
+        super().__init__(cache=cache)
 
     def get_hot(self, num_prev_days, limit):
         res = {}

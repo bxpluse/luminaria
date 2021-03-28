@@ -2,8 +2,10 @@ from apps.backup.main import BackupDatabase
 from apps.ipolistener.main import IPOListener
 from apps.logviewer.main import LogViewer
 from apps.monitor.main import RCListener
-from apps.updater.main import ExchangeUpdater
+from apps.news.main import News
 from apps.topten.main import TopTen
+from apps.updater.main import ExchangeUpdater
+from common.cache import hash_tuple
 from common.db_util import create_db, db_exists
 from common.enums import APP, APPSTATUS
 from database.apps_model import AppsModel
@@ -26,6 +28,7 @@ class AppManager:
         self.rc_listener = RCListener(subs=LocalConfigModel.retrieve('SUBREDDITS_TO_MONITOR'), interval=15)
         self.ipo_listener = IPOListener()
         self.top_ten = TopTen()
+        self.news = News()
 
         self.apps = {
             APP.EXCHANGE_UPDATER: self.exchange_updater,
@@ -33,7 +36,8 @@ class AppManager:
             APP.DB_BACKUP: self.db_backup,
             APP.RC_STREAMER: self.rc_listener,
             APP.IPO_LISTENER: self.ipo_listener,
-            APP.TOP_TEN: self.top_ten
+            APP.TOP_TEN: self.top_ten,
+            APP.NEWS: self.news
         }
 
     def get_all_apps(self):
@@ -74,15 +78,31 @@ class AppManager:
 
     def execute(self, app_id, command, data=None):
         app = self.apps[APP(app_id)]
+
+        # Pre-defined routines
         if command == 'run':
             app.run(**data)
+            return {}
         elif command == 'debug':
             app.debugging = data['isDebug']
+            return {}
         elif command == 'get':
             return app.get_data()
+
+        # Arbitrary commands
+
+        # Return results if it's found in cache
+        hash_id = hash_tuple((command, data))
+
+        res = app.try_cache(hash_id)
+        if res is not None:
+            return res
+
+        # Execute commands and put in cache
+        if data is None:
+            res = app.execute(command, **{})
         else:
-            if data is None:
-                return app.execute(command, **{})
-            else:
-                return app.execute(command, **data)
-        return {}
+            res = app.execute(command, **data)
+
+        app.store_to_cache(command, data, res)
+        return res

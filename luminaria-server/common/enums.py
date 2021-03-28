@@ -9,6 +9,7 @@ class APP(Enum):
     RC_STREAMER = 'rc-streamer'
     IPO_LISTENER = 'ipo-listener'
     TOP_TEN = 'top-ten'
+    NEWS = 'news'
 
 
 class APPTYPE(Enum):
