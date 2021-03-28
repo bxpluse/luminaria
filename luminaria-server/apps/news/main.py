@@ -1,0 +1,61 @@
+import requests
+from bs4 import BeautifulSoup
+
+from apps.baseapp import App
+from common.cache import Cache
+from database.local_config_model import LocalConfigModel
+
+BBN_URL = LocalConfigModel.retrieve('BBN_URL')
+
+HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:64.0) Gecko/20100101 Firefox/64.0',
+           'Referer': BBN_URL,
+           'Origin': BBN_URL,
+           'Host': 'www.bloomberg.com'
+           }
+
+
+class News(App):
+
+    def __init__(self):
+        cache = Cache(600)
+        super().__init__(cache=cache)
+
+    def bbn(self):
+        res = []
+        prefix = '/news'
+
+        session = requests.Session()
+        session.cookies.set('exp_pref', 'AMER')
+
+        session.headers['User-Agent'] = HEADERS['User-Agent']
+        session.headers['Referer'] = HEADERS['Referer']
+        session.headers['Origin'] = HEADERS['Origin']
+        session.headers['Host'] = HEADERS['Host']
+
+        page = session.get(BBN_URL)
+        page.raise_for_status()
+
+        soup = BeautifulSoup(page.content, 'html.parser')
+
+        for link in soup.findAll('a'):
+            valid_link = True
+            title = link.string
+            url = str(link.get('href'))
+
+            if title is not None:
+                if len(url) < 5:
+                    valid_link = False
+                else:
+                    for i in range(len(prefix)):
+                        if url[i] != prefix[i]:
+                            valid_link = False
+
+                if valid_link:
+                    item = {'title': str(title).strip(), 'url': BBN_URL + url}
+                    res.append(item)
+        return res
+
+    def execute(self, command, **kwargs):
+        if command == 'get_news':
+            self.info('Cache miss')
+            return {'articles': self.bbn()}
