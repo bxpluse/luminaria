@@ -37,10 +37,10 @@ class IPOListener(App):
                 res = cleaned.find(term.lower())
                 if res >= 0:
                     IPOStringModel.update_string_as_found(term)
-                    self.info("Company IPO announced: " + term)
+                    self.log("Company IPO announced: " + term)
         except Exception as e:
-            self.info("ERROR: " + (repr(e)))
-            self.info("Jobs after catching exception: " + str(self.scheduler.get_jobs()))
+            self.log("ERROR: " + (repr(e)))
+            self.log("Jobs after catching exception: " + str(self.scheduler.get_jobs()))
 
     @staticmethod
     def add_string(string):

@@ -1,10 +1,10 @@
 from peewee import *
 from playhouse.shortcuts import model_to_dict
 
-from database.base_model import BaseModel
+from database.base_model import ConfigModel
 
 
-class AppsModel(BaseModel):
+class AppsModel(ConfigModel):
     id = CharField(unique=True)
     name = CharField()
     description = CharField(null=True)

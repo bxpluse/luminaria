@@ -3,7 +3,7 @@ from datetime import date, datetime
 
 from apps.baseapp import App
 from common.enums import APP
-from vars import ROOT_DIR, DATABASE1_NAME
+from vars import ROOT_DIR, DATABASE_CONFIG_NAME
 
 
 class BackupDatabase(App):
@@ -12,7 +12,7 @@ class BackupDatabase(App):
 
     def __init__(self):
         super().__init__()
-        self.master_db = os.path.join(ROOT_DIR, DATABASE1_NAME)
+        self.master_db = os.path.join(ROOT_DIR, DATABASE_CONFIG_NAME)
 
     @staticmethod
     def get_copy_name():

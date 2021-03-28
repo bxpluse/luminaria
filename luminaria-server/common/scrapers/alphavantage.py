@@ -6,7 +6,7 @@ import requests
 from common.util import str_to_float, flaot_to_float
 from config import ALPHA_VANTAGE_KEY
 from database.timeseries.daily_adjusted_model import TimeSeriesDailyAdjustedModel
-from vars import DB1
+from vars import DB_CONFIG
 
 
 class ParamOutputSize(Enum):
@@ -35,7 +35,7 @@ def time_series_adjusted_download(symbol, update=False):
     json_string = r.text
     obj = json.loads(json_string)['Time Series (Daily)']
 
-    with DB1.transaction() as txn:
+    with DB_CONFIG.transaction() as txn:
         for key, value in obj.items():
             m_open = str_to_float(value['1. open'])
             high = str_to_float(value['2. high'])

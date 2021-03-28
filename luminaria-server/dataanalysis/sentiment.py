@@ -4,29 +4,29 @@ import plotly.graph_objects as go
 from common.enums import SeriesAttribute
 from common.timeless import is_weekend
 from database.comment_frequency_model import CommentFrequencyModel
-from vars import DB1, DB2
+from vars import DB_CONFIG, DB_STATIC
 
 
 def plot_freq(symbol, exclude_weekends=False):
-    cursor1 = DB1.execute_sql('''select date, sum(times_mentioned)
+    cursor1 = DB_CONFIG.execute_sql('''select date, sum(times_mentioned)
                                 from COMMENT_FREQUENCY 
                                 where symbol=?
                                 GROUP BY date;''',
-                              (symbol,))
+                                    (symbol,))
 
     from_date = CommentFrequencyModel.get_first_record_by_symbol(symbol).date
 
-    cursor2 = DB1.execute_sql('''select date, sum(times_mentioned)
+    cursor2 = DB_CONFIG.execute_sql('''select date, sum(times_mentioned)
                                 from COMMENT_FREQUENCY 
                                 where date >= ?
                                 GROUP BY date;''',
-                              (from_date,))
+                                    (from_date,))
 
-    cursor3 = DB2.execute_sql('''select *
+    cursor3 = DB_STATIC.execute_sql('''select *
                                     from TIME_SERIES_DAILY_ADJUSTED 
                                     where date >= ? and symbol = ?
                                     order by date;''',
-                              (from_date, symbol))
+                                    (from_date, symbol))
 
     totals = []  # Total comments on a date
     x = []  # Date

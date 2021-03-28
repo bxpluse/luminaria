@@ -13,3 +13,11 @@ def str_to_float(num: str):
 
 def flaot_to_float(num: float):
     return float("{:.4f}".format(num))
+
+
+def type_transform(val, data_type):
+    if data_type == 'int':
+        val = int(val)
+    elif data_type == 'float':
+        val = float(val)
+    return val

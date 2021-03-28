@@ -1,10 +1,10 @@
 from peewee import *
 from playhouse.shortcuts import model_to_dict
 
-from database.base_model import BaseModel
+from database.base_model import ConfigModel
 
 
-class LinkModel(BaseModel):
+class LinkModel(ConfigModel):
     app_id = CharField(unique=True)
     link_to = CharField()
 

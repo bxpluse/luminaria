@@ -42,28 +42,29 @@ class RCListener(App):
         super().start()
         job = self.scheduler.add_job(self.commit_to_db, trigger='cron', minute='*/' + str(self.INTERVAL))
         if self.first_start:
-            self.info('Stream starting up with schedule: ' + str(self.scheduler.get_jobs()))
+            self.log('Stream starting up with schedule: ' + str(self.scheduler.get_jobs()))
         try:
             self.stream()
         except Exception as e:
             self.status = APPSTATUS.ERROR
             self.first_start = False
             job.remove()
-            self.info("ERROR: " + (repr(e)))
-            self.info("Jobs after catching exception: " + str(self.scheduler.get_jobs()))
-            self.info("Restarting ...")
+            self.log("ERROR: " + (repr(e)))
+            self.log("Jobs after catching exception: " + str(self.scheduler.get_jobs()))
+            self.log("Restarting ...")
             timer = threading.Timer(30, self.run)
             timer.start()
 
     def show_config(self):
-        self.info('----------------Loading config------------------')
-        self.info('  Interval:      ' + str(self.INTERVAL) + ' min')
-        self.info('  Num Symbols:   ' + str(len(self.SYMBOLS)))
-        self.info('  Subreddits:    ' + str(self.SUBREDDITS))
-        self.info('------------------------------------------------')
+        self.log('\n' + '----------------Loading config------------------' + '\n'
+                 + '    Interval:      ' + str(self.INTERVAL) + ' min' + '\n'
+                 + '    Num Symbols:   ' + str(len(self.SYMBOLS)) + '\n'
+                 + '    Subreddits:    ' + str(self.SUBREDDITS) + '\n'
+                 + '------------------------------------------------'
+                 )
 
     def stream(self):
-        self.info('Stream online')
+        self.log('Stream online')
         for comment in self.REDDIT.subreddit(self.SUBREDDITS).stream.comments(skip_existing=True):
             words = comment.body.split()
             seen_symbols = set()

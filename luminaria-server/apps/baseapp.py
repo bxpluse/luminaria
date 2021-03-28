@@ -1,6 +1,6 @@
 from common.enums import APPTYPE
 from common.enums import ENVIRONMENT, APPSTATUS
-from common.logger import log
+from common.logger import LogLevel, log as log_to_db
 from vars import ENV
 
 
@@ -24,16 +24,16 @@ class App:
 
     def start(self):
         """ Called when an App is run. """
-        self.info("~ Starting {0}".format(self.APP_ID))
+        self.log("~ Starting {0}".format(self.APP_ID))
         self.status = APPSTATUS.STARTED
 
     def stop(self):
         """ Called when an App is finished running or stopped. """
         if self.app_type == APPTYPE.STREAMING:
-            self.info("~ Stopping {0}".format(self.APP_ID))
+            self.log("~ Stopping {0}".format(self.APP_ID))
             self.status = APPSTATUS.STOPPED
         elif self.app_type == APPTYPE.EXECUTABLE:
-            self.info("~ Finished {0}".format(self.APP_ID))
+            self.log("~ Finished {0}".format(self.APP_ID))
             self.status = APPSTATUS.READY
 
     def try_cache(self, hash_id):
@@ -55,10 +55,10 @@ class App:
     def get_data(self):
         return {}
 
-    def info(self, message):
+    def log(self, message, level=LogLevel.INFO):
         """ Prints or logs information depending on environment. """
         if ENV == ENVIRONMENT.PROD:
-            log(self.APP_ID, message)
+            log_to_db(self.APP_ID, message, level)
         elif ENV == ENVIRONMENT.DEV:
             print(message)
 

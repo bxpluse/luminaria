@@ -1,12 +1,27 @@
 from peewee import *
 
-from vars import DB1, DB2, DB_STREAM
+from vars import DB_CONFIG, DB_STATIC, DB_STREAM, DB_DYNAMIC
 
 
-class BaseModel(Model):
+class ConfigModel(Model):
     class Meta:
-        database = DB1
-        table_name = 'BASE_MODEL'
+        database = DB_CONFIG
+        table_name = 'CONFIG_MODEL'
+
+    @classmethod
+    def get_table_name(cls):
+        return cls._meta.table_name
+
+    @classmethod
+    def regenerate(cls, table):
+        cls.drop_table([table])
+        cls.create_table([table])
+
+
+class DynamicModel(Model):
+    class Meta:
+        database = DB_DYNAMIC
+        table_name = 'DYNAMIC_MODEL'
 
     @classmethod
     def get_table_name(cls):
@@ -20,7 +35,7 @@ class BaseModel(Model):
 
 class StaticModel(Model):
     class Meta:
-        database = DB2
+        database = DB_STATIC
         table_name = 'STATIC_MODEL'
 
     @classmethod

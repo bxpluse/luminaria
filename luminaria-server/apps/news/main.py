@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from apps.baseapp import App
 from common.cache import Cache
 from common.enums import APP
+from config import CONFIG_MAP
 from database.local_config_model import LocalConfigModel
 
 BBN_URL = LocalConfigModel.retrieve('BBN_URL')
@@ -11,16 +12,16 @@ BBN_URL = LocalConfigModel.retrieve('BBN_URL')
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:64.0) Gecko/20100101 Firefox/64.0',
            'Referer': BBN_URL,
            'Origin': BBN_URL,
-           'Host': 'www.bloomberg.com'
+           'Host': BBN_URL.split('//')[-1]
            }
 
 
 class News(App):
 
-    APP_ID = APP.NEWS
+    APP_ID = APP.NEWS.value
 
     def __init__(self):
-        cache = Cache(600)
+        cache = Cache(CONFIG_MAP['TOPTEN_CACHE_DURATION_SECS'])
         super().__init__(cache=cache)
 
     def bbn(self):
@@ -60,5 +61,5 @@ class News(App):
 
     def execute(self, command, **kwargs):
         if command == 'get_news':
-            self.info('Cache miss')
+            self.log('Cache miss')
             return {'articles': self.bbn()}

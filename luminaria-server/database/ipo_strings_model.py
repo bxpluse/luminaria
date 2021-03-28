@@ -4,7 +4,7 @@ from enum import Enum
 from peewee import *
 from playhouse.shortcuts import model_to_dict
 
-from database.base_model import BaseModel
+from database.base_model import DynamicModel
 
 
 class FOUNDSTATUS(Enum):
@@ -13,7 +13,7 @@ class FOUNDSTATUS(Enum):
     DISMISSED = 2
 
 
-class IPOStringModel(BaseModel):
+class IPOStringModel(DynamicModel):
     string_unique = CharField(unique=True)
     string = CharField()
     found = IntegerField()

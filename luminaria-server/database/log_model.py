@@ -2,10 +2,10 @@ from datetime import datetime
 
 from peewee import *
 
-from database.base_model import BaseModel
+from database.base_model import DynamicModel
 
 
-class LogModel(BaseModel):
+class LogModel(DynamicModel):
     appname = CharField()
     message = CharField()
     level = IntegerField()
