@@ -13,7 +13,7 @@ class TopTen(App):
     APP_ID = APP.TOP_TEN.value
 
     def __init__(self):
-        cache = Cache(30)
+        cache = Cache(300)
         super().__init__(cache=cache)
 
     def get_hot(self, num_prev_days, limit):

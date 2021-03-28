@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 
 from apps.baseapp import App
 from common.cache import Cache
+from common.enums import APP
 from database.local_config_model import LocalConfigModel
 
 BBN_URL = LocalConfigModel.retrieve('BBN_URL')
@@ -15,6 +16,8 @@ HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:64.0) Gecko/201
 
 
 class News(App):
+
+    APP_ID = APP.NEWS
 
     def __init__(self):
         cache = Cache(600)
