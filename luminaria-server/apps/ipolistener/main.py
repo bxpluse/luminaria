@@ -11,7 +11,7 @@ from database.local_config_model import LocalConfigModel
 
 class IPOListener(App):
 
-    APP_ID = APP.IPO_LISTENER.value
+    APP_ID = APP.IPO_LISTENER
 
     def __init__(self):
         super().__init__(app_type=APPTYPE.STREAMING)

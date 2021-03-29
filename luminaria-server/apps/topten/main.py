@@ -11,7 +11,7 @@ from database.comment_frequency_model import CommentFrequencyModel
 
 class TopTen(App):
 
-    APP_ID = APP.TOP_TEN.value
+    APP_ID = APP.TOP_TEN
 
     def __init__(self):
         cache = Cache(CONFIG_MAP['NEWS_CACHE_DURATION_SECS'])

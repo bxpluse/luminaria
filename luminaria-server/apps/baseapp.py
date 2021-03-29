@@ -2,6 +2,7 @@ from common.enums import APPTYPE
 from common.enums import ENVIRONMENT, APPSTATUS
 from common.logger import LogLevel, log as log_to_db
 from vars import ENV
+from common.enums import APP
 
 
 class App:
@@ -9,7 +10,7 @@ class App:
         Base class for all Apps to inherit from.
     """
 
-    APP_ID = 'base_app'
+    APP_ID = APP.BASE
 
     def __init__(self, app_type=APPTYPE.EXECUTABLE, cache=None):
         self.app_type = app_type
@@ -24,16 +25,16 @@ class App:
 
     def start(self):
         """ Called when an App is run. """
-        self.log("~ Starting {0}".format(self.APP_ID))
+        self.log("~ App Starting")
         self.status = APPSTATUS.STARTED
 
     def stop(self):
         """ Called when an App is finished running or stopped. """
         if self.app_type == APPTYPE.STREAMING:
-            self.log("~ Stopping {0}".format(self.APP_ID))
+            self.log("~ App Stopping")
             self.status = APPSTATUS.STOPPED
         elif self.app_type == APPTYPE.EXECUTABLE:
-            self.log("~ Finished {0}".format(self.APP_ID))
+            self.log("~ App Finished")
             self.status = APPSTATUS.READY
 
     def try_cache(self, hash_id):
@@ -58,7 +59,7 @@ class App:
     def log(self, message, level=LogLevel.INFO):
         """ Prints or logs information depending on environment. """
         if ENV == ENVIRONMENT.PROD:
-            log_to_db(self.APP_ID, message, level)
+            log_to_db(self.APP_ID.value, message, level)
         elif ENV == ENVIRONMENT.DEV:
             print(message)
 

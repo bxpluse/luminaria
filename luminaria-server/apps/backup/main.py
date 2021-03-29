@@ -8,7 +8,7 @@ from vars import ROOT_DIR, DATABASE_CONFIG_NAME
 
 class BackupDatabase(App):
 
-    APP_ID = APP.DB_BACKUP.value
+    APP_ID = APP.DB_BACKUP
 
     def __init__(self):
         super().__init__()

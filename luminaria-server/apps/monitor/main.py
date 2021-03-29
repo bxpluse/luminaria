@@ -18,7 +18,7 @@ from database.comment_frequency_model import CommentFrequencyModel
 
 
 class RCListener(App):
-    APP_ID = APP.RC_STREAMER.value
+    APP_ID = APP.RC_STREAMER
     DUMP_FILE = 'dump.json'
 
     def __init__(self, subs, interval):

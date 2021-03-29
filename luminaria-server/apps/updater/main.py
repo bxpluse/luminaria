@@ -14,7 +14,7 @@ class ExchangeUpdater(App):
         Updates CSV file of exchanges.
     """
 
-    APP_ID = APP.EXCHANGE_UPDATER.value
+    APP_ID = APP.EXCHANGE_UPDATER
     EXCHANGES = ['NASDAQ', 'NYSE', 'AMEX', 'NYSEARCA']
     STATUS = {}
 

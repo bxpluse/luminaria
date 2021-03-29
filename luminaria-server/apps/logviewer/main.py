@@ -18,7 +18,7 @@ class LogViewer(App):
         View logs.
     """
 
-    APP_ID = APP.LOG_VIEWER.value
+    APP_ID = APP.LOG_VIEWER
     BLOCK_SIZE = 1024
 
     def __init__(self):

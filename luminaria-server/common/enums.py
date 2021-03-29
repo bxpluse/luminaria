@@ -3,6 +3,8 @@ from enum import Enum
 
 class APP(Enum):
     # App ID must match up with id column in APPS table
+    BASE = 'base-app'
+    TBD = 'app-in-development'
     EXCHANGE_UPDATER = 'updater'
     LOG_VIEWER = 'log-viewer'
     DB_BACKUP = 'db-backup'
@@ -10,6 +12,7 @@ class APP(Enum):
     IPO_LISTENER = 'ipo-listener'
     TOP_TEN = 'top-ten'
     NEWS = 'news'
+    HEALTH_CHECK = 'health-check'
 
 
 class APPTYPE(Enum):
