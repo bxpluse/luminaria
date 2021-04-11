@@ -7,8 +7,6 @@ import Updater from "./apps/updater/Updater";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Nav from "react-bootstrap/Nav";
-import Form from "react-bootstrap/Form";
-import FormControl from "react-bootstrap/FormControl";
 import RCStreamer from "./apps/rc-streamer/RCStreamer";
 import Socket from "./components/Socket";
 import Backup from './apps/backup/Backup';
@@ -16,6 +14,8 @@ import Request from "./Requests";
 import IPOStatus from "./apps/ipos/IPOStatus";
 import TopTen from "./apps/top-ten/TopTen";
 import News from "./apps/news/News";
+import Select from 'react-select'
+
 
 function Navigation() {
 
@@ -134,12 +134,36 @@ function CustomNavBar(props) {
             </Nav>
 
             <Nav className="ml-auto">
-                <Form inline>
-                    <FormControl type="text" placeholder="Search" className="mr-sm-2" disabled={true}/>
-                </Form>
+                <Search apps={props.apps}/>
             </Nav>
 
         </Navbar>
+    );
+}
+
+
+function Search(props) {
+
+    const options = [];
+    for(let i = 0; i < props.apps.length; i++){
+        const app = props.apps[i];
+        options.push(
+            { value: app.name, label: app.name, url: app['link_to'] || app.url, is_link: app['link_to'] !== null}
+        )
+    }
+
+    const handleChange = (option) => {
+        if(option.is_link) {
+            window.open(option.url);
+        } else {
+            window.location.href = option.url;
+        }
+    };
+
+    return (
+        <div style={{width: "200px"}}>
+            <Select options={options} onChange={handleChange} width='250px' />
+        </div>
     );
 }
 

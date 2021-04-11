@@ -1,5 +1,3 @@
-
-
 .footer {
   padding-bottom: 10em;
 }
@@ -14,4 +12,8 @@
 
 .center {
   background: #c108a9;
+}
+
+:root {
+  scrollbar-width: thin !important;
 }
