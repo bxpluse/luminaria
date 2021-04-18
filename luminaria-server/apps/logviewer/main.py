@@ -3,7 +3,7 @@ from common.enums import APP
 from apps.baseapp import App
 from constants import LOGFILE
 from vars import ROOT_DIR
-from database.log_model import LogModel
+from database.dynamic.log_model import LogModel
 
 
 def convert_level(level):

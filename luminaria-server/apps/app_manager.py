@@ -5,12 +5,13 @@ from apps.monitor.main import RCListener
 from apps.news.main import News
 from apps.topten.main import TopTen
 from apps.updater.main import ExchangeUpdater
+from apps.notes.main import Notes
 from common.cache import hash_tuple
 from common.db_util import create_db, db_exists
 from common.enums import APP, APPSTATUS
-from database.apps_model import AppsModel
-from database.link_model import LinkModel
-from database.local_config_model import LocalConfigModel
+from database.config.apps_model import AppsModel
+from database.config.link_model import LinkModel
+from database.config.local_config_model import LocalConfigModel
 
 
 class AppManager:
@@ -22,22 +23,15 @@ class AppManager:
 
         self.apps_model = AppsModel()
 
-        self.exchange_updater = ExchangeUpdater()
-        self.log_viewer = LogViewer()
-        self.db_backup = BackupDatabase()
-        self.rc_listener = RCListener(subs=LocalConfigModel.retrieve('SUBREDDITS_TO_MONITOR'), interval=15)
-        self.ipo_listener = IPOListener()
-        self.top_ten = TopTen()
-        self.news = News()
-
         self.apps = {
-            APP.EXCHANGE_UPDATER: self.exchange_updater,
-            APP.LOG_VIEWER: self.log_viewer,
-            APP.DB_BACKUP: self.db_backup,
-            APP.RC_STREAMER: self.rc_listener,
-            APP.IPO_LISTENER: self.ipo_listener,
-            APP.TOP_TEN: self.top_ten,
-            APP.NEWS: self.news
+            APP.EXCHANGE_UPDATER: ExchangeUpdater(),
+            APP.LOG_VIEWER: LogViewer(),
+            APP.DB_BACKUP: BackupDatabase(),
+            APP.RC_STREAMER: RCListener(subs=LocalConfigModel.retrieve('SUBREDDITS_TO_MONITOR'), interval=15),
+            APP.IPO_LISTENER: IPOListener(),
+            APP.TOP_TEN: TopTen(),
+            APP.NEWS: News(),
+            APP.NOTES: Notes()
         }
 
     def get_all_apps(self):

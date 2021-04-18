@@ -13,6 +13,7 @@ class APP(Enum):
     TOP_TEN = 'top-ten'
     NEWS = 'news'
     HEALTH_CHECK = 'health-check'
+    NOTES = 'notes'
 
 
 class APPTYPE(Enum):

@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 
 from common.enums import SeriesAttribute
 from common.timeless import is_weekend
-from database.comment_frequency_model import CommentFrequencyModel
+from database.stream.comment_frequency_model import CommentFrequencyModel
 from vars import DB_CONFIG, DB_STATIC
 
 

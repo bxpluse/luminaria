@@ -1,5 +1,5 @@
 from common.timeless import prev_day
-from database.comment_frequency_model import CommentFrequencyModel
+from database.stream.comment_frequency_model import CommentFrequencyModel
 from vars import DB_CONFIG
 
 

@@ -5,7 +5,7 @@ from apps.baseapp import App
 from common.cache import Cache
 from common.enums import APP
 from config import CONFIG_MAP
-from database.local_config_model import LocalConfigModel
+from database.config.local_config_model import LocalConfigModel
 
 BBN_URL = LocalConfigModel.retrieve('BBN_URL')
 

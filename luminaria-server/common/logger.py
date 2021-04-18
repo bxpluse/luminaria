@@ -3,7 +3,7 @@ from datetime import datetime
 from enum import Enum
 
 from constants import LOGFILE
-from database.log_model import LogModel
+from database.dynamic.log_model import LogModel
 from vars import ROOT_DIR
 
 

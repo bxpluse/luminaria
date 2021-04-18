@@ -1,5 +1,5 @@
-from database.global_config_model import GlobalConfigModel
-from database.local_config_model import LocalConfigModel
+from database.config.global_config_model import GlobalConfigModel
+from database.config.local_config_model import LocalConfigModel
 
 CLIENT_SECRET = GlobalConfigModel.retrieve('CLIENT_SECRET')
 CLIENT_ID = GlobalConfigModel.retrieve('CLIENT_ID')

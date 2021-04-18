@@ -14,7 +14,7 @@ from config import CLIENT_ID, CLIENT_SECRET
 from config import SCHEDULER_TIME_ZONE
 from constants import STATIC_DIR
 from vars import ROOT_DIR
-from database.comment_frequency_model import CommentFrequencyModel
+from database.stream.comment_frequency_model import CommentFrequencyModel
 
 
 class RCListener(App):
