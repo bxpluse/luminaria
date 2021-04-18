@@ -1,20 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
-import Home from "./pages/Home";
-import LogViewer from "./apps/logviewer/LogViewer";
-import Header from "./pages/Header";
-import Updater from "./apps/updater/Updater";
+import Request from "./Requests";
+import Select from 'react-select'
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Nav from "react-bootstrap/Nav";
-import RCStreamer from "./apps/rc-streamer/RCStreamer";
+import Home from "./pages/Home";
+import Header from "./pages/Header";
 import Socket from "./components/Socket";
-import Backup from './apps/backup/Backup';
-import Request from "./Requests";
+import LogViewer from "./apps/logviewer/LogViewer";
+import Updater from "./apps/updater/Updater";
+import RCStreamer from "./apps/rc-streamer/RCStreamer";
 import IPOStatus from "./apps/ipos/IPOStatus";
 import TopTen from "./apps/top-ten/TopTen";
+import Backup from './apps/backup/Backup';
 import News from "./apps/news/News";
-import Select from 'react-select'
+import Notes from "./apps/notes/Notes";
 
 
 function Navigation() {
@@ -62,6 +63,9 @@ function Navigation() {
                         </Route>
                         <Route path="/news">
                             <News />
+                        </Route>
+                        <Route path="/notes">
+                            <Notes />
                         </Route>
                         <Route path="/">
                             <Home apps={apps} />

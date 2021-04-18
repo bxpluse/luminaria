@@ -28,7 +28,6 @@ function TopTen() {
         <Container>
             <Masonry
                 breakpointCols={4}
-                horizontalOrder={true}
                 className="masonry-grid"
                 columnClassName="masonry-grid_column">
                 {days}
