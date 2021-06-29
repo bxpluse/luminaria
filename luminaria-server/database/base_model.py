@@ -13,12 +13,15 @@ class ConfigModel(Model):
         return cls._meta.table_name
 
     @classmethod
-    def regenerate(cls, table):
-        cls.drop_table([table])
-        cls.create_table([table])
+    def regenerate(cls):
+        cls.drop_table([cls])
+        cls.create_table([cls])
 
 
 class DynamicModel(Model):
+
+    datetime_created = DateTimeField()
+
     class Meta:
         database = DB_DYNAMIC
         table_name = 'DYNAMIC_MODEL'
@@ -28,9 +31,9 @@ class DynamicModel(Model):
         return cls._meta.table_name
 
     @classmethod
-    def regenerate(cls, table):
-        cls.drop_table([table])
-        cls.create_table([table])
+    def regenerate(cls):
+        cls.drop_table([cls])
+        cls.create_table([cls])
 
 
 class StaticModel(Model):
@@ -43,9 +46,9 @@ class StaticModel(Model):
         return cls._meta.table_name
 
     @classmethod
-    def regenerate(cls, table):
-        cls.drop_table([table])
-        cls.create_table([table])
+    def regenerate(cls):
+        cls.drop_table([cls])
+        cls.create_table([cls])
 
 
 class StreamModel(Model):

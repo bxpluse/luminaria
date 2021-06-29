@@ -6,6 +6,7 @@ from apps.news.main import News
 from apps.topten.main import TopTen
 from apps.updater.main import ExchangeUpdater
 from apps.notes.main import Notes
+from apps.pool.main import Pool
 from common.cache import hash_tuple
 from common.db_util import create_db, db_exists
 from common.enums import APP, APPSTATUS
@@ -31,7 +32,8 @@ class AppManager:
             APP.IPO_LISTENER: IPOListener(),
             APP.TOP_TEN: TopTen(),
             APP.NEWS: News(),
-            APP.NOTES: Notes()
+            APP.NOTES: Notes(),
+            APP.POOL: Pool()
         }
 
     def get_all_apps(self):

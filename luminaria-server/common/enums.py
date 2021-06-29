@@ -14,6 +14,7 @@ class APP(Enum):
     NEWS = 'news'
     HEALTH_CHECK = 'health-check'
     NOTES = 'notes'
+    POOL = 'pool'
 
 
 class APPTYPE(Enum):
