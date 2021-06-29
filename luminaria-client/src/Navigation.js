@@ -16,6 +16,7 @@ import TopTen from "./apps/top-ten/TopTen";
 import Backup from './apps/backup/Backup';
 import News from "./apps/news/News";
 import Notes from "./apps/notes/Notes";
+import Pool from "./apps/pool/Pool";
 
 
 function Navigation() {
@@ -66,6 +67,9 @@ function Navigation() {
                         </Route>
                         <Route path="/notes">
                             <Notes />
+                        </Route>
+                        <Route path="/pool">
+                            <Pool />
                         </Route>
                         <Route path="/">
                             <Home apps={apps} />

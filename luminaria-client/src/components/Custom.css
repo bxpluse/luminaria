@@ -1,0 +1,12 @@
+.modal-open {
+    padding-right: 0 !important;
+}
+
+html {
+    overflow-y: scroll !important;
+}
+
+.link-btn:focus,.link-btn:active {
+    outline: none !important;
+    box-shadow: none;
+}
