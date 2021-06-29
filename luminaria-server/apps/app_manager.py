@@ -1,12 +1,13 @@
 from apps.backup.main import BackupDatabase
+from apps.healthcheck.main import HealthCheck
 from apps.ipolistener.main import IPOListener
 from apps.logviewer.main import LogViewer
 from apps.monitor.main import RCListener
 from apps.news.main import News
-from apps.topten.main import TopTen
-from apps.updater.main import ExchangeUpdater
 from apps.notes.main import Notes
 from apps.pool.main import Pool
+from apps.topten.main import TopTen
+from apps.updater.main import ExchangeUpdater
 from common.cache import hash_tuple
 from common.db_util import create_db, db_exists
 from common.enums import APP, APPSTATUS
@@ -33,7 +34,8 @@ class AppManager:
             APP.TOP_TEN: TopTen(),
             APP.NEWS: News(),
             APP.NOTES: Notes(),
-            APP.POOL: Pool()
+            APP.POOL: Pool(),
+            APP.HEALTH_CHECK: HealthCheck()
         }
 
     def get_all_apps(self):
