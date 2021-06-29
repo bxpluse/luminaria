@@ -164,7 +164,7 @@ function SinglePoolSummary(props) {
         let unrealizedGainsTemp = 0;
 
         let openStockPositions = {};
-        let openOptionPositions = {};
+        // let openOptionPositions = {};
 
         if (entries !== undefined) {
             for (let i = 0; i < entries.length; i++) {
@@ -392,11 +392,12 @@ function CreatePool() {
                     <Jumbotron>
                         <h4>Create a new pool</h4>
                         <Form>
-                            <FormGroup label='Pool Name' func={setCreatePoolName} type='text'/>
-                            <FormGroup label='Initial Fund' prepend='$'
+                            <FormGroup label='Pool Name' value={createPoolName} func={setCreatePoolName} type='text'/>
+                            <FormGroup label='Initial Fund' value={createPoolInitialFund} prepend='$'
                                        func={setCreatePoolInitialFund} type='number'
                             />
-                            <FormGroup label='Description' func={setCreatePoolDescription} as='textarea' rows={3}/>
+                            <FormGroup label='Description' value={createPoolDescription}
+                                       func={setCreatePoolDescription} as='textarea' rows={3}/>
                         </Form>
                         <MyButton text='Save'  onClick={() =>
                             savePool(createPoolName, createPoolDescription, createPoolInitialFund)}/>
