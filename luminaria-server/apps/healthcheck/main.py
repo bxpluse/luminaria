@@ -15,6 +15,15 @@ def cmd(command):
     return subprocess.run(lst, capture_output=True, text=True).stdout
 
 
+def get_mock_syscheck():
+    d = {'date': 'mock date',
+         'uptime': 'mock uptime',
+         'temperature': 'mock temperature',
+         'ram': 'mock ram',
+         'space': 'mock space'}
+    return d
+
+
 class HealthCheck(App):
     """
         Get overview of system.
@@ -28,14 +37,15 @@ class HealthCheck(App):
         self.PLATFORM = os.name
 
     def run_health_check(self):
-        d = {}
         if self.PLATFORM != Platform.LINUX:
-            return d
-        d['date'] = self.get_date()
-        d['uptime'] = self.get_uptime()
-        d['temperature'] = self.get_temp()
-        d['ram'] = self.get_ram()
-        d['space'] = self.get_space()
+            return get_mock_syscheck()
+        d = {'date': self.get_date(),
+             'uptime': self.get_uptime(),
+             'temperature': self.get_temp(),
+             'ram': self.get_ram(),
+             'space': self.get_space()
+             }
+        return d
 
     @staticmethod
     def get_date():
