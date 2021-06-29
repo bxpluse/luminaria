@@ -1,22 +1,23 @@
 import React, {useEffect, useState} from 'react';
-import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
-import Request from "./Requests";
-import Select from 'react-select'
+import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import Nav from "react-bootstrap/Nav";
-import Home from "./pages/Home";
-import Header from "./pages/Header";
-import Socket from "./components/Socket";
-import LogViewer from "./apps/logviewer/LogViewer";
-import Updater from "./apps/updater/Updater";
-import RCStreamer from "./apps/rc-streamer/RCStreamer";
-import IPOStatus from "./apps/ipos/IPOStatus";
-import TopTen from "./apps/top-ten/TopTen";
+import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
+import Select from 'react-select'
 import Backup from './apps/backup/Backup';
+import HealthCheck from "./apps/health-check/HealthCheck";
+import IPOStatus from "./apps/ipos/IPOStatus";
+import LogViewer from "./apps/logviewer/LogViewer";
 import News from "./apps/news/News";
 import Notes from "./apps/notes/Notes";
 import Pool from "./apps/pool/Pool";
+import RCStreamer from "./apps/rc-streamer/RCStreamer";
+import TopTen from "./apps/top-ten/TopTen";
+import Updater from "./apps/updater/Updater";
+import Socket from "./components/Socket";
+import Header from "./pages/Header";
+import Home from "./pages/Home";
+import Request from "./Requests";
 
 
 function Navigation() {
@@ -70,6 +71,9 @@ function Navigation() {
                         </Route>
                         <Route path="/pool">
                             <Pool />
+                        </Route>
+                        <Route path="/health-check">
+                            <HealthCheck />
                         </Route>
                         <Route path="/">
                             <Home apps={apps} />
