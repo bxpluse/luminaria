@@ -226,10 +226,14 @@ function SinglePoolSummary(props) {
 
                     </Form.Row>
                     <Form.Row>
-                        <FormGroup label='Est. Net Liq.' value={netLiquidationVal.toString()} prepend='$' disabled/>
-                        <FormGroup label='Open Pos. Val' value={openPositionsVal.toString()} prepend='$' disabled/>
-                        <FormGroup label='Avl. Cash'     value={availableCash.toString()} prepend='$' disabled/>
-                        <FormGroup label='Rlz. Profit'   value={profit.toString()} prepend='$' disabled/>
+                        <FormGroup label='Est. Net Liq.' value={netLiquidationVal.toFixed(2).toString()}
+                                   prepend='$' disabled/>
+                        <FormGroup label='Open Pos. Val' value={openPositionsVal.toFixed(2).toString()}
+                                   prepend='$' disabled/>
+                        <FormGroup label='Avl. Cash'     value={availableCash.toFixed(2).toString()}
+                                   prepend='$' disabled/>
+                        <FormGroup label='Rlz. Profit'   value={profit.toFixed(2).toString()}
+                                   prepend='$' disabled/>
                     </Form.Row>
                     <FormGroup row label='Description' as="textarea" rows={3} value={pool['description']} disabled/>
                 </Form>
