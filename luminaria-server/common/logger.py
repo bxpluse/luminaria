@@ -18,14 +18,16 @@ class LogLevel(Enum):
 FILE = os.path.join(ROOT_DIR, LOGFILE)
 
 
-def log_to_file(appname, info):
+def log_to_file(app_name, message):
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S.%f")
 
     with open(FILE, 'a+') as f:
-        f.write('{0}: ({1}) {2}{3}'.format(dt_string[:-3], appname, info, '\n'))
+        f.write('{0}: ({1}) {2}{3}'.format(dt_string[:-3], app_name, message, '\n'))
 
 
-def log(appname, info, level=LogLevel.INFO):
-    log_to_file(appname, info)
-    LogModel.log_message(appname, info, level.value)
+def log(app_name, message, level=LogLevel.INFO):
+    try:
+        LogModel.log_message(app_name, message, level.value)
+    except Exception as exception:
+        log_to_file(app_name, 'Logging to file because exception: {0} Message: {1}'.format(str(exception), message))
