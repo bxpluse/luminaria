@@ -5,8 +5,8 @@ from apps.baseapp import App
 from common.enums import APP
 from common.enums import APPTYPE
 from config import SCHEDULER_TIME_ZONE
-from database.dynamic.ipo_strings_model import IPOStringModel
 from database.config.local_config_model import LocalConfigModel
+from database.dynamic.ipo_strings_model import IPOStringModel
 
 
 class IPOListener(App):

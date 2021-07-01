@@ -1,19 +1,19 @@
 import json
 import os
 import threading
-from common.enums import APP
+
 import praw
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from apps.baseapp import App
-from common.symbols import load_symbols, load_blacklist, load_whitelist
+from common.enums import APP
 from common.enums import APPSTATUS
 from common.enums import APPTYPE
+from common.symbols import load_symbols, load_blacklist, load_whitelist
 from common.util import parse_word
 from config import CLIENT_ID, CLIENT_SECRET
 from config import SCHEDULER_TIME_ZONE
-from constants import STATIC_DIR
-from vars import ROOT_DIR
+from constants import STATIC_DIR, ROOT_DIR
 from database.stream.comment_frequency_model import CommentFrequencyModel
 
 

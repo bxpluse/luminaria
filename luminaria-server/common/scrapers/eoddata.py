@@ -6,8 +6,7 @@ from urllib.request import build_opener, HTTPCookieProcessor
 
 from bs4 import BeautifulSoup
 
-from constants import STATIC_DIR, EXCHANGES_DIR
-from vars import ROOT_DIR
+from constants import STATIC_DIR, EXCHANGES_DIR, ROOT_DIR
 
 
 def retrieve_by_letter(exchange, letter):

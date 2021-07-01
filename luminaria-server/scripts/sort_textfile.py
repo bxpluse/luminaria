@@ -1,7 +1,6 @@
 import os
 
-from constants import STATIC_DIR
-from vars import ROOT_DIR
+from constants import STATIC_DIR, ROOT_DIR
 
 
 def sort_file(filename):

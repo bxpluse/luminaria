@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 from common.enums import SeriesAttribute
 from common.timeless import is_weekend
 from database.stream.comment_frequency_model import CommentFrequencyModel
-from vars import DB_CONFIG, DB_STATIC
+from constants import DB_CONFIG, DB_STATIC
 
 
 def plot_freq(symbol, exclude_weekends=False):

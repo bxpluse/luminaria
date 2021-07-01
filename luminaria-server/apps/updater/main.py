@@ -1,12 +1,12 @@
 import os
 import time
-from common.enums import APP
+
 import requests
 
 from apps.baseapp import App
+from common.enums import APP
 from common.enums import APPSTATUS
-from constants import EXCHANGES_DIR, STATIC_DIR
-from vars import ROOT_DIR
+from constants import EXCHANGES_DIR, STATIC_DIR, ROOT_DIR
 
 
 class ExchangeUpdater(App):

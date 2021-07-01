@@ -1,8 +1,7 @@
 import csv
 import os
 
-from constants import STATIC_DIR, BLACKLIST_FILENAME, WHITELIST_FILENAME, EXCHANGES_DIR
-from vars import ROOT_DIR
+from constants import STATIC_DIR, BLACKLIST_FILENAME, WHITELIST_FILENAME, EXCHANGES_DIR, ROOT_DIR
 
 
 def load_symbols():

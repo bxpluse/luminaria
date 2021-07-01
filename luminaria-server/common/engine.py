@@ -1,7 +1,7 @@
 import os
 from importlib import import_module
 
-from vars import STATIC_DIR
+from constants import STATIC_DIR
 
 engine = None
 started = False

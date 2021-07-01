@@ -2,9 +2,8 @@ import os
 from datetime import datetime
 from enum import Enum
 
-from constants import LOGFILE
+from constants import LOGFILE, ROOT_DIR
 from database.dynamic.log_model import LogModel
-from vars import ROOT_DIR
 
 
 class LogLevel(Enum):

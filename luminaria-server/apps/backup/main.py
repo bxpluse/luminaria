@@ -3,7 +3,7 @@ from datetime import date, datetime
 
 from apps.baseapp import App
 from common.enums import APP
-from vars import ROOT_DIR, DATABASE_CONFIG_NAME
+from constants import DATABASE_CONFIG_NAME, ROOT_DIR
 
 
 class BackupDatabase(App):

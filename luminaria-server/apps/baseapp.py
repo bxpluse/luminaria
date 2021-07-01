@@ -1,8 +1,8 @@
+from common.enums import APP
 from common.enums import APPTYPE
 from common.enums import ENVIRONMENT, APPSTATUS
 from common.logger import LogLevel, log as log_to_db
-from vars import ENV
-from common.enums import APP
+from constants import ENV
 
 
 class App:

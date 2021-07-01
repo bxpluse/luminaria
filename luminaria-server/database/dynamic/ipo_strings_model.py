@@ -38,7 +38,12 @@ class IPOStringModel(DynamicModel):
         pk = string.upper()
         query = IPOStringModel.select().where(IPOStringModel.string_unique == pk)
         if not query.exists():
-            IPOStringModel.create(string_unique=pk, string=string, found=FOUNDSTATUS.NOT_FOUND.value, found_date=None)
+            IPOStringModel.create(string_unique=pk,
+                                  string=string,
+                                  found=FOUNDSTATUS.NOT_FOUND.value,
+                                  found_date=None,
+                                  datetime_created=datetime.now()
+                                  )
 
     @staticmethod
     def update_string_as_found(string):

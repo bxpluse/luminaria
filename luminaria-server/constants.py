@@ -1,3 +1,9 @@
+import os
+
+from peewee import SqliteDatabase
+
+from common.enums import ENVIRONMENT
+
 # Directories
 STATIC_DIR = 'static'
 EXCHANGES_DIR = 'exchanges'
@@ -11,3 +17,11 @@ DATABASE_STREAM_NAME = 'db_stream.sqlite3'
 BLACKLIST_FILENAME = 'blacklist.txt'
 WHITELIST_FILENAME = 'whitelist.txt'
 LOGFILE = 'log.txt'
+
+# Variables
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+ENV = ENVIRONMENT.PROD
+DB_CONFIG = SqliteDatabase(os.path.join(ROOT_DIR, DATABASE_CONFIG_NAME))
+DB_DYNAMIC = SqliteDatabase(os.path.join(ROOT_DIR, DATABASE_DYNAMIC_NAME))
+DB_STATIC = SqliteDatabase(os.path.join(ROOT_DIR, DATABASE_STATIC_NAME))
+DB_STREAM = SqliteDatabase(os.path.join(ROOT_DIR, DATABASE_STREAM_NAME))

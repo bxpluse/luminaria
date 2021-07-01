@@ -6,7 +6,7 @@ import requests
 from common.util import str_to_float, flaot_to_float
 from config import ALPHA_VANTAGE_KEY
 from database.timeseries.daily_adjusted_model import TimeSeriesDailyAdjustedModel
-from vars import DB_CONFIG
+from constants import DB_CONFIG
 
 
 class ParamOutputSize(Enum):

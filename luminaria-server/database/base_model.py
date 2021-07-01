@@ -1,6 +1,6 @@
 from peewee import *
 
-from vars import DB_CONFIG, DB_STATIC, DB_STREAM, DB_DYNAMIC
+from constants import DB_CONFIG, DB_DYNAMIC, DB_STATIC, DB_STREAM
 
 
 class ConfigModel(Model):
