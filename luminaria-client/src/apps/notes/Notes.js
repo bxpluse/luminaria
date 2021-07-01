@@ -1,8 +1,3 @@
-import React, {useEffect, useState} from 'react';
-import '@draft-js-plugins/static-toolbar/lib/plugin.css';
-import {EditorState, convertFromRaw, convertToRaw} from 'draft-js';
-import Editor, {createEditorStateWithText} from '@draft-js-plugins/editor';
-import createToolbarPlugin, {Separator,} from '@draft-js-plugins/static-toolbar';
 import {
     BoldButton,
     ItalicButton,
@@ -10,10 +5,15 @@ import {
     UnderlineButton,
     UnorderedListButton
 } from '@draft-js-plugins/buttons';
-import './Notes.css';
+import Editor, {createEditorStateWithText} from '@draft-js-plugins/editor';
+import createToolbarPlugin, {Separator,} from '@draft-js-plugins/static-toolbar';
+import '@draft-js-plugins/static-toolbar/lib/plugin.css';
+import {convertFromRaw, convertToRaw, EditorState} from 'draft-js';
+import React, {useEffect, useState} from 'react';
 import Container from "react-bootstrap/Container";
 import MyButton from "../../components/MyButton";
 import Request from "../../Requests";
+import './Notes.css';
 
 const toolbarPlugin = createToolbarPlugin();
 const { Toolbar } = toolbarPlugin;
@@ -30,20 +30,33 @@ function Notes() {
 
 function CustomEditor() {
 
+    const [saveDisabled, setSaveDisabled] = useState(true);
+    const [previousContent, setPreviousContent] = useState(null);
+    const [editorState, setEditorState] = useState(createEditorStateWithText(''));
+    const editor = React.useRef(null);
+
     useEffect(() => {
         Request.POST_JSON('/exec/notes/load', {}).then(data => {
             const contentState = convertFromRaw(JSON.parse(data['content']));
-            setEditorState(EditorState.createWithContent(contentState));
+            const editorStateTemp = EditorState.createWithContent(contentState);
+            setEditorState(editorStateTemp);
+            setPreviousContent(stateToString(editorStateTemp));
         });
     }, []);
 
-    const [editorState, setEditorState] = useState(createEditorStateWithText(""));
-
     function onChange(editorState){
         setEditorState(editorState);
+        if (previousContent !== null) {
+            setSaveDisabled(previousContent === stateToString(editorState));
+        }
     }
 
-    const editor = React.useRef(null);
+    async function save(content) {
+        const body = {content: content};
+        await Request.POST_JSON('/exec/notes/save', body);
+        setSaveDisabled(true);
+        setPreviousContent(stateToString(editorState));
+    }
 
     function focusEditor() {
         editor.current.focus();
@@ -51,6 +64,8 @@ function CustomEditor() {
 
     return (
         <div>
+            <h2>Notebook</h2>
+            <br/>
             <div className={"editor"}
                  onClick={focusEditor}>
                 <div style={{ padding:"1em" }}>
@@ -78,15 +93,16 @@ function CustomEditor() {
                 </div>
             </div>
             <MyButton text={"Save"}
-                      onClick={() => save(JSON.stringify(convertToRaw(editorState.getCurrentContent())))}
+                      disabled={saveDisabled}
+                      onClick={() => save(stateToString(editorState))}
             />
         </div>
     );
 }
 
-async function save(content) {
-    const body = {content: content};
-    await Request.POST_JSON('/exec/notes/save', body);
+function stateToString(state) {
+    return JSON.stringify(convertToRaw(state.getCurrentContent()))
 }
+
 
 export default Notes;
