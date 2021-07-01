@@ -6,6 +6,7 @@ from apps.monitor.main import RCListener
 from apps.news.main import News
 from apps.notes.main import Notes
 from apps.pool.main import Pool
+from apps.signal.main import Signal
 from apps.topten.main import TopTen
 from apps.updater.main import ExchangeUpdater
 from common.cache import hash_tuple
@@ -35,7 +36,8 @@ class AppManager:
             APP.NEWS: News(),
             APP.NOTES: Notes(),
             APP.POOL: Pool(),
-            APP.HEALTH_CHECK: HealthCheck()
+            APP.HEALTH_CHECK: HealthCheck(),
+            APP.SIGNAL: Signal()
         }
 
     def get_all_apps(self):
