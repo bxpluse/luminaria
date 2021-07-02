@@ -13,6 +13,7 @@ import Tabs from 'react-bootstrap/Tabs'
 import MyButton from "../../components/MyButton";
 import MyModal from "../../components/MyModal";
 import Request from "../../Requests";
+import DateUtil from "../../util/DateUtil";
 import MathUtil from '../../util/MathUtil'
 import './Pool.css';
 
@@ -43,7 +44,7 @@ function Pool() {
     for(let i = 0; i < pools.length; i++){
         const poolItem = pools[i];
         poolTabs.push(
-            <Tab eventKey={poolItem['pool_name']} title={poolItem['pool_name']}>
+            <Tab key={poolItem['pool_name']} eventKey={poolItem['pool_name']} title={poolItem['pool_name']}>
                 <SinglePool pool={poolItem} entries={entries[poolItem['pool_name']]}
                             rerender={(value) => handleSelect(value)}/>
             </Tab>
@@ -91,7 +92,7 @@ function SinglePool(props) {
             if (setTrade.has(entry['action'])) {
                 const colSpan = totalSpan / divider;
                 history.push(
-                    <tr>
+                    <tr key={i}>
                         <td colSpan={colSpan} className='align-center'>
                             {entry['action']}&nbsp;
                             {entry['note'] !== ''?
@@ -103,7 +104,8 @@ function SinglePool(props) {
                         <td colSpan={colSpan} className='align-right'> {entry['amount']}</td>
                         <td colSpan={colSpan} className='align-center'>{entry['symbol']}</td>
                         <td colSpan={colSpan} className='align-right'>
-                            ${entry['price']}   |   ${entry['amount'] * entry['price'] * multiplier}
+                            ${entry['price'].toFixed(2)}   |
+                            ${(entry['amount'] * entry['price'] * multiplier).toFixed(2)}
                         </td>
                         <td colSpan={colSpan} className='align-center'>{entry['date'] + ' ' + entry['time']}</td>
                         {entry['strike'] !== null?
@@ -116,7 +118,7 @@ function SinglePool(props) {
             } else {
                 const colSpan = totalSpan / transactionRowNum;
                 history.push(
-                    <tr>
+                    <tr key={i}>
                         <td colSpan={colSpan} className='align-center'>{entry['action']}</td>
                         <td colSpan={colSpan} className='align-right'>${entry['amount']}</td>
                         <td colSpan={colSpan} className='align-right'>{entry['date'] + ' ' + entry['time']}</td>
@@ -158,7 +160,6 @@ function SinglePoolSummary(props) {
     useEffect(() => {
         let availableCashTemp = 0;
         let netLiquidationValTemp = 0;
-        let totalDepositsTemp = 0;
         let commissionTemp = 0;
         let realizedGainsTemp = 0;
         let unrealizedGainsTemp = 0;
@@ -171,7 +172,6 @@ function SinglePoolSummary(props) {
                 const entry = entries[i];
                 if (entry.action === 'DEPOSIT') {
                     availableCashTemp += entry.amount;
-                    totalDepositsTemp += entry.amount;
                 } else {
                     const symbol = entry.symbol;
                     const amount = entry.amount;
@@ -212,7 +212,7 @@ function SinglePoolSummary(props) {
         setAvailableCash(availableCashTemp);
         setOpenPositionsVal(unrealizedGainsTemp)
         setProfit(realizedGainsTemp)
-    });
+    }, [entries, setNetLiquidationVal]);
 
 
     return(
@@ -223,7 +223,6 @@ function SinglePoolSummary(props) {
                     <Form.Row>
                         <FormGroup label='Pool Name'     value={pool['pool_name']} disabled/>
                         <FormGroup label='Created on'    value={pool['datetime_created']} disabled/>
-
                     </Form.Row>
                     <Form.Row>
                         <FormGroup label='Est. Net Liq.' value={netLiquidationVal.toFixed(2).toString()}
@@ -258,6 +257,7 @@ function CreateEntry(props) {
     const [strike, setStrike]           = useState('');
     const [expiryDate, setExpiryDate]   = useState('');
     const [note, setNote]               = useState('');
+    const [parserText, setParserText]   = useState('');
 
     async function saveEntry(action, amount, symbol, price, date, time, spot, strike, expiryDate, note) {
         const body = {poolName: props.poolName, instrument: entryType, entryType: entryType,
@@ -278,6 +278,7 @@ function CreateEntry(props) {
         setStrike('');
         setExpiryDate('');
         setNote('');
+        setParserText('');
     }
 
     useEffect(() => {
@@ -303,6 +304,31 @@ function CreateEntry(props) {
 
     }, [entryType, action, amount, symbol, price, date, time, spot, strike, expiryDate]);
 
+    function parser(string) {
+        setParserText(string);
+        const arr = string.trim().split('\t')
+
+        if (arr[0] !== 'BOT' && arr[0] !== 'SLD') {
+            return
+        }
+        if (!MathUtil.isPositiveInt(arr[1])) {
+            return
+        }
+        if (!MathUtil.isPositiveInt(arr[3])) {
+            return
+        }
+
+        const thirdArr = arr[2].split(',');
+        const time = arr[5].split(' ')[0];
+
+        setAction(arr[0] === 'BOT' ? 'BUY' : 'SELL');
+        setAmount(arr[1]);
+        setSymbol(thirdArr[0]);
+        setPrice(arr[3]);
+        setDate(DateUtil.getCurrentDate);
+        setTime(time);
+    }
+
     return (
         <div>
             <MyButton text="Create New Entry" onClick={() => setOpenCreateEntryForm(!openCreateEntryForm)}/>
@@ -327,7 +353,7 @@ function CreateEntry(props) {
                             <Form.Row>
                                 <Form.Group as={Col}>
                                     <Form.Label>Action</Form.Label>
-                                    <Form.Control as='select' defaultValue='...'
+                                    <Form.Control value={action} as='select' defaultValue='...'
                                                   onChange={e => setAction(e.target.value)}
                                     >
                                         <option>...</option>
@@ -356,14 +382,7 @@ function CreateEntry(props) {
                                     <FormGroup row label='Note' value={note} func={setNote}/>
                                 </Accordion.Collapse>
                             </Accordion>
-                            <Accordion>
-                                <Accordion.Toggle as={ParserLinkButton} eventKey='1'>
-                                    > Parser
-                                </Accordion.Toggle>
-                                <Accordion.Collapse eventKey='1'>
-                                    <FormGroup row placeholder='Auto Parser'/>
-                                </Accordion.Collapse>
-                            </Accordion>
+                            <FormGroup row placeholder='Auto Parser' value={parserText} func={parser}/>
                         </Form>
                         <br/>
                         <MyButton text="Save"
@@ -452,17 +471,6 @@ function NoteLinkButton(props) {
             onClick={() => {props.onClick();}}
             variant='link'
             text='>Notes'
-        >
-        </MyButton>
-    )
-}
-
-function ParserLinkButton(props) {
-    return (
-        <MyButton
-            onClick={() => {props.onClick();}}
-            variant='link'
-            text='>Parser'
         >
         </MyButton>
     )
