@@ -6,5 +6,6 @@
 **/*.csv
 /static/*.txt
 /static/exchanges
+/static/rules/prod
 /backup_folder/
 test.py

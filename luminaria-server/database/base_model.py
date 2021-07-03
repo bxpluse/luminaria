@@ -61,6 +61,6 @@ class StreamModel(Model):
         return cls._meta.table_name
 
     @classmethod
-    def regenerate(cls, table):
-        cls.drop_table([table])
-        cls.create_table([table])
+    def regenerate(cls):
+        cls.drop_table([cls])
+        cls.create_table([cls])

@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 import random
 
-TIME_FORMAT = '%Y-%m-%d'
+DATE_FORMAT = '%Y-%m-%d'
+TIME_FORMAT = '%H:%M:%S'
+DATETIME_FORMAT = '{0} {1}'.format(DATE_FORMAT, TIME_FORMAT)
 
 
 def months_diff(from_date, to_date):
@@ -11,8 +13,8 @@ def months_diff(from_date, to_date):
     :param to_date: str date
     :return: int
     """
-    d1 = datetime.strptime(to_date, TIME_FORMAT)
-    d2 = datetime.strptime(from_date, TIME_FORMAT)
+    d1 = datetime.strptime(to_date, DATE_FORMAT)
+    d2 = datetime.strptime(from_date, DATE_FORMAT)
     return (d1.year - d2.year) * 12 + d1.month - d2.month
 
 
@@ -51,7 +53,7 @@ def is_weekend(date):
     :return: bool
     """
     if type(date) == str:
-        d = datetime.strptime(date, TIME_FORMAT)
+        d = datetime.strptime(date, DATE_FORMAT)
         week_num = d.weekday()
     else:
         week_num = date.weekday()
@@ -74,8 +76,8 @@ def next_day(date: str):
     :param date: Current date
     :return: Next day
     """
-    tomorrow = datetime.strptime(date, TIME_FORMAT) + timedelta(days=1)
-    return tomorrow.strftime(TIME_FORMAT)
+    tomorrow = datetime.strptime(date, DATE_FORMAT) + timedelta(days=1)
+    return tomorrow.strftime(DATE_FORMAT)
 
 
 def prev_day(date):
@@ -84,7 +86,14 @@ def prev_day(date):
     :return: Previous day. Same data type as passed in.
     """
     if type(date) == str:
-        tomorrow = datetime.strptime(date, TIME_FORMAT) + timedelta(days=-1)
-        return tomorrow.strftime(TIME_FORMAT)
+        tomorrow = datetime.strptime(date, DATE_FORMAT) + timedelta(days=-1)
+        return tomorrow.strftime(DATE_FORMAT)
     tomorrow = date + timedelta(days=-1)
     return tomorrow
+
+
+def today():
+    """
+    :return: Today's date
+    """
+    return datetime.today().strftime(DATE_FORMAT)

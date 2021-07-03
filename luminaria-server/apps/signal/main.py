@@ -1,37 +1,30 @@
 from apps.baseapp import App
 from common.engine import get_engine
 from common.enums import APP
-
-i = 0
-
-
-def test(a, b):
-    global i
-    i += 1
-    if i < 4:
-        print(i / 0)
-    print("job just ran ", i, a, b)
+from common.enums import APPTYPE
+from common.job_scheduler import JobScheduler
 
 
 class Signal(App):
     APP_ID = APP.SIGNAL
 
     def __init__(self):
-        super().__init__()
-        print("Signal inited")
+        super().__init__(app_type=APPTYPE.STREAMING)
+        self.engine = get_engine()
+        self.scheduler = JobScheduler()
+        self.rules = []
 
-        triggers = {}
-        triggers['second'] = '10,20,30,40,50,0'
+        for rule_name in self.engine.modules:
+            module = self.engine.get(rule_name)
+            rule = module.rule
+            rule.scheduler = self.scheduler
+            rule.app_id = self.APP_ID
+            module.run()
+            rule.is_running = True
+            self.rules.append(rule)
 
-        # self.scheduler = JobScheduler()
-        # self.scheduler.create_job(name='test()', app_id=self.APP_ID, func=test, triggers=triggers, args=('a', 'b'))
+        self.start()
 
     def execute(self, command, **kwargs):
-        if command == 'save':
-            return {}
-
-
-if __name__ == "__main__":
-    engine = get_engine()
-    print(engine.modules)
-    engine.get('sample_rule')
+        if command == 'getAllRules':
+            return {'rules': self.rules}
