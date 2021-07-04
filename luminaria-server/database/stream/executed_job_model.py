@@ -2,6 +2,7 @@ from datetime import datetime
 
 from peewee import CharField, DateTimeField
 
+from common.transformer import model_to_dict_wrapper
 from database.base_model import StreamModel
 
 
@@ -27,7 +28,14 @@ class ExecutedJobModel(StreamModel):
             on_error=on_error,
             response=response,
             datetime_created=datetime.now()
-            )
+        )
+
+    @staticmethod
+    def tail(num_lines):
+        query = ExecutedJobModel.select() \
+            .order_by(ExecutedJobModel.datetime_created.desc()) \
+            .limit(num_lines)
+        return [model_to_dict_wrapper(line, keys=['datetime_created']) for line in query]
 
 
 if __name__ == "__main__":

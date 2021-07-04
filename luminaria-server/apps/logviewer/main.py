@@ -4,6 +4,7 @@ from apps.baseapp import App
 from common.enums import APP
 from constants import LOGFILE, ROOT_DIR
 from database.dynamic.log_model import LogModel
+from database.stream.executed_job_model import ExecutedJobModel
 
 
 def convert_level(level):
@@ -19,41 +20,13 @@ class LogViewer(App):
     """
 
     APP_ID = APP.LOG_VIEWER
-    BLOCK_SIZE = 1024
 
     def __init__(self):
         super().__init__()
         self.LOG = os.path.join(ROOT_DIR, LOGFILE)
 
-    def tail_old(self, lines):
-
-        def d(f, lines):
-            total_lines_wanted = lines
-            f.seek(0, 2)
-            block_end_byte = f.tell()
-            lines_to_go = total_lines_wanted
-            block_number = -1
-            blocks = []
-            while lines_to_go > 0 and block_end_byte > 0:
-                if block_end_byte - self.BLOCK_SIZE > 0:
-                    f.seek(block_number * self.BLOCK_SIZE, 2)
-                    blocks.append(f.read(self.BLOCK_SIZE))
-                else:
-                    f.seek(0, 0)
-                    blocks.append(f.read(block_end_byte))
-                lines_found = blocks[-1].count(b'\n')
-                lines_to_go -= lines_found
-                block_end_byte -= self.BLOCK_SIZE
-                block_number -= 1
-            all_read_text = b''.join(reversed(blocks))
-            return b'\n'.join(all_read_text.splitlines()[-total_lines_wanted:])
-
-        with open(self.LOG, 'rb') as file:
-            byts = d(file, lines)
-        decoded = byts.decode("utf-8")
-        return {'lines': decoded}
-
-    def tail(self, lines, apps, levels):
+    @staticmethod
+    def tail(lines, apps, levels):
         query = LogModel.tail(lines, apps, levels)
         line = ''
         for i in range(len(query) - 1, -1, -1):
@@ -62,9 +35,16 @@ class LogViewer(App):
             line += m + '\n'
         return {'lines': line}
 
+    @staticmethod
+    def tail_jobs(num_lines=100):
+        lines = ExecutedJobModel.tail(num_lines)
+        return lines
+
     def execute(self, command, **kwargs):
         if command == 'tail':
             num_lines = kwargs['numLines']
             apps = kwargs.get('apps', ())
             levels = kwargs.get('levels', (1, 2, 3, 4, 5))
             return self.tail(num_lines, apps, levels)
+        elif command == 'tailJob':
+            return {'lines': self.tail_jobs()}

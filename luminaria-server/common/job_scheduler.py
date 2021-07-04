@@ -5,7 +5,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 from common.logger import log, LogLevel
 from config import SCHEDULER_TIME_ZONE
-from database.stream.executed_job import ExecutedJobModel
+from database.stream.executed_job_model import ExecutedJobModel
 
 
 class OnError(Enum):
