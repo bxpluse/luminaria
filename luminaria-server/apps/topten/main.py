@@ -10,28 +10,30 @@ from database.stream.comment_frequency_model import CommentFrequencyModel
 
 
 class TopTen(App):
-
     APP_ID = APP.TOP_TEN
 
     def __init__(self):
         cache = Cache(CONFIG_MAP['NEWS_CACHE_DURATION_SECS'])
         super().__init__(cache=cache)
 
-    def get_hot(self, num_prev_days, limit):
+    @staticmethod
+    def get_hot(num_prev_days, limit):
         res = {}
         day = date.today()
-        for _ in range(num_prev_days):
+        query_total_mentions = CommentFrequencyModel.get_total_mentions_from_day(prev_day(day, num_days=num_prev_days))
+
+        for i in range(num_prev_days):
             res[str(day)] = {}
             day_dict = res[str(day)]
 
-            query_total_mention = CommentFrequencyModel.get_total_mentions_on_day(day)
             query_hot = CommentFrequencyModel.get_top_on_day(day, limit)
 
             day_dict['symbols'] = []
             day_dict['mentions'] = []
             day_dict['is_weekend'] = is_weekend(day)
             day_dict['day_of_week'] = day_of_week(day)
-            day_dict['total_mentions'] = query_total_mention.total
+            total_mentions = query_total_mentions[day] if day in query_total_mentions else None
+            day_dict['total_mentions'] = total_mentions
 
             for item in query_hot:
                 day_dict['symbols'].append(item.symbol)

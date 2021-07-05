@@ -16,6 +16,7 @@ class APP(Enum):
     NOTES = 'notes'
     POOL = 'pool'
     SIGNAL = 'signal'
+    GRAPHY = 'graphy'
 
 
 class APPTYPE(Enum):

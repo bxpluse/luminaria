@@ -36,10 +36,10 @@ class RCListener(App):
         self.load_preloader()
         self.scheduler = BackgroundScheduler({'apscheduler.timezone': SCHEDULER_TIME_ZONE})
         self.scheduler.start()
-        self.show_config()
 
     def run(self):
         super().start()
+        self.show_config()
         job = self.scheduler.add_job(self.commit_to_db, trigger='cron', minute='*/' + str(self.INTERVAL))
         if self.first_start:
             self.log('Stream starting up with schedule: ' + str(self.scheduler.get_jobs()))

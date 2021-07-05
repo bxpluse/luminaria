@@ -1,14 +1,14 @@
 import numpy as np
 import plotly.graph_objects as go
+import plotly
 
-from common.enums import SeriesAttribute
 from common.timeless import is_weekend
+from constants import DB_STREAM
 from database.stream.comment_frequency_model import CommentFrequencyModel
-from constants import DB_CONFIG, DB_STATIC
 
 
-def plot_freq(symbol, exclude_weekends=False):
-    cursor1 = DB_CONFIG.execute_sql('''select date, sum(times_mentioned)
+def plot_freq(symbol, show=False):
+    cursor1 = DB_STREAM.execute_sql('''select date, sum(times_mentioned)
                                 from COMMENT_FREQUENCY 
                                 where symbol=?
                                 GROUP BY date;''',
@@ -16,60 +16,50 @@ def plot_freq(symbol, exclude_weekends=False):
 
     from_date = CommentFrequencyModel.get_first_record_by_symbol(symbol).date
 
-    cursor2 = DB_CONFIG.execute_sql('''select date, sum(times_mentioned)
+    cursor2 = DB_STREAM.execute_sql('''select date, sum(times_mentioned)
                                 from COMMENT_FREQUENCY 
                                 where date >= ?
                                 GROUP BY date;''',
                                     (from_date,))
 
-    cursor3 = DB_STATIC.execute_sql('''select *
-                                    from TIME_SERIES_DAILY_ADJUSTED 
-                                    where date >= ? and symbol = ?
-                                    order by date;''',
-                                    (from_date, symbol))
-
-    totals = []  # Total comments on a date
-    x = []  # Date
-    y_abs = []  # Absolute number of comments
+    totals = []         # Total comments on a date
+    x = []              # Date
+    y_abs_weekday = []  # Absolute number of comments on weekdays
+    y_abs_weekend = []  # Absolute number of comments on weekends
 
     for row in cursor2.fetchall():
-        if exclude_weekends and is_weekend(row[0]):
-            totals.append(None)
-        else:
-            totals.append(row[1])
+        totals.append(row[1])
 
-    i = 0
     for row in cursor1.fetchall():
         x.append(row[0])
-        if exclude_weekends and is_weekend(row[0]):
-            y_abs.append(None)
+        if is_weekend(row[0]):
+            y_abs_weekday.append(None)
+            y_abs_weekend.append(row[1])
         else:
-            y_abs.append(row[1])
-        i += 1
-
-    time_series_dates = []
-    time_series_adjusted_closes = []
-    time_series_volumes = []
-    for row in cursor3.fetchall():
-        time_series_dates.append(row[SeriesAttribute.DATE])
-        time_series_adjusted_closes.append(row[SeriesAttribute.ADJUSTED_CLOSE])
-        time_series_volumes.append(row[SeriesAttribute.VOLUME])
+            y_abs_weekday.append(row[1])
+            y_abs_weekend.append(None)
 
     assert len(x) == len(totals)
 
     x = np.array(x)
-    totals = np.array(totals, dtype=np.float)
-    y_abs = np.array(y_abs, dtype=np.float)
-    y_normalized = y_abs / totals
+    totals = np.array(totals, dtype=float)
+    y_abs_weekday = np.array(y_abs_weekday, dtype=float)
+    y_abs_weekend = np.array(y_abs_weekend, dtype=float)
+    y_weekday_normalized = y_abs_weekday / totals
+    y_weekend_normalized = y_abs_weekend / totals
 
     fig = go.Figure()
 
-    fig.add_trace(go.Scatter(x=x, y=y_abs, mode='markers', name="Absolute"))
-    fig.add_trace(go.Scatter(x=x, y=y_normalized, mode='markers', name="Percentage", yaxis="y2"))
+    marker_abs = dict(color='#345fef')
+    marker_per = dict(color='#ef18a9')
+
+    fig.add_trace(go.Scatter(x=x, y=y_abs_weekday, mode='markers', marker=marker_abs, name="Absolute", fillcolor='red'))
+    fig.add_trace(go.Scatter(x=x, y=y_abs_weekend, mode='markers', marker=marker_abs, name="Absolute(weekend)"))
 
     fig.add_trace(
-        go.Scatter(x=time_series_dates, y=time_series_adjusted_closes, name='Close', mode='lines', yaxis="y3"))
-    fig.add_trace(go.Bar(x=time_series_dates, y=time_series_volumes, opacity=0.1, name='Volume', yaxis="y4"))
+        go.Scatter(x=x, y=y_weekday_normalized, mode='markers', marker=marker_per, yaxis="y2", name="Percentage"))
+    fig.add_trace(go.Scatter(x=x, y=y_weekend_normalized, mode='markers', marker=marker_per, yaxis="y2",
+                             name="Percentage(weekend)"))
 
     fig.update_layout(
         title="Exuberance " + symbol,
@@ -104,24 +94,8 @@ def plot_freq(symbol, exclude_weekends=False):
             side="left",
             position=0.05
         ),
-        yaxis3=dict(
-            title="Adjusted Close",
-            titlefont=dict(
-                color="#d62728"
-            ),
-            tickfont=dict(
-                color="#d62728"
-            ),
-            anchor="x",
-            overlaying="y",
-            side="right",
-            position=0.1
-        ),
-        yaxis4=dict(
-            overlaying="y",
-            visible=False,
-            range=[0, max(time_series_volumes) * 4]
-        ),
     )
 
-    fig.show()
+    if show:
+        fig.show()
+    return plotly.offline.plot(fig, output_type='div', auto_open=False, include_plotlyjs="cdn")

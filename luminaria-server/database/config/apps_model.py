@@ -10,14 +10,16 @@ class AppsModel(ConfigModel):
     description = CharField(null=True)
     image = CharField(null=True)
     url = CharField()
+    is_online = BooleanField()
     order = IntegerField()
 
     class Meta:
         table_name = 'APPS'
 
     @staticmethod
-    def get_all_apps():
+    def get_all_online_apps():
         res = {}
         for app in AppsModel.select():
-            res[app.id] = (model_to_dict(app))
+            if app.is_online:
+                res[app.id] = model_to_dict(app)
         return res

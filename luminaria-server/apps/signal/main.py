@@ -27,4 +27,16 @@ class Signal(App):
 
     def execute(self, command, **kwargs):
         if command == 'getAllRules':
-            return {'rules': self.rules}
+            return {'rules': [parse_rule(rule) for rule in self.rules]}
+
+
+def parse_rule(rule):
+    d = {'id': str(rule.id),
+         'name': rule.name,
+         'description': rule.description,
+         'rule_names': str(rule.rule_names),
+         'is_running': str(rule.is_running),
+         'jobs': rule.scheduler.get_str_jobs()
+         }
+    return d
+

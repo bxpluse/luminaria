@@ -1,11 +1,10 @@
 import os
 from importlib import import_module
-
-from constants import ROOT_DIR, STATIC_DIR
+from constants import ROOT_DIR, STATIC_DIR, ENV, ENVIRONMENT
 
 engine = None
 started = False
-inactive_rules = {'sample_rule'}
+inactive_rules = {} if ENV != ENVIRONMENT.PROD else {'sample_rule'}
 
 RULES_IMPORT_PATH_DEV = 'static.rules.{0}'
 RULES_IMPORT_PATH_PROD = 'static.rules.prod.{0}'
@@ -42,6 +41,8 @@ def start_engine():
                     try:
                         module = import_module(RULES_IMPORT_PATH_DEV.format(module_name))
                     except ModuleNotFoundError:
+                        if ENV != ENVIRONMENT.PROD:
+                            continue
                         module = import_module(RULES_IMPORT_PATH_PROD.format(module_name))
                     if not verify_module(module):
                         continue

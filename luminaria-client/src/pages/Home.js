@@ -44,12 +44,12 @@ function AppCard(props) {
         variant = 'warning'
     }
 
-    const is_link = props.app['link_to'] !== null;
+    const is_link = props.app.url.includes('https');
 
     return (
         <Card className={'mt-5 shadow dashboard-card'}>
             {is_link ? (
-                <a className={'app-link'} href={props.app['link_to']} target='_blank' rel='noopener noreferrer'>
+                <a className={'app-link'} href={props.app['url']} target='_blank' rel='noopener noreferrer'>
                     <Card.Img variant="top" src={props.app.image} />
                     <Badge className={'app-badge badge-pill'} variant={variant}>{props.app.status}</Badge>
                 </a>

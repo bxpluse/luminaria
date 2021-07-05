@@ -82,6 +82,15 @@ class Job:
             response=str(response)
         )
 
+    def get_info(self):
+        d = {'name': self.name,
+             'func': self.func.__name__,
+             'args': self.args,
+             'on_error': self.on_error.value,
+             'triggers': self.triggers
+             }
+        return d
+
 
 class JobScheduler:
 
@@ -95,3 +104,6 @@ class JobScheduler:
             job = Job(name, app_id, func, triggers, args=args, on_error=on_error, scheduler=self.scheduler)
             self.jobs[name] = job
             job.run()
+
+    def get_str_jobs(self):
+        return [job.get_info() for job in self.jobs.values()]

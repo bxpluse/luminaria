@@ -19,8 +19,8 @@ WHITELIST_FILENAME = 'whitelist.txt'
 LOGFILE = 'log.txt'
 
 # Variables
+ENV = ENVIRONMENT.DEV if os.name == 'nt' else ENVIRONMENT.PROD
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-ENV = ENVIRONMENT.PROD
 DB_CONFIG = SqliteDatabase(os.path.join(ROOT_DIR, DATABASE_CONFIG_NAME))
 DB_DYNAMIC = SqliteDatabase(os.path.join(ROOT_DIR, DATABASE_DYNAMIC_NAME))
 DB_STATIC = SqliteDatabase(os.path.join(ROOT_DIR, DATABASE_STATIC_NAME))

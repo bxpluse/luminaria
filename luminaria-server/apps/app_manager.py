@@ -1,63 +1,35 @@
-from apps.backup.main import BackupDatabase
-from apps.healthcheck.main import HealthCheck
-from apps.ipolistener.main import IPOListener
-from apps.logviewer.main import LogViewer
-from apps.monitor.main import RCListener
-from apps.news.main import News
-from apps.notes.main import Notes
-from apps.pool.main import Pool
-from apps.signal.main import Signal
-from apps.topten.main import TopTen
-from apps.updater.main import ExchangeUpdater
 from common.cache import hash_tuple
-from common.db_util import create_db, db_exists
 from common.enums import APP, APPSTATUS
 from database.config.apps_model import AppsModel
-from database.config.link_model import LinkModel
-from database.config.local_config_model import LocalConfigModel
 
 
 class AppManager:
 
+    IS_RUNNING = False
+
     def __init__(self):
 
-        if not db_exists():
-            create_db()
+        if self.IS_RUNNING:
+            raise Exception('Only one instance of AppManager allowed')
 
+        self.IS_RUNNING = True
         self.apps_model = AppsModel()
-
-        self.apps = {
-            APP.EXCHANGE_UPDATER: ExchangeUpdater(),
-            APP.LOG_VIEWER: LogViewer(),
-            APP.DB_BACKUP: BackupDatabase(),
-            APP.RC_STREAMER: RCListener(subs=LocalConfigModel.retrieve('SUBREDDITS_TO_MONITOR'), interval=15),
-            APP.IPO_LISTENER: IPOListener(),
-            APP.TOP_TEN: TopTen(),
-            APP.NEWS: News(),
-            APP.NOTES: Notes(),
-            APP.POOL: Pool(),
-            APP.HEALTH_CHECK: HealthCheck(),
-            APP.SIGNAL: Signal()
-        }
+        # Import all running apps
+        from apps.online_apps import APPS
+        self.apps = APPS
 
     def get_all_apps(self):
-        res = self.apps_model.get_all_apps()
+        res = self.apps_model.get_all_online_apps()
         for key, value in res.items():
             app_entry = res[key]
+            app_entry['status'] = APPSTATUS.UNKNOWN.value
             try:
                 app = APP(key)
                 if app in self.apps:
                     app_entry['status'] = self.apps[app].status.value
-                else:
-                    app_entry['status'] = APPSTATUS.UNKNOWN.value
             except ValueError:
-                app_entry['status'] = APPSTATUS.UNKNOWN.value
-
-            is_link = LinkModel.select_link_by_app_id(app_entry['id']) is not None
-            if is_link:
-                app_entry['status'] = APPSTATUS.LINK.value
-            app_entry['link_to'] = LinkModel.select_link_by_app_id(app_entry['id'])
-
+                if 'https' in app_entry['url']:
+                    app_entry['status'] = APPSTATUS.LINK.value
         return res
 
     def get_app_status(self, app_id):

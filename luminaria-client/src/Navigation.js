@@ -5,6 +5,7 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import Select from 'react-select'
 import Backup from './apps/backup/Backup';
+import Graphy from "./apps/graphy/Graphy";
 import HealthCheck from "./apps/health-check/HealthCheck";
 import IPOStatus from "./apps/ipos/IPOStatus";
 import LogViewer from "./apps/logviewer/LogViewer";
@@ -12,6 +13,7 @@ import News from "./apps/news/News";
 import Notes from "./apps/notes/Notes";
 import Pool from "./apps/pool/Pool";
 import RCStreamer from "./apps/rc-streamer/RCStreamer";
+import Signal from "./apps/signal/Signal";
 import TopTen from "./apps/top-ten/TopTen";
 import Updater from "./apps/updater/Updater";
 import Socket from "./components/Socket";
@@ -75,6 +77,12 @@ function Navigation() {
                         <Route path="/health-check">
                             <HealthCheck />
                         </Route>
+                        <Route path="/signal">
+                            <Signal />
+                        </Route>
+                        <Route path="/graphy">
+                            <Graphy />
+                        </Route>
                         <Route path="/">
                             <Home apps={apps} />
                         </Route>
@@ -101,17 +109,17 @@ function CustomNavBar(props) {
     const links = [];
     for(let i = 0; i < props.apps.length; i++){
         const app = props.apps[i];
-        const is_link = app['link_to'] !== null;
+        const is_link = app.url.includes('https');
         if(is_link){
             links.push(
                 <NavDropdown.Item
-                    key={i}
-                    href={app['link_to']}
+                    key={'item_' + i}
+                    href={app['url']}
                     target='_blank'
                     rel='noopener noreferrer'>
                     {app['name']}
                 </NavDropdown.Item>,
-                <NavDropdown.Divider key={i}/>
+                <NavDropdown.Divider key={'divider_' + i}/>
             )
         }
     }
@@ -160,7 +168,7 @@ function Search(props) {
     for(let i = 0; i < props.apps.length; i++){
         const app = props.apps[i];
         options.push(
-            { value: app.name, label: app.name, url: app['link_to'] || app.url, is_link: app['link_to'] !== null}
+            { value: app.name, label: app.name, url: app['link_to'] || app.url, is_link: app.url.includes('https')}
         )
     }
 

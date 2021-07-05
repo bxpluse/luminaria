@@ -61,7 +61,7 @@ class App:
         if ENV == ENVIRONMENT.PROD:
             log_to_db(self.APP_ID.value, message, level)
         elif ENV == ENVIRONMENT.DEV:
-            print(message)
+            print(self.APP_ID.value, message, level)
 
     def get(self, command):
         return {}

@@ -80,16 +80,17 @@ def next_day(date: str):
     return tomorrow.strftime(DATE_FORMAT)
 
 
-def prev_day(date):
+def prev_day(date, num_days=1):
     """
     :param date: Current date
+    :param num_days: Number of days before the given one
     :return: Previous day. Same data type as passed in.
     """
     if type(date) == str:
-        tomorrow = datetime.strptime(date, DATE_FORMAT) + timedelta(days=-1)
-        return tomorrow.strftime(DATE_FORMAT)
-    tomorrow = date + timedelta(days=-1)
-    return tomorrow
+        past_day = datetime.strptime(date, DATE_FORMAT) + timedelta(days=-num_days)
+        return past_day.strftime(DATE_FORMAT)
+    past_day = date + timedelta(days=-num_days)
+    return past_day
 
 
 def today():
