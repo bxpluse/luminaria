@@ -8,6 +8,7 @@ import Row from 'react-bootstrap/Row'
 import Tab from 'react-bootstrap/Tab'
 import Table from 'react-bootstrap/Table'
 import Tabs from 'react-bootstrap/Tabs'
+import MyButton from "../../components/MyButton";
 import Request from "../../Requests";
 import './LogViewer.css'
 
@@ -28,8 +29,16 @@ function LogViewer(props) {
 
 
 function LogTab(props) {
+
+    const MAX_APPS = 50;
+    const [nextToggle, setNextToggle] = useState(false);
     const [logs, setLogs] = useState('');
-    const [checkedApps, setCheckedApps] = useState({});
+    const [checkedState, setCheckedState] = useState(
+        new Array(MAX_APPS).fill(true)
+    );
+    const apps = ['Flask'];
+    const links = new Set();
+
     const [selectedLogLevel, setSelectedLogLevel] = useState(2);
     const scrollRef = useRef(null);
 
@@ -39,29 +48,34 @@ function LogTab(props) {
 
     function onClick() {
         // Find logs for wanted apps
-        const appsToSearch = [];
-        for (const [, app] of Object.entries(props.apps)) {
-            const is_link = app['link_to'] !== null;
-            if(!is_link){
-                if(!(app.id in checkedApps) || (checkedApps[app.id] === true)){
-                    appsToSearch.push(app.id);
-                }
+        const appsToSearch = new Set();
+        for (let i = 0; i < checkedState.length; i++) {
+            if (checkedState[i] && !links.has(i) && checkedState[i] !== undefined) {
+                appsToSearch.add(apps[i]);
             }
         }
-        if(!('FLASK' in checkedApps) || (checkedApps['FLASK'] === true)){
-            appsToSearch.push('Flask');
+        if (appsToSearch.size === 0) {
+            setLogs('');
+        } else {
+            getLogs(Array.from(appsToSearch), selectedLogLevel).then(lines => {
+                setLogs(lines);
+                scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+                scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+            });
         }
-
-        getLogs(appsToSearch, selectedLogLevel).then(lines => {
-            setLogs(lines);
-            scrollRef.current.scrollIntoView({ behavior: 'smooth' });
-            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-        });
     }
 
-    const handleChange = (event) => {
-        setCheckedApps({...checkedApps, [event.target.name] : event.target.checked });
+    function onToggle() {
+        setCheckedState(new Array(MAX_APPS).fill(nextToggle));
+        setNextToggle(!nextToggle);
     }
+
+    const handleOnChange = (position) => {
+        const updatedCheckedState = checkedState.map((item, index) =>
+            index === position ? !item : item
+        );
+        setCheckedState(updatedCheckedState);
+    };
 
     const handleLogLevelChange = (event) => {
         setSelectedLogLevel(parseInt(event.target.value));
@@ -69,17 +83,21 @@ function LogTab(props) {
 
     const checkboxes = [];
     checkboxes.push(
-        <Form.Check key="FLASK" className="ml-3" type="checkbox" defaultChecked={true} name="FLASK"
-                    label="FLASK" onChange={handleChange}/>
+        <Form.Check key="FLASK" className="ml-3" type="checkbox" name="FLASK"
+                    label="FLASK" checked={checkedState[0]} onChange={() => handleOnChange(0)}/>
     )
     for(let i = 0; i < props.apps.length; i++){
         const app = props.apps[i];
-        const is_link = app['link_to'] !== null;
+        const is_link = app.url.includes('https');
+        const stateIdx = i + 1;
+        apps.push(app.id);
         if(!is_link){
             checkboxes.push(
-                <Form.Check key={app.id} className="ml-3" type="checkbox" name={app.id} defaultChecked={true}
-                            label={app.name} onChange={handleChange}/>
+                <Form.Check key={app.id} className="ml-3" type="checkbox" name={app.id}
+                            label={app.name} checked={checkedState[stateIdx]} onChange={() => handleOnChange(stateIdx)}/>
             )
+        } else {
+            links.add(stateIdx);
         }
     }
 
@@ -88,6 +106,7 @@ function LogTab(props) {
             <h3>Logviewer</h3>
             <br />
             <Container>
+                <MyButton text='Toggle' variant='secondary' onClick={() => onToggle()}/>
                 <Row>
                     {checkboxes}
                 </Row>
