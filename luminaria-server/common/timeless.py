@@ -93,6 +93,17 @@ def prev_day(date, num_days=1):
     return past_day
 
 
+def prev_weekday(date):
+    """
+    :param date: Current date
+    :return: Previous weekday.
+    """
+    date = prev_day(date)
+    while is_weekend(date):
+        date = prev_day(date)
+    return date
+
+
 def today():
     """
     :return: Today's date
