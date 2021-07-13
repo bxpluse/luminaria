@@ -9,6 +9,6 @@ peewee==3.13.3
 matplotlib~=3.3.3
 plotly~=4.13.0
 beautifulsoup4~=4.9.3
-yfinance~=0.1.59
+yfinance~=0.1.63
 pandas~=1.2.5
 twilio~=6.61.0

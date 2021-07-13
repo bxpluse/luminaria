@@ -1,3 +1,8 @@
+from common.enums import APP
+from common.job_scheduler import JobScheduler
+from constants import IS_DEV_ENV
+
+
 class Rule:
 
     def __init__(self, id_, name):
@@ -10,9 +15,17 @@ class Rule:
         self.app_id = None
 
     def create_subrule(self, name, func, triggers, args=None):
+        if IS_DEV_ENV:
+            self.mock_fields()
         self.scheduler.create_job(name=name,
                                   app_id=self.app_id,
                                   func=func,
                                   args=args,
                                   triggers=triggers
                                   )
+
+    def mock_fields(self):
+        if not self.scheduler:
+            self.scheduler = JobScheduler()
+        if not self.app_id:
+            self.app_id = APP.TBD

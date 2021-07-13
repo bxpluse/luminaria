@@ -48,19 +48,18 @@ class Job:
             self.run_job(*args)
         except Exception as exception:
             log(self.app_id, 'Encountered error on execute: {0}'.format(str(exception)), level=self.LOG_LEVEL_WARN)
-            if self.on_error == OnError.CANCEL:
-                self.scheduler_job.remove()
-            elif self.on_error == OnError.RESTART:
-                self.scheduler_job.remove()
+            self.scheduler_job.remove()
+            if self.on_error == OnError.RESTART:
                 timer = threading.Timer(self.SECS_BEFORE_RESTART, self.run)
                 timer.start()
             elif self.on_error == OnError.RETRY:
-                self.scheduler_job.remove()
                 self.retry(1, *args)
 
     def retry(self, count, *args):
         if count == self.TIMES_TO_RETRY:
             self.run()
+            log(self.app_id, 'Max retry exceeded for job {0}'.format(str(self.name)), level=self.LOG_LEVEL_WARN)
+            return
         try:
             self.run_job(*args)
             self.run()

@@ -20,6 +20,7 @@ LOGFILE = 'log.txt'
 
 # Variables
 ENV = ENVIRONMENT.DEV if os.name == 'nt' else ENVIRONMENT.PROD
+IS_DEV_ENV = True if ENV == ENVIRONMENT.DEV else False
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_CONFIG = SqliteDatabase(os.path.join(ROOT_DIR, DATABASE_CONFIG_NAME))
 DB_DYNAMIC = SqliteDatabase(os.path.join(ROOT_DIR, DATABASE_DYNAMIC_NAME))
