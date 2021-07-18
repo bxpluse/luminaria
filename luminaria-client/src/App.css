@@ -1,9 +1,5 @@
-.footer {
-  padding-bottom: 10em;
-}
-
 .content {
-  min-height: calc(50vh);
+  min-height: calc(100vh);
 }
 
 .orange {

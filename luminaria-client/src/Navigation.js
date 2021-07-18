@@ -1,25 +1,27 @@
 import React, {useEffect, useState} from 'react';
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
 import Select from 'react-select'
 import Backup from './apps/backup/Backup';
-import Graphy from "./apps/graphy/Graphy";
-import HealthCheck from "./apps/health-check/HealthCheck";
-import IPOStatus from "./apps/ipos/IPOStatus";
-import LogViewer from "./apps/logviewer/LogViewer";
-import News from "./apps/news/News";
-import Notes from "./apps/notes/Notes";
-import Pool from "./apps/pool/Pool";
-import RCStreamer from "./apps/rc-streamer/RCStreamer";
-import Signal from "./apps/signal/Signal";
-import TopTen from "./apps/top-ten/TopTen";
-import Updater from "./apps/updater/Updater";
-import Socket from "./components/Socket";
-import Header from "./pages/Header";
-import Home from "./pages/Home";
-import Request from "./Requests";
+import Graphy from './apps/graphy/Graphy';
+import HealthCheck from './apps/health-check/HealthCheck';
+import IPOStatus from './apps/ipos/IPOStatus';
+import LogViewer from './apps/logviewer/LogViewer';
+import News from './apps/news/News';
+import Notes from './apps/notes/Notes';
+import Pool from './apps/pool/Pool';
+import RCStreamer from './apps/rc-streamer/RCStreamer';
+import Signal from './apps/signal/Signal';
+import TopTen from './apps/top-ten/TopTen';
+import Updater from './apps/updater/Updater';
+import Graph from './common/Graph';
+import Socket from './components/Socket';
+import Header from './pages/Header';
+import Home from './pages/Home';
+import Request from './Requests';
+import AppUtil from './util/AppUtil'
 
 
 function Navigation() {
@@ -42,11 +44,20 @@ function Navigation() {
     return (
         <React.Fragment>
             <Router>
-                <Header/>
+                {
+                    AppUtil.getCurrentApp() !== 'graph' ?
+                        <>
+                            <Header/>
+                            <CustomNavBar apps={apps}/>
+                        </>
+                        : null
+                }
                 <Socket/>
-                <CustomNavBar apps={apps}/>
                 <div className="content py-5 bg-light">
                     <Switch>
+                        <Route path="/graph">
+                            <Graph />
+                        </Route>
                         <Route path="/updater">
                             <Updater />
                         </Route>
@@ -88,7 +99,6 @@ function Navigation() {
                         </Route>
                     </Switch>
                 </div>
-                <footer className="footer bg-light"/>
             </Router>
         </React.Fragment>
     );

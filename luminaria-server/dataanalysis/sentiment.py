@@ -1,20 +1,25 @@
 import numpy as np
-import plotly.graph_objects as go
 import plotly
+import plotly.graph_objects as go
+from peewee import DoesNotExist
 
 from common.timeless import is_weekend
 from constants import DB_STREAM
 from database.stream.comment_frequency_model import CommentFrequencyModel
 
 
-def plot_freq(symbol, show=False):
+def plot_freq(symbol, config=None, show=False):
+    if not config:
+        config = {}
     cursor1 = DB_STREAM.execute_sql('''select date, sum(times_mentioned)
                                 from COMMENT_FREQUENCY 
                                 where symbol=?
                                 GROUP BY date;''',
                                     (symbol,))
-
-    from_date = CommentFrequencyModel.get_first_record_by_symbol(symbol).date
+    try:
+        from_date = CommentFrequencyModel.get_first_record_by_symbol(symbol).date
+    except DoesNotExist:
+        return '<p>Error: Not found</p>'
 
     cursor2 = DB_STREAM.execute_sql('''select date, sum(times_mentioned)
                                 from COMMENT_FREQUENCY 
@@ -22,8 +27,8 @@ def plot_freq(symbol, show=False):
                                 GROUP BY date;''',
                                     (from_date,))
 
-    totals = []         # Total comments on a date
-    x = []              # Date
+    totals = []  # Total comments on a date
+    x = []  # Date
     y_abs_weekday = []  # Absolute number of comments on weekdays
     y_abs_weekend = []  # Absolute number of comments on weekends
 
@@ -69,6 +74,7 @@ def plot_freq(symbol, show=False):
             size=16,
             color="#7f7f7f"
         ),
+        height=config.get('height', 450),
         xaxis=dict(
             domain=[0.15, 0.9]
         ),
