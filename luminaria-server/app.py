@@ -47,6 +47,8 @@ def download_db(app_id, command):
 def execute(app_id, command):
     data = request.get_json()
     res = manager.execute(app_id, command, data)
+    if not res:
+        return {}
     if '<MESSAGE>' in res:
         messenger.toast(res['<MESSAGE>'])
     return res
