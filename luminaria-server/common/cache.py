@@ -41,6 +41,9 @@ class Cache:
     def eject(self, hash_id):
         del self.cache[hash_id]
 
+    def invalidate(self):
+        self.cache = {}
+
 
 class CachedRequest:
 

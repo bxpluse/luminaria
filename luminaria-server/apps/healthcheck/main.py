@@ -2,6 +2,7 @@ import os
 import subprocess
 
 from apps.baseapp import App
+from common.cache import Cache
 from common.enums import APP
 
 
@@ -33,7 +34,8 @@ class HealthCheck(App):
     PLATFORM = None
 
     def __init__(self):
-        super().__init__()
+        cache = Cache(5)
+        super().__init__(cache=cache)
         self.PLATFORM = os.name
 
     def run_health_check(self):
