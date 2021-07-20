@@ -319,13 +319,23 @@ function CreateEntry(props) {
         }
 
         const thirdArr = arr[2].split(',');
-        const time = arr[5].split(' ')[0];
+        const datetime = arr[5].split(' ');
+        const date = datetime[4];
+        const time = datetime[0];
 
         setAction(arr[0] === 'BOT' ? 'BUY' : 'SELL');
         setAmount(arr[1]);
         setSymbol(thirdArr[0]);
         setPrice(arr[3]);
-        setDate(DateUtil.getCurrentDate);
+
+        if (date === undefined) {
+            setDate(DateUtil.getCurrentDate);
+        } else {
+            const dateFormatted = date.substring(0, 4).concat('-')
+                .concat(date.substring(4, 6)).concat('-')
+                .concat(date.substring(6, 8));
+            setDate(dateFormatted);
+        }
         setTime(time);
     }
 
