@@ -17,6 +17,9 @@ class Rule:
     def create_subrule(self, name, func, triggers, args=None):
         if IS_DEV_ENV:
             self.mock_fields()
+        if args is not None:
+            if type(args) != tuple:
+                args = (args, )
         self.scheduler.create_job(name=name,
                                   app_id=self.app_id,
                                   func=func,
