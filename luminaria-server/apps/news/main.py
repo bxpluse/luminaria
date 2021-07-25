@@ -5,11 +5,13 @@ from apps.baseapp import App
 from common.cache import Cache
 from common.enums import APP
 from config import CONFIG_MAP
+from database.config.global_config_model import GlobalConfigModel
 from database.config.local_config_model import LocalConfigModel
 
+USER_AGENT = GlobalConfigModel.retrieve('USER_AGENT')
 BBN_URL = LocalConfigModel.retrieve('BBN_URL')
 
-HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:64.0) Gecko/20100101 Firefox/64.0',
+HEADERS = {'User-Agent': USER_AGENT,
            'Referer': BBN_URL,
            'Origin': BBN_URL,
            'Host': BBN_URL.split('//')[-1]

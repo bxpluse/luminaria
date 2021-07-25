@@ -1,12 +1,14 @@
+import csv
 import os
-import time
 
 import requests
 
 from apps.baseapp import App
 from common.enums import APP
-from common.enums import APPSTATUS
 from constants import EXCHANGES_DIR, STATIC_DIR, ROOT_DIR
+from database.config.global_config_model import GlobalConfigModel
+
+USER_AGENT = GlobalConfigModel.retrieve('USER_AGENT')
 
 
 class ExchangeUpdater(App):
@@ -15,44 +17,48 @@ class ExchangeUpdater(App):
     """
 
     APP_ID = APP.EXCHANGE_UPDATER
-    EXCHANGES = ['NASDAQ', 'NYSE', 'AMEX', 'NYSEARCA']
-    STATUS = {}
+    FILE_NAME = 'ALL.CSV'
+    URL = 'https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=25&offset=0&download=true'
+    HEADERS = {'User-Agent': USER_AGENT,
+               'Referer': 'https://www.nasdaq.com',
+               'Origin': 'https://www.nasdaq.com/',
+               'Host': 'api.nasdaq.com'
+               }
 
     def __init__(self):
         super().__init__()
         self.dir_path = os.path.join(ROOT_DIR, STATIC_DIR, EXCHANGES_DIR)
         os.makedirs(self.dir_path, exist_ok=True)
-        if len(self.STATUS) == 0:
-            for exchange in self.EXCHANGES:
-                self.STATUS[exchange] = APPSTATUS.READY
 
-    def run(self, exchange):
-        super().start()
-        if self.STATUS[exchange] == APPSTATUS.READY:
-            for key, status in self.STATUS.items():
-                if status != APPSTATUS.READY:
-                    time.sleep(2)
-                self.download_file(exchange)
-        super().stop()
+    def download(self):
+        res = requests.get(self.URL, headers=self.HEADERS, timeout=30)
+        json = res.json()
+        data = json['data']
 
-    def download_file(self, exchange):
-        file_path = os.path.join(self.dir_path, exchange)
-        url = 'https://old.nasdaq.com/screening/companies-by-name.aspx?letter=0&exchange={0}&render=download'
-        url = url.format(exchange)
-        headers = {'user-agent': 'app/0.0.1'}
-        r = requests.get(url, headers=headers)
-        with open('{0}.csv'.format(file_path), 'wb') as output:
-            output.write(r.content)
-
-    def get(self, command):
-        if command == 'available-exchanges':
-            return {'exchanges': self.EXCHANGES}
+        fields = ['symbol',
+                  'name',
+                  'lastsale',
+                  'netchange',
+                  'pctchange',
+                  'marketCap',
+                  'country',
+                  'ipoyear',
+                  'volume',
+                  'sector',
+                  'industry',
+                  'url']
+        rows = data['rows']
+        with open(os.path.join(self.dir_path, self.FILE_NAME), 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=fields)
+            writer.writeheader()
+            writer.writerows(rows)
 
     def execute(self, command, **kwargs):
-        if command == 'update-exchange':
-            exchange = kwargs['exchange']
-            # self.run(exchange)
-            # message = str(exchange) + " exchange has finished updating"
-            message = 'Updater has sunset'
+        if command == 'update':
+            message = 'Updated!'
+            try:
+                self.download()
+            except Exception as e:
+                self.log('Error in updating symbols: ' + str(e))
+                message = 'Failed!'
             return {'<MESSAGE>': message}
-        return {}
