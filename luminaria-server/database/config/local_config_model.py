@@ -17,7 +17,17 @@ class LocalConfigModel(ConfigModel):
     @staticmethod
     def retrieve(param):
         res = LocalConfigModel.get(LocalConfigModel.parameter == param)
-        return res.value
+        return type_transform(res.value, res.data_type)
+
+    @staticmethod
+    def retrieve_default(param, default):
+        try:
+            res = LocalConfigModel.get(LocalConfigModel.parameter == param)
+            return type_transform(res.value, res.data_type)
+        except DoesNotExist:
+            return default
+        except OperationalError:
+            return default
 
     @staticmethod
     def retrieve_all():
