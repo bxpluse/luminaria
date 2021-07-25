@@ -5,10 +5,9 @@ import requests
 
 from apps.baseapp import App
 from common.enums import APP
-from constants import EXCHANGES_DIR, STATIC_DIR, ROOT_DIR
-from database.config.global_config_model import GlobalConfigModel
+from constants import CONFIG_MAP, EXCHANGES_DIR, STATIC_DIR, ROOT_DIR
 
-USER_AGENT = GlobalConfigModel.retrieve('USER_AGENT')
+USER_AGENT = CONFIG_MAP['USER_AGENT']
 
 
 class ExchangeUpdater(App):

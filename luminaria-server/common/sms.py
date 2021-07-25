@@ -4,13 +4,13 @@ from threading import Timer
 from twilio.rest import Client
 
 from common.logger import log, LogLevel
-from database.config.global_config_model import GlobalConfigModel
+from constants import CONFIG_MAP
 from database.config.local_config_model import LocalConfigModel
 
-TWILIO_SID = GlobalConfigModel.retrieve('TWILIO_SID')
-TWILIO_TOKEN = GlobalConfigModel.retrieve('TWILIO_TOKEN')
-TWILIO_FROM_NUMBER = GlobalConfigModel.retrieve('TWILIO_FROM_NUMBER')
-TWILIO_TO_NUMBER = GlobalConfigModel.retrieve('TWILIO_TO_NUMBER')
+TWILIO_SID = CONFIG_MAP['TWILIO_SID']
+TWILIO_TOKEN = CONFIG_MAP['TWILIO_TOKEN']
+TWILIO_FROM_NUMBER = CONFIG_MAP['TWILIO_FROM_NUMBER']
+TWILIO_TO_NUMBER = CONFIG_MAP['TWILIO_TO_NUMBER']
 
 
 batch_messages = []

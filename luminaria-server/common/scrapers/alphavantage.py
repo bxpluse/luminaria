@@ -4,9 +4,8 @@ from enum import Enum
 import requests
 
 from common.util import str_to_float, flaot_to_float
-from config import ALPHA_VANTAGE_KEY
+from constants import CONFIG_MAP, DB_CONFIG
 from database.timeseries.daily_adjusted_model import TimeSeriesDailyAdjustedModel
-from constants import DB_CONFIG
 
 
 class ParamOutputSize(Enum):
@@ -28,7 +27,7 @@ def time_series_adjusted_download(symbol, update=False):
     url = 'https://www.alphavantage.co/query?' \
           'function=TIME_SERIES_DAILY_ADJUSTED&' \
           'symbol={0}&outputsize={1}&datatype={2}&apikey={3}' \
-        .format(symbol, outputsize, datatype, ALPHA_VANTAGE_KEY)
+        .format(symbol, outputsize, datatype, CONFIG_MAP['ALPHA_VANTAGE_KEY'])
 
     r = requests.get(url)
 

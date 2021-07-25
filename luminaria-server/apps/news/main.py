@@ -4,12 +4,10 @@ from bs4 import BeautifulSoup
 from apps.baseapp import App
 from common.cache import Cache
 from common.enums import APP
-from config import CONFIG_MAP
-from database.config.global_config_model import GlobalConfigModel
-from database.config.local_config_model import LocalConfigModel
+from constants import CONFIG_MAP
 
-USER_AGENT = GlobalConfigModel.retrieve('USER_AGENT')
-BBN_URL = LocalConfigModel.retrieve('BBN_URL')
+USER_AGENT = CONFIG_MAP['USER_AGENT']
+BBN_URL = CONFIG_MAP['BBN_URL']
 
 HEADERS = {'User-Agent': USER_AGENT,
            'Referer': BBN_URL,

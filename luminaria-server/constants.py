@@ -1,8 +1,28 @@
 import os
+import sqlite3
 
 from peewee import SqliteDatabase
 
 from common.enums import ENVIRONMENT
+
+
+def bootstrap_config():
+    def consume_rows():
+        rows = cur.fetchall()
+        for row in rows:
+            res[row['parameter']] = row['value']
+    res = {}
+    conn = sqlite3.connect(os.path.join(ROOT_DIR, DATABASE_CONFIG_NAME))
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute('''SELECT * FROM GLOBAL_CONFIG''')
+    consume_rows()
+    cur.execute('''SELECT * FROM LOCAL_CONFIG''')
+    consume_rows()
+    cur.close()
+    conn.close()
+    return res
+
 
 # Directories
 STATIC_DIR = 'static'
@@ -26,3 +46,6 @@ DB_CONFIG = SqliteDatabase(os.path.join(ROOT_DIR, DATABASE_CONFIG_NAME))
 DB_DYNAMIC = SqliteDatabase(os.path.join(ROOT_DIR, DATABASE_DYNAMIC_NAME))
 DB_STATIC = SqliteDatabase(os.path.join(ROOT_DIR, DATABASE_STATIC_NAME))
 DB_STREAM = SqliteDatabase(os.path.join(ROOT_DIR, DATABASE_STREAM_NAME))
+
+# Dictionary of all configs; must restart app to refresh changes if using this constant
+CONFIG_MAP = bootstrap_config()

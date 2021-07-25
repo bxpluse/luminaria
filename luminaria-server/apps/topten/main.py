@@ -5,7 +5,7 @@ from apps.baseapp import App
 from common.cache import Cache
 from common.enums import APP
 from common.timeless import prev_day, is_weekend, day_of_week
-from config import CONFIG_MAP
+from constants import CONFIG_MAP
 from database.stream.comment_frequency_model import CommentFrequencyModel
 
 

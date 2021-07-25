@@ -6,14 +6,10 @@ import praw
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from apps.baseapp import App
-from common.enums import APP
-from common.enums import APPSTATUS
-from common.enums import APPTYPE
+from common.enums import APP, APPSTATUS, APPTYPE
 from common.symbols import load_symbols, load_blacklist, load_whitelist
 from common.util import parse_word
-from config import CLIENT_ID, CLIENT_SECRET
-from config import SCHEDULER_TIME_ZONE
-from constants import STATIC_DIR, ROOT_DIR
+from constants import CONFIG_MAP, STATIC_DIR, ROOT_DIR
 from database.stream.comment_frequency_model import CommentFrequencyModel
 
 
@@ -21,20 +17,20 @@ class RCListener(App):
     APP_ID = APP.RC_STREAMER
     DUMP_FILE = 'dump.json'
 
-    def __init__(self, subs, interval):
+    def __init__(self, interval=15):
 
         super().__init__(app_type=APPTYPE.STREAMING)
         self.SYMBOLS = set()
         self.INTERVAL = interval
         self.COMMENT_FREQUENCY_MODEL = CommentFrequencyModel()
-        self.SUBREDDITS = subs
-        self.REDDIT = praw.Reddit(client_id=CLIENT_ID,
-                                  client_secret=CLIENT_SECRET,
+        self.SUBREDDITS = CONFIG_MAP['SUBREDDITS_TO_MONITOR']
+        self.REDDIT = praw.Reddit(client_id=CONFIG_MAP['CLIENT_ID'],
+                                  client_secret=CONFIG_MAP['CLIENT_SECRET'],
                                   user_agent="Test Script")
         self.data = {}  # key=symbol, value=times_mentioned
         self.restore_from_file()
         self.load_preloader()
-        self.scheduler = BackgroundScheduler({'apscheduler.timezone': SCHEDULER_TIME_ZONE})
+        self.scheduler = BackgroundScheduler({'apscheduler.timezone': CONFIG_MAP['SCHEDULER_TIME_ZONE']})
         self.scheduler.start()
 
     def run(self):

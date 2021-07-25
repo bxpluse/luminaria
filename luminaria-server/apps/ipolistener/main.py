@@ -2,10 +2,8 @@ import requests
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from apps.baseapp import App
-from common.enums import APP
-from common.enums import APPTYPE
-from config import SCHEDULER_TIME_ZONE
-from database.config.local_config_model import LocalConfigModel
+from common.enums import APP, APPTYPE
+from constants import CONFIG_MAP
 from database.dynamic.ipo_strings_model import IPOStringModel
 
 
@@ -15,12 +13,12 @@ class IPOListener(App):
 
     def __init__(self):
         super().__init__(app_type=APPTYPE.STREAMING)
-        self.scheduler = BackgroundScheduler({'apscheduler.timezone': SCHEDULER_TIME_ZONE})
+        self.scheduler = BackgroundScheduler({'apscheduler.timezone': CONFIG_MAP['SCHEDULER_TIME_ZONE']})
         self.scheduler.start()
-        self.MAIN_SITE = LocalConfigModel.retrieve("IPO_CALENDAR_MARKETWATCH")
+        self.MAIN_SITE = CONFIG_MAP['IPO_CALENDAR_MARKETWATCH']
         self.SITES = [self.MAIN_SITE,
-                      LocalConfigModel.retrieve("IPO_CALENDAR_YAHOO"),
-                      LocalConfigModel.retrieve("IPO_CALENDAR_NASDAQ")]
+                      CONFIG_MAP['IPO_CALENDAR_YAHOO'],
+                      CONFIG_MAP['IPO_CALENDAR_NASDAQ']]
 
     def run(self):
         super().start()

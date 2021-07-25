@@ -12,13 +12,12 @@ from apps.signal.main import Signal
 from apps.topten.main import TopTen
 from apps.updater.main import ExchangeUpdater
 from common.enums import APP
-from database.config.local_config_model import LocalConfigModel
 
 APPS = {
     APP.EXCHANGE_UPDATER: ExchangeUpdater(),
     APP.LOG_VIEWER: LogViewer(),
     APP.DB_BACKUP: BackupDatabase(),
-    APP.RC_STREAMER: RCListener(subs=LocalConfigModel.retrieve('SUBREDDITS_TO_MONITOR'), interval=15),
+    APP.RC_STREAMER: RCListener(),
     APP.IPO_LISTENER: IPOListener(),
     APP.TOP_TEN: TopTen(),
     APP.NEWS: News(),
