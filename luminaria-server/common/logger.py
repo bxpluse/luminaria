@@ -3,7 +3,7 @@ from datetime import datetime
 from enum import Enum
 
 from constants import LOGFILE, ROOT_DIR
-from database.dynamic.log_model import LogModel
+from database.stream.log_model import LogModel
 
 
 class LogLevel(Enum):

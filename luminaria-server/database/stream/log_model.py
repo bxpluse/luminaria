@@ -2,10 +2,10 @@ from datetime import datetime
 
 from peewee import *
 
-from database.base_model import DynamicModel
+from database.base_model import StreamModel
 
 
-class LogModel(DynamicModel):
+class LogModel(StreamModel):
     appname = CharField()
     message = CharField()
     level = IntegerField()
@@ -37,3 +37,7 @@ class LogModel(DynamicModel):
                 .order_by(LogModel.datetime_created.desc()) \
                 .limit(num_lines)
         return query
+
+
+if __name__ == "__main__":
+    LogModel.regenerate()

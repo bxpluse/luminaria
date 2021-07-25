@@ -3,7 +3,7 @@ import os
 from apps.baseapp import App
 from common.enums import APP
 from constants import LOGFILE, ROOT_DIR
-from database.dynamic.log_model import LogModel
+from database.stream.log_model import LogModel
 from database.stream.executed_job_model import ExecutedJobModel
 
 
