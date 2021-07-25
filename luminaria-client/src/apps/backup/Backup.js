@@ -1,9 +1,11 @@
+import {saveAs} from "file-saver";
 import React from "react";
+import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container';
 import Jumbotron from 'react-bootstrap/Jumbotron'
-import Button from 'react-bootstrap/Button'
-import {saveAs} from "file-saver";
 import Request from "../../Requests";
+import StringUtil from "../../util/StringUtil";
+
 
 function Backup() {
 
@@ -11,40 +13,37 @@ function Backup() {
 
     return (
         <Container>
-            <Jumbotron>
-                <h1>Download DB</h1>
-                <p>
-                    Download a copy of the current database.
-                </p>
-                <p>
-                    <Button variant="primary" onClick={() => {download()}}>Download</Button>
-                </p>
-            </Jumbotron>
+            <DownloadJumbo dbName='config'/>
+            <DownloadJumbo dbName='dynamic'/>
+        </Container>
+    );
+}
 
+
+function DownloadJumbo(props) {
+
+    return (
+        <Container>
             <Jumbotron>
-                <h1>Copy DB (Disabled)</h1>
+                <h1>Download {StringUtil.capitalize(props.dbName)} DB</h1>
                 <p>
-                    Copy a copy of the current database to the backup folder.
+                    Download a copy of the {props.dbName} database.
                 </p>
                 <p>
-                    <Button variant="primary" disabled="true" onClick={() => {copy()}}>Copy</Button>
+                    <Button variant="primary" onClick={() => {download(props.dbName)}}>Download</Button>
                 </p>
             </Jumbotron>
         </Container>
     );
 }
 
-function download(){
-    Request.GET_JSON('/get/db-backup/file-name').then(data => {
+function download(dbName){
+    Request.POST_JSON('/exec/db-backup/file-name', {dbName: dbName}).then(data => {
         const filename = data['filename'];
-        Request.GET_FILE('/blob/db-backup/download').then(blob => {
+        Request.GET_FILE('/blob/db-backup/download',{dbName: dbName}).then(blob => {
             saveAs(blob, filename);
         });
     });
-}
-
-function copy() {
-
 }
 
 

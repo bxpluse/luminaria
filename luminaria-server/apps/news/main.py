@@ -60,6 +60,5 @@ class News(App):
         return res
 
     def execute(self, command, **kwargs):
-        if command == 'get_news':
-            self.log('Cache miss')
+        if command == 'fetch-news':
             return {'articles': self.bbn()}

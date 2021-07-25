@@ -63,11 +63,14 @@ class App:
         elif ENV == ENVIRONMENT.DEV:
             print('[{0}][{1}]'.format(self.APP_ID.value, level), message)
 
-    def get(self, command):
-        return {}
-
-    def blob(self, command):
+    def blob(self, command, data):
+        """
+        Returns an absolute path to a file.
+        """
         return ''
 
     def execute(self, command, **kwargs):
+        """
+        Interface to execute a command.
+        """
         return {}

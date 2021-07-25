@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
+import Button from 'react-bootstrap/Button'
 import Container from "react-bootstrap/Container";
 import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
-import Request from "../../Requests";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import Table from 'react-bootstrap/Table'
 import {STATUS} from "../../Enums";
+import Request from "../../Requests";
 
 function IPOStatus() {
 
@@ -161,7 +161,7 @@ function IPOStatus() {
     );
 
     function refresh(){
-        Request.POST_JSON('/exec/ipo-listener/get', {}).then(data => {
+        Request.POST_JSON('/exec/ipo-listener/data', {}).then(data => {
             setStrings(data['res']);
             setSites(data['sites']);
         });

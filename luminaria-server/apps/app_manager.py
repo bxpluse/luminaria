@@ -38,17 +38,12 @@ class AppManager:
         additional_data = app.get_data()
         return {**base_data, **additional_data}
 
-    def get(self, app_id, command):
+    def blob(self, app_id, command, data):
         app = self.apps[APP(app_id)]
-        res = app.get(command)
-        return res
-
-    def blob(self, app_id, command):
-        app = self.apps[APP(app_id)]
-        file_path = app.blob(command)
+        file_path = app.blob(command, **data)
         return file_path
 
-    def execute(self, app_id, command, data=None):
+    def execute(self, app_id, command, data):
         app = self.apps[APP(app_id)]
 
         # Pre-defined routines
@@ -58,7 +53,7 @@ class AppManager:
         elif command == 'debug':
             app.debugging = data['isDebug']
             return {}
-        elif command == 'get':
+        elif command == 'data':
             return app.get_data()
 
         # Arbitrary commands

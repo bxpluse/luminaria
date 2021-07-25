@@ -7,7 +7,7 @@ function News() {
     const [articles, setArticles] = useState([]);
 
     useEffect(() => {
-        Request.POST_JSON('/exec/news/get_news', {}).then(data => {
+        Request.POST_JSON('/exec/news/fetch-news', {}).then(data => {
             setArticles(data['articles']);
         });
     }, []);

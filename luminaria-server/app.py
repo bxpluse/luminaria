@@ -30,22 +30,24 @@ def get_app_status(app_id):
     return manager.get_app_status(app_id)
 
 
+@app.route('/blob/<string:app_id>/<string:command>', methods=['POST'])
+def blob(app_id, command):
+    data = request.get_json()
+    return send_file(manager.blob(app_id, command, data), as_attachment=True)
+
+
 @app.route('/get/<string:app_id>/<string:command>', methods=['GET'])
 def get(app_id, command):
-    res = manager.get(app_id, command)
-    if '<MESSAGE>' in res:
-        messenger.toast(res['<MESSAGE>'])
-    return res
-
-
-@app.route('/blob/<string:app_id>/<string:command>', methods=['POST'])
-def download_db(app_id, command):
-    return send_file(manager.blob(app_id, command), as_attachment=True)
+    return execute(app_id, command)
 
 
 @app.route('/exec/<string:app_id>/<string:command>', methods=['POST'])
-def execute(app_id, command):
+def post(app_id, command):
     data = request.get_json()
+    return execute(app_id, command, data)
+
+
+def execute(app_id, command, data=None):
     res = manager.execute(app_id, command, data)
     if not res:
         return {}
