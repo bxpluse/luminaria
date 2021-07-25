@@ -17,7 +17,7 @@ class GlobalConfigModel(ConfigModel):
     @staticmethod
     def retrieve(param):
         res = GlobalConfigModel.get(GlobalConfigModel.parameter == param)
-        return res.value
+        return type_transform(res.value, res.data_type)
 
     @staticmethod
     def retrieve_all():

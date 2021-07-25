@@ -20,4 +20,8 @@ def type_transform(val, data_type):
         val = int(val)
     elif data_type == 'float':
         val = float(val)
+    elif data_type == 'bool':
+        val = bool(val)
+    elif data_type == 'list':
+        val = eval(val)
     return val
