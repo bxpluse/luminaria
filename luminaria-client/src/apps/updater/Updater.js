@@ -1,37 +1,23 @@
-import React, {useEffect, useState} from 'react';
-import Container from "react-bootstrap/Container";
-import Form from 'react-bootstrap/Form'
+import React, {useState} from 'react';
 import Button from 'react-bootstrap/Button'
 import CardColumns from "react-bootstrap/CardColumns";
-import Spinner from 'react-bootstrap/Spinner'
-import '../../pages/Home.css';
-import {STATUS} from '../../Enums'
-import Request from "../../Requests";
+import Container from "react-bootstrap/Container";
+import Form from 'react-bootstrap/Form'
 import Jumbotron from "react-bootstrap/Jumbotron";
+import Spinner from 'react-bootstrap/Spinner'
+import {STATUS} from '../../Enums'
+import '../../pages/Home.css';
+import Request from "../../Requests";
+
 
 function Updater() {
-
-    const [exchanges, setExchanges] = useState([]);
-
-    useEffect(() => {
-        Request.GET_JSON('/get/updater/available-exchanges').then(data => {
-            setExchanges(data['exchanges']);
-        });
-    }, []);
-
-    const exchangesComponents = [];
-    for (const exchange of exchanges){
-        exchangesComponents.push(
-            <UpdateCard key={exchange} exchange={exchange}/>);
-    }
-
     return (
         <Container>
             <Jumbotron>
                 <h1>Exchange Updater</h1>
                 <br />
                 <CardColumns>
-                    {exchangesComponents}
+                    <UpdateCard exchange='All'/>
                 </CardColumns>
             </Jumbotron>
         </Container>
@@ -45,7 +31,7 @@ function UpdateCard(props) {
 
     function updateExchange(exchange) {
         setStatus(STATUS.INPROGRESS);
-        Request.POST_JSON('/exec/updater/update-exchange', {exchange: exchange}).then(() => {
+        Request.POST_JSON('/exec/updater/update', {exchange: exchange}).then(() => {
             setStatus(STATUS.READY);
         });
     }
@@ -69,7 +55,6 @@ function UpdateCard(props) {
             {button}
         </Form>
     );
-
 }
 
 
