@@ -73,6 +73,7 @@ def load_whitelist():
 def purge_special_chars_from_set(s):
     special_set = set()
     special_set.add('Symbol')
+    special_set.add('symbol')
     special_set.add('')
     special_set.add(' ')
     special_set.add('  ')
