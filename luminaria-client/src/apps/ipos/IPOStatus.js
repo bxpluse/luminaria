@@ -85,7 +85,7 @@ function IPOStatus() {
     sites.map((site) => {
         const match = /[.](.*?)[.]/g.exec(site);
         links.push(
-            <div>
+            <div key={site}>
                 <a href={site} target='_blank' rel='noopener noreferrer'>Link to {match[1]} calendar</a>
                 <br/>
             </div>
@@ -95,12 +95,12 @@ function IPOStatus() {
 
     const handleSubmit = (evt) => {
         const string = company.trim();
-        if(string !== ""){
+        if(string !== ''){
             Request.POST_JSON('/exec/ipo-listener/add', {string: string}).then(() => {
                 refresh();
             });
         }
-        setCompany("");
+        setCompany('');
         evt.preventDefault();
     }
 
@@ -116,19 +116,19 @@ function IPOStatus() {
 
                 <Form inline onSubmit={handleSubmit}>
                     <Form.Control
-                        className="mb-2 mr-sm-2"
-                        placeholder="Company Name"
+                        className='mb-2 mr-sm-2'
+                        placeholder='Company Name'
                         value={company}
                         onChange={e => setCompany(e.target.value)}
                     />
-                    <Button type="submit" className="mb-2" variant="info">Add String</Button>
+                    <Button type='submit' className='mb-2' variant='info'>Add String</Button>
                 </Form>
             </Jumbotron>
 
             <Table striped bordered hover>
                 <thead>
                     <tr>
-                        <th colSpan="4">IPO Date Set</th>
+                        <th colSpan='4'>IPO Date Set</th>
                     </tr>
                     <tr>
                         <th>#</th>
@@ -145,7 +145,7 @@ function IPOStatus() {
             <Table striped bordered hover>
                 <thead>
                 <tr>
-                    <th colSpan="3">Waiting for IPO Date</th>
+                    <th colSpan='3'>Waiting for IPO Date</th>
                 </tr>
                 <tr>
                     <th>#</th>

@@ -13,7 +13,7 @@ class TopTen(App):
     APP_ID = APP.TOP_TEN
 
     def __init__(self):
-        cache = Cache(CONFIG_MAP['NEWS_CACHE_DURATION_SECS'])
+        cache = Cache(CONFIG_MAP['TOPTEN_CACHE_DURATION_SECS'])
         super().__init__(cache=cache)
 
     @staticmethod

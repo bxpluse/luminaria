@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import Container from 'react-bootstrap/Container';
 import Request from "../../Requests";
 
+
 function News() {
 
     const [articles, setArticles] = useState([]);
@@ -16,8 +17,10 @@ function News() {
 
     for (const article of articles){
         links.push(
-            <span><a href={article.url}>{article.title}</a>
-            <br/></span>
+            <span key={article.url}>
+                <a href={article.url}>{article.title}</a>
+                <br/>
+            </span>
         );
     }
 

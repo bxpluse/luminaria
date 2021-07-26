@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
+import {BrowserRouter as Router, Link, Route, Switch, useLocation} from 'react-router-dom';
 import Select from 'react-select'
 import Backup from './apps/backup/Backup';
 import Graphy from './apps/graphy/Graphy';
@@ -23,84 +23,92 @@ import Home from './pages/Home';
 import Request from './Requests';
 import AppUtil from './util/AppUtil'
 
+function Paths() {
 
-function Navigation() {
-
-    const [apps, setApps] = useState({});
+    const [apps, setApps] = useState([]);
+    const location = useLocation();
 
     useEffect(() => {
-        Request.POST_JSON('/get-all-apps', {}).then(data => {
-            const applications = [];
-            for (const [, app] of Object.entries(data)) {
-                applications.push(app);
-            }
-            applications.sort(function(a, b){
-                return a.order - b.order;
+        if (location.pathname === '/') {
+            Request.POST_JSON('/get-all-apps', {}).then(data => {
+                const applications = [];
+                for (const [, app] of Object.entries(data)) {
+                    applications.push(app);
+                }
+                applications.sort(function(a, b){
+                    return a.order - b.order;
+                });
+                setApps(applications);
             });
-            setApps(applications);
-        });
-    }, []);
+        }
+    }, [location]);
 
     return (
-        <React.Fragment>
-            <Router>
-                {
-                    AppUtil.getCurrentApp() !== 'graph' ?
-                        <>
-                            <Header/>
-                            <CustomNavBar apps={apps}/>
-                        </>
-                        : null
-                }
-                <Socket/>
-                <div className="content py-5 bg-light">
-                    <Switch>
-                        <Route path="/graph">
-                            <Graph />
-                        </Route>
-                        <Route path="/updater">
-                            <Updater />
-                        </Route>
-                        <Route path="/logs">
-                            <LogViewer apps={apps} />
-                        </Route>
-                        <Route path="/rc-streamer">
-                            <RCStreamer />
-                        </Route>
-                        <Route path="/backup">
-                            <Backup />
-                        </Route>
-                        <Route path="/ipos">
-                            <IPOStatus />
-                        </Route>
-                        <Route path="/top-ten">
-                            <TopTen />
-                        </Route>
-                        <Route path="/news">
-                            <News />
-                        </Route>
-                        <Route path="/notes">
-                            <Notes />
-                        </Route>
-                        <Route path="/pool">
-                            <Pool />
-                        </Route>
-                        <Route path="/health-check">
-                            <HealthCheck />
-                        </Route>
-                        <Route path="/signal">
-                            <Signal />
-                        </Route>
-                        <Route path="/graphy">
-                            <Graphy />
-                        </Route>
-                        <Route path="/">
-                            <Home apps={apps} />
-                        </Route>
-                    </Switch>
-                </div>
-            </Router>
-        </React.Fragment>
+        <>
+            {
+                AppUtil.getCurrentApp() !== 'graph' ?
+                    <>
+                        <Header/>
+                        <CustomNavBar apps={apps}/>
+                    </>
+                    : null
+            }
+            <Socket/>
+            <div className="content py-5 bg-light">
+                <Switch>
+                    <Route path="/graph">
+                        <Graph />
+                    </Route>
+                    <Route path="/updater">
+                        <Updater />
+                    </Route>
+                    <Route path="/logs">
+                        <LogViewer apps={apps} />
+                    </Route>
+                    <Route path="/rc-streamer">
+                        <RCStreamer />
+                    </Route>
+                    <Route path="/backup">
+                        <Backup />
+                    </Route>
+                    <Route path="/ipos">
+                        <IPOStatus />
+                    </Route>
+                    <Route path="/top-ten">
+                        <TopTen />
+                    </Route>
+                    <Route path="/news">
+                        <News />
+                    </Route>
+                    <Route path="/notes">
+                        <Notes />
+                    </Route>
+                    <Route path="/pool">
+                        <Pool />
+                    </Route>
+                    <Route path="/health-check">
+                        <HealthCheck />
+                    </Route>
+                    <Route path="/signal">
+                        <Signal />
+                    </Route>
+                    <Route path="/graphy">
+                        <Graphy />
+                    </Route>
+                    <Route path="/">
+                        <Home apps={apps} />
+                    </Route>
+                </Switch>
+            </div>
+        </>
+    );
+}
+
+function Navigation() {
+    return (
+        <Router>
+            <Paths/>
+        </Router>
     );
 }
 

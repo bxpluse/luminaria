@@ -4,13 +4,14 @@ import sqlite3
 from peewee import SqliteDatabase
 
 from common.enums import ENVIRONMENT
+from common.util import type_transform
 
 
 def bootstrap_config():
     def consume_rows():
         rows = cur.fetchall()
         for row in rows:
-            res[row['parameter']] = row['value']
+            res[row['parameter']] = type_transform(row['value'], row['data_type'])
     res = {}
     conn = sqlite3.connect(os.path.join(ROOT_DIR, DATABASE_CONFIG_NAME))
     conn.row_factory = sqlite3.Row

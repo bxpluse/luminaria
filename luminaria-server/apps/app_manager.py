@@ -13,15 +13,14 @@ class AppManager:
             raise Exception('Only one instance of AppManager allowed')
 
         self.IS_RUNNING = True
-        self.apps_model = AppsModel()
+        self.online_apps = AppsModel.get_all_online_apps()
         # Import all running apps
         from apps.online_apps import APPS
         self.apps = APPS
 
     def get_all_apps(self):
-        res = self.apps_model.get_all_online_apps()
-        for key, value in res.items():
-            app_entry = res[key]
+        for key, value in self.online_apps.items():
+            app_entry = value
             app_entry['status'] = APPSTATUS.UNKNOWN.value
             try:
                 app = APP(key)
@@ -30,7 +29,7 @@ class AppManager:
             except ValueError:
                 if 'https' in app_entry['url']:
                     app_entry['status'] = APPSTATUS.LINK.value
-        return res
+        return self.online_apps
 
     def get_app_status(self, app_id):
         app = self.apps[APP(app_id)]
