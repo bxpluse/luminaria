@@ -1,0 +1,11 @@
+.trigger-button {
+    text-decoration: none;
+    color: #000000;
+    size: 100px;
+}
+
+.trigger-button:focus, .trigger-button:hover {
+    text-decoration: none;
+    outline: none;
+    box-shadow: none;
+}

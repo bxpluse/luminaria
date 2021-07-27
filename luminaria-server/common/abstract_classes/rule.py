@@ -9,8 +9,9 @@ class Rule:
         self.id = id_
         self.name = name
         self.description = ''
-        self.rule_names = []
+        self.subrule_names = []
         self.is_running = False
+        self.suppressed = False
         self.scheduler = None
         self.app_id = None
 

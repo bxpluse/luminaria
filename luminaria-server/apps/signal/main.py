@@ -26,14 +26,14 @@ class Signal(App):
         self.start()
 
     def execute(self, command, **kwargs):
-        if command == 'getAllRules':
+        if command == 'fetch-all-rules':
             return {'rules': [parse_rule(rule) for rule in self.rules]}
-        elif command == 'updateRuleRunning':
+        elif command == 'update-rule-suppressed':
             rule_id = int(kwargs.get('id'))
-            is_running = bool(kwargs.get('isRunning'))
+            suppressed = bool(kwargs.get('suppressed'))
             for rule in self.rules:
                 if rule.id == rule_id:
-                    rule.is_running = is_running
+                    rule.suppressed = suppressed
                     break
 
 
@@ -41,8 +41,9 @@ def parse_rule(rule):
     d = {'id': str(rule.id),
          'name': rule.name,
          'description': rule.description,
-         'rule_names': str(rule.rule_names),
+         'subrule_names': rule.subrule_names,
          'is_running': rule.is_running,
+         'suppressed': rule.suppressed,
          'jobs': rule.scheduler.get_str_jobs()
          }
     return d

@@ -6,11 +6,12 @@ import Form from 'react-bootstrap/Form'
 import Jumbotron from "react-bootstrap/Jumbotron";
 import Row from 'react-bootstrap/Row'
 import Tab from 'react-bootstrap/Tab'
-import Table from 'react-bootstrap/Table'
 import Tabs from 'react-bootstrap/Tabs'
 import MyButton from "../../components/MyButton";
 import Request from "../../Requests";
+import JobUtil from "./JobUtil";
 import './LogViewer.css'
+
 
 function LogViewer(props) {
     return (
@@ -149,46 +150,13 @@ function JobTab() {
         })
     }
 
-    const rows = [];
-
-    for (let i = 0; i < executedJobs.length; i++) {
-        const executedJob = executedJobs[i];
-        rows.push(
-            <tr>
-                <td>{executedJob['name']}</td>
-                <td>{executedJob['app_id']}</td>
-                <td>{executedJob['func']}</td>
-                <td>{executedJob['triggers']}</td>
-                <td>{executedJob['response']}</td>
-                <td>{executedJob['datetime_created']}</td>
-            </tr>
-        )
-    }
-
     return (
         <Jumbotron>
             <h3>Jobs</h3>
             <br />
             <Button onClick={onClick} variant="info">Tail 100</Button>
             <br/> <br/> <br/>
-
-            {executedJobs.length !== 0 ?
-                <Table striped bordered hover>
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Id</th>
-                        <th>Func</th>
-                        <th>Triggers</th>
-                        <th>Response</th>
-                        <th>Datetime</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {rows}
-                    </tbody>
-                </Table> : <></>
-            }
+            {JobUtil.convertJobRowsToTable(executedJobs)}
         </Jumbotron>
     );
 }
@@ -205,7 +173,7 @@ async function getLogs(appsToSearch, selectedLogLevel) {
 }
 
 async function getJobs() {
-    return await Request.POST_JSON('/exec/log-viewer/tailJob', {}).then(data => {
+    return await Request.POST_JSON('/exec/log-viewer/tail-jobs', {}).then(data => {
         return data.lines;
     });
 }

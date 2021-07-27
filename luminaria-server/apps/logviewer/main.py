@@ -36,8 +36,13 @@ class LogViewer(App):
         return {'lines': line}
 
     @staticmethod
-    def tail_jobs(num_lines=100):
+    def tail_jobs(num_lines):
         lines = ExecutedJobModel.tail(num_lines)
+        return lines
+
+    @staticmethod
+    def tail_jobs_by_name(name, num_lines):
+        lines = ExecutedJobModel.tail_by_name(name, num_lines)
         return lines
 
     def execute(self, command, **kwargs):
@@ -46,5 +51,8 @@ class LogViewer(App):
             apps = kwargs.get('apps', ())
             levels = kwargs.get('levels', (1, 2, 3, 4, 5))
             return self.tail(num_lines, apps, levels)
-        elif command == 'tailJob':
-            return {'lines': self.tail_jobs()}
+        elif command == 'tail-jobs':
+            name = kwargs.get('name', None)
+            if name is None:
+                return {'lines': self.tail_jobs(60)}
+            return {'lines': self.tail_jobs_by_name(name, 7)}

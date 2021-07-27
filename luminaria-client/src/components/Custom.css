@@ -10,3 +10,11 @@ html {
     outline: none !important;
     box-shadow: none;
 }
+
+.info-symbol {
+    color: #de02c3;
+}
+
+.modal-75w {
+    max-width: 75% !important;
+}
