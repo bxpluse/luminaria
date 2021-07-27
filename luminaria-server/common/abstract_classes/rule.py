@@ -12,7 +12,7 @@ class Rule:
         self.subrule_names = []
         self.is_running = False
         self.suppressed = False
-        self.scheduler = None
+        self.scheduler = JobScheduler()
         self.app_id = None
 
     def create_subrule(self, name, func, triggers, args=None):
@@ -29,7 +29,5 @@ class Rule:
                                   )
 
     def mock_fields(self):
-        if not self.scheduler:
-            self.scheduler = JobScheduler()
         if not self.app_id:
             self.app_id = APP.TBD

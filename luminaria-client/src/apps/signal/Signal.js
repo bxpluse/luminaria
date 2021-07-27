@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {OverlayTrigger, Tooltip} from "react-bootstrap";
-import Button from "react-bootstrap/Button";
+import {OverlayTrigger, Tooltip} from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
+import Masonry from "react-masonry-css";
 import Switch from 'react-switch';
-import InfoSymbol from "../../components/InfoSymbol";
+import InfoSymbol from '../../components/InfoSymbol';
 import MyModal from '../../components/MyModal';
 import Request from "../../Requests";
 import JobUtil from "../logviewer/JobUtil";
@@ -31,7 +32,12 @@ function Signal() {
 
     return (
         <Container>
-            {ruleCards}
+            <Masonry
+                breakpointCols={3}
+                className='masonry-grid'
+                columnClassName='masonry-grid_column masonry-grid-extra-margin'>
+                {ruleCards}
+            </Masonry>
         </Container>
     );
 }
