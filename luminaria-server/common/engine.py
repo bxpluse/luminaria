@@ -4,8 +4,7 @@ from constants import ROOT_DIR, STATIC_DIR, ENV, ENVIRONMENT
 
 engine = None
 started = False
-inactive_rules = {} if ENV != ENVIRONMENT.PROD else {'sample_rule'}
-
+inactive_rules = {} if ENV != ENVIRONMENT.PROD else set(['sample_rule'] + ['sample_rule' + str(x) for x in range(9)])
 RULES_IMPORT_PATH_DEV = 'static.rules.{0}'
 RULES_IMPORT_PATH_PROD = 'static.rules.prod.{0}'
 DECLARATIONS = ['rule', 'run']
