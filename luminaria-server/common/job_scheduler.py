@@ -20,7 +20,7 @@ class Job:
     SECS_BEFORE_RESTART = 30
     LOG_LEVEL_WARN = LogLevel.WARN
 
-    def __init__(self, name, app_id, func, triggers, on_error, scheduler, args=None):
+    def __init__(self, name, app_id, func, triggers, scheduler_num, on_error, scheduler, args=None):
         self.name = name
         self.app_id = app_id.value
         self.func = func
@@ -29,6 +29,7 @@ class Job:
         self.scheduler = scheduler
         self.scheduler_job = None
         self.triggers = triggers
+        self.scheduler_num = scheduler_num
         self.hour = triggers.get('hour', None)
         self.minute = triggers.get('minute', None)
         self.second = triggers.get('second', None)
@@ -39,9 +40,10 @@ class Job:
                                                     hour=self.hour, second=self.second, minute=self.minute,
                                                     day_of_week=self.day_of_week)
         all_jobs = self.scheduler.get_jobs()
-        log(self.app_id, 'Running scheduler with {0} job(s): {1}\n'
-                         'function: {2}   args: {3}  on_error: {4}  triggers: {5}'
-            .format(len(all_jobs), all_jobs, self.func.__name__, self.args, self.on_error, self.triggers))
+        log(self.app_id, 'Running scheduler[#{0}] with {1} job(s): {2}\n'
+                         'function: {3}   args: {4}  on_error: {5}  triggers: {6}'
+            .format(self.scheduler_num, len(all_jobs), all_jobs, self.func.__name__,
+                    self.args, self.on_error, self.triggers))
 
     def execute_job(self, *args):
         try:
@@ -93,14 +95,19 @@ class Job:
 
 class JobScheduler:
 
+    SCHEDULER_NUM = 1
+
     def __init__(self):
         self.scheduler = BackgroundScheduler({'apscheduler.timezone': CONFIG_MAP['SCHEDULER_TIME_ZONE']})
+        self.scheduler_num = JobScheduler.SCHEDULER_NUM
+        JobScheduler.SCHEDULER_NUM += 1
         self.scheduler.start()
         self.jobs = {}
 
     def create_job(self, name, app_id, func, triggers, args=None, on_error=OnError.RETRY):
         if name not in self.jobs:
-            job = Job(name, app_id, func, triggers, args=args, on_error=on_error, scheduler=self.scheduler)
+            job = Job(name, app_id, func, triggers, self.scheduler_num,
+                      args=args, on_error=on_error, scheduler=self.scheduler)
             self.jobs[name] = job
             job.run()
 

@@ -6,6 +6,10 @@
     width: auto;
 }
 
+.masonry-grid-extra-margin {
+    margin-left: 15px;
+}
+
 .masonry-grid_column {
     padding-left: 20px;
     background-clip: padding-box;
