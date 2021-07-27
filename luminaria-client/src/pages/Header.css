@@ -1,10 +1,17 @@
-.App-header {
-    background-color: #000000;
+.app-header {
     min-height: 20vh;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: calc(10px + 2vmin);
+}
+
+.bg-prod {
+    background-color: #000000;
+}
+
+.bg-dev {
+    background-color: rgba(23, 3, 76, 0.58);
 }
 
 .header-link:hover {

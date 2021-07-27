@@ -14,7 +14,11 @@ const AppUtil = {
             params[keyValueArr[0]] = keyValueArr[1];
         }
         return params;
-    }
+    },
+
+    isDevEnv: function () {
+        return process.env.NODE_ENV === 'development';
+    },
 };
 
 

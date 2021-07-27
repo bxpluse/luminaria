@@ -1,5 +1,9 @@
 /* Modified from source: https://codepen.io/whqet/pen/Auzch*/
 
+const TIME_TO_FIRE = 360;
+const SPEED = 1.5;
+const ACCELERATION = 1.02;
+
 
 // when animating on canvas, it is best to use requestAnimationFrame instead of setTimeout or setInterval
 // not supported in all browsers though and sometimes needs a prefix, so we need a shim
@@ -28,7 +32,7 @@ let canvas = document.getElementById( 'canvas' ),
     limiterTotal = 20,
     limiterTick = 0,
     // this will time the auto launches of fireworks, one launch per 80 loop ticks
-    timerTotal = 240,
+    timerTotal = TIME_TO_FIRE,
     timerTick = 0,
     mousedown = false,
     // mouse x coordinate,
@@ -76,8 +80,8 @@ function Firework( sx, sy, tx, ty ) {
         this.coordinates.push( [ this.x, this.y ] );
     }
     this.angle = Math.atan2( ty - sy, tx - sx );
-    this.speed = 2;
-    this.acceleration = 1.05;
+    this.speed = SPEED;
+    this.acceleration = ACCELERATION;
     this.brightness = random( 50, 70 );
     // circle target indicator radius
     this.targetRadius = 1;
