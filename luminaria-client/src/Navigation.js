@@ -14,10 +14,11 @@ import Notes from './apps/notes/Notes';
 import Pool from './apps/pool/Pool';
 import RCStreamer from './apps/rc-streamer/RCStreamer';
 import Signal from './apps/signal/Signal';
-import Syscmd from "./apps/syscmd/Syscmd";
+import Syscmd from './apps/syscmd/Syscmd';
 import TopTen from './apps/top-ten/TopTen';
 import Updater from './apps/updater/Updater';
-import Graph from './common/Graph';
+import GearLink from './components/GearLink';
+import Graph from './components/Graph';
 import Socket from './components/Socket';
 import Header from './pages/Header';
 import Home from './pages/Home';
@@ -55,51 +56,51 @@ function Paths() {
                     : null
             }
             <Socket/>
-            <div className="content py-5 bg-light">
+            <div className='content py-5 bg-light'>
                 <Switch>
-                    <Route path="/graph">
+                    <Route path='/graph'>
                         <Graph />
                     </Route>
-                    <Route path="/updater">
+                    <Route path='/updater'>
                         <Updater />
                     </Route>
-                    <Route path="/logs">
+                    <Route path='/logs'>
                         <LogViewer apps={apps} />
                     </Route>
-                    <Route path="/rc-streamer">
+                    <Route path='/rc-streamer'>
                         <RCStreamer />
                     </Route>
-                    <Route path="/backup">
+                    <Route path='/backup'>
                         <Backup />
                     </Route>
-                    <Route path="/ipos">
+                    <Route path='/ipos'>
                         <IPOStatus />
                     </Route>
-                    <Route path="/top-ten">
+                    <Route path='/top-ten'>
                         <TopTen />
                     </Route>
-                    <Route path="/news">
+                    <Route path='/news'>
                         <News />
                     </Route>
-                    <Route path="/notes">
+                    <Route path='/notes'>
                         <Notes />
                     </Route>
-                    <Route path="/pool">
+                    <Route path='/pool'>
                         <Pool />
                     </Route>
-                    <Route path="/health-check">
+                    <Route path='/health-check'>
                         <HealthCheck />
                     </Route>
-                    <Route path="/signal">
+                    <Route path='/signal'>
                         <Signal />
                     </Route>
-                    <Route path="/graphy">
+                    <Route path='/graphy'>
                         <Graphy />
                     </Route>
-                    <Route path="/syscmd">
+                    <Route path='/syscmd'>
                         <Syscmd />
                     </Route>
-                    <Route path="/">
+                    <Route path='/'>
                         <Home apps={apps} />
                     </Route>
                 </Switch>
@@ -150,7 +151,7 @@ function CustomNavBar(props) {
     }
 
     return (
-        <Navbar className={'custom-nav-bar navbar-expand-lg navbar-dark bg-dark'} bg="light" variant="light">
+        <Navbar className={'custom-nav-bar navbar-expand-lg navbar-dark bg-dark'} bg='light' variant='light'>
 
             <Link to="/">
                 <Navbar.Brand>Home</Navbar.Brand>
@@ -170,13 +171,14 @@ function CustomNavBar(props) {
             </Nav>
 
             <Nav>
-                <NavDropdown id="nav-dropdown" title="External Links">
+                <NavDropdown id='nav-dropdown' title='External Links'>
                     {links}
                 </NavDropdown>
             </Nav>
 
-            <Nav className="ml-auto">
+            <Nav className='ml-auto'>
                 <Search apps={props.apps}/>
+                <GearLink link='syscmd' marginLeft='8px' marginTop='5px'/>
             </Nav>
 
         </Navbar>
@@ -203,7 +205,7 @@ function Search(props) {
     };
 
     return (
-        <div style={{width: "200px"}}>
+        <div style={{width: '200px'}}>
             <Select options={options} onChange={handleChange} width='250px' />
         </div>
     );

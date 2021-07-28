@@ -1,6 +1,6 @@
 import InnerHTML from 'dangerously-set-html-content'
 import React, {useEffect, useState} from 'react';
-import Container from "react-bootstrap/Container";
+import Container from 'react-bootstrap/Container';
 import Spinner from 'react-bootstrap/Spinner'
 import Request from '../Requests';
 import AppUtil from '../util/AppUtil'

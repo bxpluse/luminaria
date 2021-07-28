@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import Container from "react-bootstrap/Container";
-import Request from "../../Requests";
 import Card from 'react-bootstrap/Card'
+import Container from 'react-bootstrap/Container';
 import Masonry from 'react-masonry-css'
-import '../../common/masonry.css';
+import '../../components/masonry.css';
+import Request from '../../Requests';
+
 
 function TopTen() {
 
