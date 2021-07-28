@@ -5,9 +5,10 @@ from flask_socketio import SocketIO
 from apps.app_manager import AppManager
 from common.logger import log
 from common.messenger import Messenger
+from constants import CONFIG_MAP
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'
+app.config['SECRET_KEY'] = CONFIG_MAP['FLASK_SECRET_KEY']
 socketio = SocketIO(app, cors_allowed_origins="*", cookie=False)
 CORS(app)
 messenger = Messenger(socketio)
@@ -51,8 +52,9 @@ def execute(app_id, command, data=None):
     res = manager.execute(app_id, command, data)
     if not res:
         return {}
-    if '<MESSAGE>' in res:
-        messenger.toast(res['<MESSAGE>'])
+    if '<TOAST>' in res:
+        messenger.toast(res['<TOAST>'])
+        del res['<TOAST>']
     return res
 
 

@@ -1,6 +1,5 @@
 from common.cache import hash_tuple
 from common.enums import APP, APPSTATUS
-from database.config.apps_model import AppsModel
 
 
 class AppManager:
@@ -13,13 +12,13 @@ class AppManager:
             raise Exception('Only one instance of AppManager allowed')
 
         self.IS_RUNNING = True
-        self.online_apps = AppsModel.get_all_online_apps()
         # Import all running apps
         from apps.online_apps import APPS
         self.apps = APPS
 
     def get_all_apps(self):
-        for key, value in self.online_apps.items():
+        online_apps = self.apps[APP.SYSCMD].online_apps
+        for key, value in online_apps.items():
             app_entry = value
             app_entry['status'] = APPSTATUS.UNKNOWN.value
             try:
@@ -29,7 +28,7 @@ class AppManager:
             except ValueError:
                 if 'https' in app_entry['url']:
                     app_entry['status'] = APPSTATUS.LINK.value
-        return self.online_apps
+        return online_apps
 
     def get_app_status(self, app_id):
         app = self.apps[APP(app_id)]

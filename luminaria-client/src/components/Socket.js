@@ -12,18 +12,37 @@ function Socket() {
         const socket = openSocket.connect(CONFIG.HOST);
 
         socket.on('toast-message', (data) => {
-            toast.warn(data.message, {
+            const message = data.message;
+            const options = {
                 position: "top-right",
-                autoClose: 8000,
+                autoClose: data.duration * 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
-            });
+            };
+
+            switch(data.variant) {
+                case 'success':
+                    toast.success(message, options);
+                    break;
+                case 'warning':
+                    toast.warning(message, options);
+                    break;
+                case 'error':
+                    toast.error(message, options);
+                    break;
+                case 'dark':
+                    toast.dark(message, options);
+                    break;
+                default:
+                    toast.info(message, options);
+            }
         });
 
-        //socket.on('toast-status', (data) => {
-        //    console.log(data);
-        //});
+
+        // socket.on('toast-status', (data) => {
+        //     console.log(data);
+        // });
 
     }, []);
 

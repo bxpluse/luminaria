@@ -4,7 +4,8 @@ import os
 import requests
 
 from apps.baseapp import App
-from common.enums import APP
+from common.enums import APP, Variant
+from common.messenger import Toast
 from constants import CONFIG_MAP, EXCHANGES_DIR, STATIC_DIR, ROOT_DIR
 
 USER_AGENT = CONFIG_MAP['USER_AGENT']
@@ -57,7 +58,8 @@ class ExchangeUpdater(App):
             message = 'Updated!'
             try:
                 self.download()
+                return {'<TOAST>': Toast(message, variant=Variant.SUCCESS)}
             except Exception as e:
                 self.log('Error in updating symbols: ' + str(e))
-                message = 'Failed!'
-            return {'<MESSAGE>': message}
+                message = 'Errored!'
+                return {'<TOAST>': Toast(message, variant=Variant.ERROR)}

@@ -9,6 +9,7 @@ from apps.notes.main import Notes
 from apps.pool.main import Pool
 from apps.research.main import Research
 from apps.signal.main import Signal
+from apps.syscmd.main import Syscmd
 from apps.topten.main import TopTen
 from apps.updater.main import ExchangeUpdater
 from common.enums import APP
@@ -26,5 +27,6 @@ APPS = {
     APP.HEALTH_CHECK: HealthCheck(),
     APP.SIGNAL: Signal(),
     APP.GRAPHY: Graphy(),
-    APP.RESEARCH: Research()
+    APP.RESEARCH: Research(),
+    APP.SYSCMD: Syscmd()
 }

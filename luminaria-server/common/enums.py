@@ -18,6 +18,7 @@ class APP(Enum):
     SIGNAL = 'signal'
     GRAPHY = 'graphy'
     RESEARCH = 'research'
+    SYSCMD = 'syscmd'
 
 
 class APPTYPE(Enum):
@@ -60,3 +61,11 @@ class SeriesAttribute:
     DATE = 2
     ADJUSTED_CLOSE = 10
     VOLUME = 11
+
+
+class Variant:
+    SUCCESS = 'success'
+    INFO = 'info'
+    WARNING = 'warning'
+    ERROR = 'error'
+    DARK = 'dark'

@@ -14,6 +14,7 @@ import Notes from './apps/notes/Notes';
 import Pool from './apps/pool/Pool';
 import RCStreamer from './apps/rc-streamer/RCStreamer';
 import Signal from './apps/signal/Signal';
+import Syscmd from "./apps/syscmd/Syscmd";
 import TopTen from './apps/top-ten/TopTen';
 import Updater from './apps/updater/Updater';
 import Graph from './common/Graph';
@@ -94,6 +95,9 @@ function Paths() {
                     </Route>
                     <Route path="/graphy">
                         <Graphy />
+                    </Route>
+                    <Route path="/syscmd">
+                        <Syscmd />
                     </Route>
                     <Route path="/">
                         <Home apps={apps} />
