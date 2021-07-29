@@ -306,9 +306,13 @@ function CreateEntry(props) {
 
     function parser(string) {
         setParserText(string);
-        const arr = string.trim().split('\t')
+        let arr = string.trim().split('\t')
 
-        if (arr[0] !== 'BOT' && arr[0] !== 'SLD') {
+        arr = arr.filter((x) => {
+            return /\S/.test(x);
+        });
+
+        if (arr[0] !== 'BOT' && arr[0] !== 'SLD' && arr[0] !== 'BUY' && arr[0] !== 'SELL') {
             return
         }
         if (!MathUtil.isPositiveInt(arr[1])) {
@@ -318,14 +322,20 @@ function CreateEntry(props) {
             return
         }
 
-        const thirdArr = arr[2].split(',');
-        const datetime = arr[5].split(' ');
-        const date = datetime[4];
-        const time = datetime[0];
+        const symbolArr = arr[2].split(',');
+        let datetimeArr;
+        if (arr[0] === 'BOT' || arr[0] === 'SLD') {
+            datetimeArr = arr[5].split(' ');
+        } else {
+            datetimeArr = arr[arr.length - 2].split(' ');
+        }
 
-        setAction(arr[0] === 'BOT' ? 'BUY' : 'SELL');
+        const date = datetimeArr[4];
+        const time = datetimeArr[0];
+
+        setAction(arr[0] === 'BOT' || arr[0] === 'BUY' ? 'BUY' : 'SELL');
         setAmount(arr[1]);
-        setSymbol(thirdArr[0]);
+        setSymbol(symbolArr[0]);
         setPrice(arr[3]);
 
         if (date === undefined) {
