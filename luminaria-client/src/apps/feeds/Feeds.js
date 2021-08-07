@@ -11,6 +11,7 @@ import DateUtil from '../../util/DateUtil';
 import StringUtil from '../../util/StringUtil';
 import './Feed.css';
 
+
 function Feeds() {
 
     const [entries, setEntries] = useState([]);
@@ -22,8 +23,16 @@ function Feeds() {
         });
         setTimeout(() => {
             setPageLoaded(true);
-        }, 200)
+        }, 300)
     }, []);
+
+    function updateFeeds() {
+        Request.GET_JSON('/get/feeds/force-fetch-feed').then(() => {
+            Request.GET_JSON('/get/feeds/entries').then(data => {
+                setEntries(data['entries']);
+            })
+        });
+    }
 
     let entryCard = [];
 
@@ -63,18 +72,14 @@ function Feeds() {
 
     return (
         <Container>
-            {entryCard.length === 0 && pageLoaded ? <h2>No Unread Feeds</h2>:
-                <Masonry
-                    breakpointCols={1}
-                    className='masonry-grid masonry-grid-extra-margin'
-                    columnClassName='masonry-grid_column'>
-                    <MyButton text='Update Feeds' onClick={() => {
-                        Request.GET_JSON('/get/feeds/force-fetch-feed').then();
-                    }}/>
-                    <br/><br/>
-                    {entryCard}
-                </Masonry>
-            }
+            <Masonry
+                breakpointCols={1}
+                className='masonry-grid masonry-grid-extra-margin'
+                columnClassName='masonry-grid_column'>
+                <MyButton text='Update Feeds' onClick={() => updateFeeds()}/>
+                <br/><br/>
+                {entryCard.length === 0 && pageLoaded ? <h2>No Unread Feeds</h2> : entryCard}
+            </Masonry>
         </Container>
     );
 }

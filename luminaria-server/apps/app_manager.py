@@ -59,7 +59,7 @@ class AppManager:
         # Return results if it's found in cache
         hash_id = hash_tuple((command, data))
 
-        res = app.try_cache(hash_id)
+        res = app.try_cache(command, hash_id)
         if res is not None:
             return res
 

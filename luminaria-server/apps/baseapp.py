@@ -45,8 +45,11 @@ class App:
             self.log("~ App Finished")
             self.status = APPSTATUS.READY
 
-    def try_cache(self, hash_id):
+    def try_cache(self, command, hash_id):
         if self.has_cache():
+            # Exclude requests in exclusion set
+            if command in self.cache.exclusion:
+                return None
             res = self.cache.fetch(hash_id)
             return res
         return None

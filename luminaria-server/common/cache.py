@@ -12,9 +12,10 @@ def hash_tuple(tup):
 class Cache:
     CACHE_LIMIT = 4
 
-    def __init__(self, secs_to_expire):
+    def __init__(self, secs_to_expire, exclusion=()):
         self.cache = {}
         self.SEC_TO_EXPIRE = secs_to_expire
+        self.exclusion = set(exclusion)
 
     def fetch(self, hash_id):
         if hash_id in self.cache:

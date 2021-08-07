@@ -63,7 +63,7 @@ class Feeds(App):
     APP_ID = APP.FEEDS
 
     def __init__(self):
-        cache = Cache(30)
+        cache = Cache(30, exclusion=('dismiss', 'force-fetch-feed'))
         super().__init__(app_type=APPTYPE.STREAMING, cache=cache)
 
         urls = CONFIG_MAP['FEED_SITES']
@@ -81,14 +81,17 @@ class Feeds(App):
                 }
             )
         self.overseer.add_rule(rule)
+        self.start()
 
     def execute(self, command, **kwargs):
         if command == 'entries':
             return {'entries': RSSEntryModel.get_not_dismissed_entries()}
         elif command == 'dismiss':
+            self.cache.invalidate()
             RSSEntryModel.dismiss(kwargs['id'])
             return self.execute('entries')
         elif command == 'force-fetch-feed':
+            self.cache.invalidate()
             urls = CONFIG_MAP['FEED_SITES']
             for url in urls:
                 get_feed(url)
