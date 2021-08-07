@@ -1,3 +1,6 @@
+import moment from 'moment';
+
+
 const DateUtil = {
     getCurrentDate: function(){
         // Return string in yyyy-mm-dd format
@@ -7,6 +10,10 @@ const DateUtil = {
         const yyyy = today.getFullYear();
         today = yyyy + '-' + mm + '-' + dd;
         return today;
+    },
+
+    parse: function(date_str){
+        return moment(date_str).format('lll')
     },
 };
 

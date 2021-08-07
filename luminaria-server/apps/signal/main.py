@@ -10,7 +10,6 @@ class Signal(App):
     def __init__(self):
         super().__init__(app_type=APPTYPE.STREAMING)
         self.engine = get_engine()
-        self.rules = []
 
         for rule_name in self.engine.modules:
             module = self.engine.get(rule_name)
@@ -18,29 +17,14 @@ class Signal(App):
             rule.app_id = self.APP_ID
             rule.is_running = True
             module.run()
-            self.rules.append(rule)
+            self.overseer.add_rule(rule)
 
         self.start()
 
     def execute(self, command, **kwargs):
         if command == 'fetch-all-rules':
-            return {'rules': [parse_rule(rule) for rule in self.rules]}
+            return {'rules': self.overseer.get_all_rules()}
         elif command == 'update-rule-suppressed':
-            rule_id = int(kwargs.get('id'))
+            rule_id = kwargs.get('id')
             suppressed = bool(kwargs.get('suppressed'))
-            for rule in self.rules:
-                if rule.id == rule_id:
-                    rule.suppressed = suppressed
-                    break
-
-
-def parse_rule(rule):
-    d = {'id': str(rule.id),
-         'name': rule.name,
-         'description': rule.description,
-         'subrule_names': rule.subrule_names,
-         'is_running': rule.is_running,
-         'suppressed': rule.suppressed,
-         'jobs': rule.scheduler.get_str_jobs()
-         }
-    return d
+            self.overseer.suppress(rule_id, suppressed)

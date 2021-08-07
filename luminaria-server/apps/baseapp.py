@@ -1,8 +1,13 @@
-from common.enums import APP
-from common.enums import APPTYPE
-from common.enums import ENVIRONMENT, APPSTATUS
+from apps.reliance import DEPENDENCIES, DEPENDENCY_LIST
+from common.enums import APP, DEPENDENCY, APPTYPE, ENVIRONMENT, APPSTATUS
 from common.logger import LogLevel, log as log_to_db
 from constants import ENV
+
+
+def install_dependency(app_id):
+    if app_id in DEPENDENCY_LIST[DEPENDENCY.OVERSEER]:
+        return DEPENDENCIES[DEPENDENCY.OVERSEER]
+    return None
 
 
 class App:
@@ -22,6 +27,9 @@ class App:
         self.debugging = False
         self.first_start = True
         self.cache = cache
+
+        # Dependencies
+        self.overseer = install_dependency(self.APP_ID)
 
     def start(self):
         """ Called when an App is run. """

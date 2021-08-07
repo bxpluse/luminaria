@@ -1,3 +1,9 @@
+import random
+import string
+
+from tldextract import extract
+
+
 def parse_word(word):
     # word = word.strip()
     # word = re.sub('[^A-Za-z0-9]+', '', word)
@@ -25,3 +31,12 @@ def type_transform(val, data_type):
     elif data_type == 'list':
         val = eval(val)
     return val
+
+
+def gen_id(length=8):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+
+
+def extract_domain(url):
+    tsd, domain, tsu = extract(url)
+    return domain

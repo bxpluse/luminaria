@@ -5,6 +5,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import {BrowserRouter as Router, Link, Route, Switch, useLocation} from 'react-router-dom';
 import Select from 'react-select'
 import Backup from './apps/backup/Backup';
+import Feeds from "./apps/feeds/Feeds";
 import Graphy from './apps/graphy/Graphy';
 import HealthCheck from './apps/health-check/HealthCheck';
 import IPOStatus from './apps/ipos/IPOStatus';
@@ -24,6 +25,7 @@ import Header from './pages/Header';
 import Home from './pages/Home';
 import Request from './Requests';
 import AppUtil from './util/AppUtil'
+
 
 function Paths() {
 
@@ -99,6 +101,9 @@ function Paths() {
                     </Route>
                     <Route path='/syscmd'>
                         <Syscmd />
+                    </Route>
+                    <Route path='/feeds'>
+                        <Feeds />
                     </Route>
                     <Route path='/'>
                         <Home apps={apps} />

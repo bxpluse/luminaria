@@ -5,8 +5,8 @@ from constants import IS_DEV_ENV
 
 class Rule:
 
-    def __init__(self, id_, name):
-        self.id = id_
+    def __init__(self, name, rule_id=None):
+        self.id = rule_id
         self.name = name
         self.description = ''
         self.subrule_names = []
@@ -16,6 +16,7 @@ class Rule:
         self.app_id = None
 
     def create_subrule(self, name, func, triggers, args=None):
+        self.subrule_names.append(name)
         if IS_DEV_ENV:
             self.mock_fields()
         if args is not None:

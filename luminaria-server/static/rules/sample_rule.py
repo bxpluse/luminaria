@@ -1,8 +1,7 @@
 from common.abstract_classes.rule import Rule
 
-rule = Rule(-1, 'Sample Rule')
+rule = Rule('Sample Rule')
 rule.description = 'This is a sample template on creating a rule'
-rule.subrule_names = ['subrule1', 'subrule2']
 
 
 def run():

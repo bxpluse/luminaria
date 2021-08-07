@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from peewee import *
 
 from constants import DB_CONFIG, DB_DYNAMIC, DB_STATIC, DB_STREAM
@@ -20,7 +22,7 @@ class ConfigModel(Model):
 
 class DynamicModel(Model):
 
-    datetime_created = DateTimeField()
+    datetime_created = DateTimeField(default=datetime.now)
 
     class Meta:
         database = DB_DYNAMIC

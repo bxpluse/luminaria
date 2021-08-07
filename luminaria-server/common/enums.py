@@ -19,6 +19,12 @@ class APP(Enum):
     GRAPHY = 'graphy'
     RESEARCH = 'research'
     SYSCMD = 'syscmd'
+    FEEDS = 'feeds'
+
+
+class DEPENDENCY(Enum):
+    BASE = 'base-dependency'
+    OVERSEER = 'overseer'
 
 
 class APPTYPE(Enum):
