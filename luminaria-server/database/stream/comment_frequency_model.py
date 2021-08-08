@@ -35,39 +35,33 @@ class CommentFrequencyModel(StreamModel):
     @staticmethod
     def get_top_on_day(day, limit):
         query = CommentFrequencyModel.select(CommentFrequencyModel.symbol,
-                                             fn.sum(CommentFrequencyModel.times_mentioned).alias('total'))\
-            .where(CommentFrequencyModel.date == day)\
-            .group_by(CommentFrequencyModel.symbol)\
-            .order_by(fn.sum(CommentFrequencyModel.times_mentioned).desc())\
+                                             fn.sum(CommentFrequencyModel.times_mentioned).alias('total')) \
+            .where(CommentFrequencyModel.date == day) \
+            .group_by(CommentFrequencyModel.symbol) \
+            .order_by(fn.sum(CommentFrequencyModel.times_mentioned).desc()) \
             .limit(limit)
         return query
 
     @staticmethod
     def get_total_mentions_from_day(day):
-        query = CommentFrequencyModel\
+        query = CommentFrequencyModel \
             .select(CommentFrequencyModel.date, fn.sum(CommentFrequencyModel.times_mentioned).alias('total')) \
-            .where(CommentFrequencyModel.date >= day)\
+            .where(CommentFrequencyModel.date >= day) \
             .group_by(CommentFrequencyModel.date)
         d = {}
         for day in query:
             d[day.date] = day.total
         return d
 
-
-"""
-cursor = DB1.execute_sql('''select symbol, sum(times_mentioned)
-                                            from COMMENT_FREQUENCY 
-                                            where date = ?
-                                            GROUP BY symbol
-                                            ORDER BY sum(times_mentioned) desc
-                                            LIMIT ?;''',
-                              (day, limit))
-"""
+    @staticmethod
+    def sum_all_mention():
+        return CommentFrequencyModel.get_total_mentions_from_day('01-01-2020')
 
 
 if __name__ == "__main__":
     import string
     import random
+
     args = {}
 
     for i in range(0, 10000):
