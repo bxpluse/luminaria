@@ -1,5 +1,6 @@
 from apps.backup.main import BackupDatabase
 from apps.feeds.main import Feeds
+from apps.finder.main import Finder
 from apps.graphy.main import Graphy
 from apps.healthcheck.main import HealthCheck
 from apps.ipolistener.main import IPOListener
@@ -30,5 +31,6 @@ APPS = {
     APP.GRAPHY: Graphy(),
     APP.RESEARCH: Research(),
     APP.SYSCMD: Syscmd(),
-    APP.FEEDS: Feeds()
+    APP.FEEDS: Feeds(),
+    APP.FINDER: Finder()
 }

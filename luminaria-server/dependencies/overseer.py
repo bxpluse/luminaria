@@ -30,6 +30,7 @@ def parse_rule(rule):
          'subrule_names': rule.subrule_names,
          'is_running': rule.is_running,
          'suppressed': rule.suppressed,
+         'alarmable': rule.alarmable,
          'jobs': rule.scheduler.get_str_jobs()
          }
     return d

@@ -68,7 +68,7 @@ class Feeds(App):
 
         urls = CONFIG_MAP['FEED_SITES']
 
-        rule = Rule('Feed sites')
+        rule = Rule('Feed sites', alarmable=False)
         rule.description = 'Store a set of feeds'
         rule.app_id = self.APP_ID
         for url in urls:

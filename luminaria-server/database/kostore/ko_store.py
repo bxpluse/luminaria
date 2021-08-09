@@ -1,24 +1,52 @@
-from peewee import *
+import json
+from datetime import datetime
 
-from database.base_model import DynamicModel
+from peewee import DoesNotExist
+
+from common.transformer import model_to_dict_unstringify
+from database.kostore.ko_store_model import KOStoreModel
 
 
-class KOStore(DynamicModel):
-    key = CharField()
-    value = TextField()
-    datetime_updated = DateTimeField()
+class KOStore:
 
-    class Meta:
-        table_name = 'KO_STORE'
-
-    @staticmethod
-    def put(key, obj):
+    def __init__(self):
         pass
 
     @staticmethod
-    def get(key):
-        pass
+    def put(key, obj, metadata=None):
+        if metadata is None:
+            metadata = {}
+        if type(key) != str:
+            raise Exception('KO Key should be type(str)')
+        if type(obj) != dict:
+            raise Exception('KO Value should be type(dict)')
+        if type(metadata) != dict:
+            raise Exception('KO Metadata should be type(dict)')
 
+        key = key.upper()
+        obj = json.dumps(obj, default=str)
+        metadata = json.dumps(metadata, default=str)
+        now = datetime.now()
 
-if __name__ == "__main__":
-    KOStore.regenerate()
+        num_updated = KOStoreModel.update(key=key,
+                                          value=obj,
+                                          metadata=metadata,
+                                          datetime_updated=now) \
+            .where(KOStoreModel.key == key) \
+            .execute()
+
+        if num_updated == 0:
+            KOStoreModel.insert(key=key,
+                                value=obj,
+                                metadata=metadata,
+                                datetime_updated=now) \
+                .execute()
+
+    @staticmethod
+    def get(key, column='value'):
+        key = key.upper()
+        try:
+            query = KOStoreModel.get(KOStoreModel.key == key)
+            return model_to_dict_unstringify(query, keys=['datetime_created', 'datetime_updated'])[column]
+        except DoesNotExist:
+            return {}

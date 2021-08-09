@@ -5,7 +5,7 @@ from constants import IS_DEV_ENV
 
 class Rule:
 
-    def __init__(self, name, rule_id=None):
+    def __init__(self, name, rule_id=None, alarmable=True):
         self.id = rule_id
         self.name = name
         self.description = ''
@@ -14,6 +14,7 @@ class Rule:
         self.suppressed = False
         self.scheduler = JobScheduler()
         self.app_id = None
+        self.alarmable = alarmable
 
     def create_subrule(self, name, func, triggers, args=None):
         self.subrule_names.append(name)

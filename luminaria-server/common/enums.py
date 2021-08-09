@@ -20,6 +20,7 @@ class APP(Enum):
     RESEARCH = 'research'
     SYSCMD = 'syscmd'
     FEEDS = 'feeds'
+    FINDER = 'finder'
 
 
 class DEPENDENCY(Enum):

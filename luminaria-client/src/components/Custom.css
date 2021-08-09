@@ -24,3 +24,12 @@ html {
     right: 15px;
     cursor: pointer;
 }
+
+.external-link {
+    display:inline-block;
+    text-decoration: none !important;
+}
+
+.no-deco {
+    text-decoration: none !important;
+}

@@ -103,22 +103,23 @@ function RuleCard(props) {
             />
             <Card.Body>
                 <Card.Title>{rule['name']}</Card.Title>
-                <Card.Subtitle className="mb-2 text-muted">
-                <span>{isAlarmRunning ? 'Alarm Running' : 'Alarm Suppressed'} </span>
-                <Switch onChange={handleChange} checked={isAlarmRunning}
-                        onColor="#86d3ff"
-                        onHandleColor="#2693e6"
-                        handleDiameter={30}
-                        uncheckedIcon={false}
-                        checkedIcon={false}
-                        boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
-                        activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
-                        height={20}
-                        width={48}
-                        className="react-switch"
-                        id="material-switch"
-                />
-                </Card.Subtitle>
+                {rule['alarmable'] === true ? <Card.Subtitle className="mb-2 text-muted">
+                    <span>{isAlarmRunning ? 'Alarm Running' : 'Alarm Suppressed'} </span>
+                    <Switch onChange={handleChange} checked={isAlarmRunning}
+                            onColor="#86d3ff"
+                            onHandleColor="#2693e6"
+                            handleDiameter={30}
+                            uncheckedIcon={false}
+                            checkedIcon={false}
+                            boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+                            activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+                            height={20}
+                            width={48}
+                            className="react-switch"
+                            id="material-switch"
+                    />
+                </Card.Subtitle> : null}
+
                 <Card.Text>
                     {rule['description']}
                 </Card.Text>
