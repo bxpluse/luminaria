@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import {BrowserRouter as Router, Link, Route, Switch, useLocation} from 'react-router-dom';
+import {BrowserRouter as Router, Link, Route, Switch, useHistory, useLocation} from 'react-router-dom';
 import Select from 'react-select'
 import Backup from './apps/backup/Backup';
 import Feeds from "./apps/feeds/Feeds";
@@ -25,7 +25,7 @@ import Socket from './components/Socket';
 import Header from './pages/Header';
 import Home from './pages/Home';
 import Request from './Requests';
-import AppUtil from './util/AppUtil'
+import AppUtil from './util/AppUtil';
 
 function Paths() {
 
@@ -196,6 +196,8 @@ function CustomNavBar(props) {
 
 function Search(props) {
 
+    const [selectValue, setSelectValue] = useState(null);
+    const history = useHistory();
     const options = [];
     for(let i = 0; i < props.apps.length; i++){
         const app = props.apps[i];
@@ -208,13 +210,14 @@ function Search(props) {
         if(option.is_link) {
             window.open(option.url);
         } else {
-            window.location.href = option.url;
+            history.push(option.url);
         }
+        setSelectValue(null);
     };
 
     return (
         <div style={{width: '200px'}}>
-            <Select options={options} onChange={handleChange} width='250px' />
+            <Select value={selectValue} options={options} onChange={handleChange} width='250px' />
         </div>
     );
 }
