@@ -37,9 +37,10 @@ function Finder() {
             <Card key={schedule.name}>
                 <Card.Body>
                     <Card.Title>
-                        <div>
-                            {schedule.name} <ExternalLink symbol='🔗' link={'https://twitter.com/i/status/' + maxKey}/>
-                        </div>
+                        <span>
+                            <ExternalLink symbol={schedule.name} link={schedule['<!METADATA>']['slink']}/>
+                            <ExternalLink symbol='🔗' link={'https://twitter.com/i/status/' + maxKey}/>
+                        </span>
                     </Card.Title>
                     <Card.Img variant='bottom' src={maxUrl}/>
                 </Card.Body>
