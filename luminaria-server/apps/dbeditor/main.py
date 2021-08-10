@@ -3,11 +3,11 @@ from datetime import date, datetime
 
 from apps.baseapp import App
 from common.enums import APP
-from constants import DATABASE_CONFIG_NAME, DATABASE_DYNAMIC_NAME, ROOT_DIR
+from constants import ROOT_DIR
 
 
-class BackupDatabase(App):
-    APP_ID = APP.DB_BACKUP
+class DBUtil(App):
+    APP_ID = APP.DB_UTIL
 
     def __init__(self):
         super().__init__()

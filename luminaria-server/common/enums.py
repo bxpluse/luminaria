@@ -7,7 +7,7 @@ class APP(Enum):
     TBD = 'app-in-development'
     EXCHANGE_UPDATER = 'updater'
     LOG_VIEWER = 'log-viewer'
-    DB_BACKUP = 'db-backup'
+    DB_UTIL = 'dbutil'
     RC_STREAMER = 'rc-streamer'
     IPO_LISTENER = 'ipo-listener'
     TOP_TEN = 'top-ten'

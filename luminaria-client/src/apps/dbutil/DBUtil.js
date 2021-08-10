@@ -1,13 +1,13 @@
-import {saveAs} from "file-saver";
-import React from "react";
+import {saveAs} from 'file-saver';
+import React from 'react';
 import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container';
 import Jumbotron from 'react-bootstrap/Jumbotron'
-import Request from "../../Requests";
-import StringUtil from "../../util/StringUtil";
+import Request from '../../Requests';
+import StringUtil from '../../util/StringUtil';
 
 
-function Backup() {
+function DBUtil() {
 
     window.scrollTo(0, 0)
 
@@ -38,13 +38,13 @@ function DownloadJumbo(props) {
 }
 
 function download(dbName){
-    Request.POST_JSON('/exec/db-backup/file-name', {dbName: dbName}).then(data => {
+    Request.POST_JSON('/exec/dbutil/file-name', {dbName: dbName}).then(data => {
         const filename = data['filename'];
-        Request.GET_FILE('/blob/db-backup/download',{dbName: dbName}).then(blob => {
+        Request.GET_FILE('/blob/dbutil/download',{dbName: dbName}).then(blob => {
             saveAs(blob, filename);
         });
     });
 }
 
 
-export default Backup;
+export default DBUtil;

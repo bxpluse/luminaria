@@ -1,4 +1,4 @@
-from apps.backup.main import BackupDatabase
+from apps.dbeditor.main import DBUtil
 from apps.feeds.main import Feeds
 from apps.finder.main import Finder
 from apps.graphy.main import Graphy
@@ -19,7 +19,7 @@ from common.enums import APP
 APPS = {
     APP.EXCHANGE_UPDATER: ExchangeUpdater(),
     APP.LOG_VIEWER: LogViewer(),
-    APP.DB_BACKUP: BackupDatabase(),
+    APP.DB_UTIL: DBUtil(),
     APP.RC_STREAMER: RCListener(),
     APP.IPO_LISTENER: IPOListener(),
     APP.TOP_TEN: TopTen(),

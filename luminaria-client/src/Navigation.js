@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import {BrowserRouter as Router, Link, Route, Switch, useHistory, useLocation} from 'react-router-dom';
 import Select from 'react-select'
-import Backup from './apps/backup/Backup';
+import DBUtil from './apps/dbutil/DBUtil';
 import Feeds from "./apps/feeds/Feeds";
 import Finder from './apps/finder/Finder';
 import Graphy from './apps/graphy/Graphy';
@@ -72,8 +72,8 @@ function Paths() {
                     <Route path='/rc-streamer'>
                         <RCStreamer />
                     </Route>
-                    <Route path='/backup'>
-                        <Backup />
+                    <Route path='/dbutil'>
+                        <DBUtil />
                     </Route>
                     <Route path='/ipos'>
                         <IPOStatus />
