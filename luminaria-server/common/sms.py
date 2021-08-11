@@ -36,7 +36,7 @@ def send(msg, requester=None, when=When.NOW):
             log_sms('SENT', log_message)
         elif when == When.NEXT:
             if len(batch_messages) == 0:
-                secs = LocalConfigModel.retrieve_default('SMS_BATCH_WAIT_SECS', 60)
+                secs = LocalConfigModel.retrieve('SMS_BATCH_WAIT_SECS', default=60)
                 Timer(secs, send, ('', None, When.BATCH)).start()
             batch_messages.append(msg)
         elif when == When.BATCH:

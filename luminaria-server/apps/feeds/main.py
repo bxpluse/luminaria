@@ -10,7 +10,6 @@ from common.cache import Cache
 from common.enums import APP, APPTYPE
 from common.timeless import DATETIME_FORMAT
 from common.util import extract_domain
-from constants import CONFIG_MAP
 from constants import DB_DYNAMIC
 from database.dynamic.rss_entry import RSSEntryModel
 
@@ -66,7 +65,7 @@ class Feeds(App):
         cache = Cache(30, exclusion=('dismiss', 'force-fetch-feed'))
         super().__init__(app_type=APPTYPE.STREAMING, cache=cache)
 
-        urls = CONFIG_MAP['FEED_SITES']
+        urls = self.configuration['FEED_SITES']
 
         rule = Rule('Feed sites', alarmable=False)
         rule.description = 'Store a set of feeds'
@@ -92,6 +91,6 @@ class Feeds(App):
             return self.execute('entries')
         elif command == 'force-fetch-feed':
             self.cache.invalidate()
-            urls = CONFIG_MAP['FEED_SITES']
+            urls = self.configuration['FEED_SITES']
             for url in urls:
                 get_feed(url)

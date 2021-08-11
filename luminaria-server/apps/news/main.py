@@ -4,25 +4,22 @@ from bs4 import BeautifulSoup
 from apps.baseapp import App
 from common.cache import Cache
 from common.enums import APP
-from constants import CONFIG_MAP
-
-USER_AGENT = CONFIG_MAP['USER_AGENT']
-BBN_URL = CONFIG_MAP['BBN_URL']
-
-HEADERS = {'User-Agent': USER_AGENT,
-           'Referer': BBN_URL,
-           'Origin': BBN_URL,
-           'Host': BBN_URL.split('//')[-1]
-           }
+from database.config.local_config_model import LocalConfigModel
 
 
 class News(App):
-
     APP_ID = APP.NEWS
 
     def __init__(self):
-        cache = Cache(CONFIG_MAP['TOPTEN_CACHE_DURATION_SECS'])
+        cache = Cache(LocalConfigModel.retrieve('TOPTEN_CACHE_DURATION_SECS'))
         super().__init__(cache=cache)
+        self.USER_AGENT = self.configuration['USER_AGENT']
+        self.BBN_URL = self.configuration['BBN_URL']
+        self.HEADERS = {'User-Agent': self.USER_AGENT,
+                        'Referer': self.BBN_URL,
+                        'Origin': self.BBN_URL,
+                        'Host': self.BBN_URL.split('//')[-1]
+                        }
 
     def bbn(self):
         res = []
@@ -31,12 +28,12 @@ class News(App):
         session = requests.Session()
         session.cookies.set('exp_pref', 'AMER')
 
-        session.headers['User-Agent'] = HEADERS['User-Agent']
-        session.headers['Referer'] = HEADERS['Referer']
-        session.headers['Origin'] = HEADERS['Origin']
-        session.headers['Host'] = HEADERS['Host']
+        session.headers['User-Agent'] = self.HEADERS['User-Agent']
+        session.headers['Referer'] = self.HEADERS['Referer']
+        session.headers['Origin'] = self.HEADERS['Origin']
+        session.headers['Host'] = self.HEADERS['Host']
 
-        page = session.get(BBN_URL)
+        page = session.get(self.BBN_URL)
         page.raise_for_status()
 
         soup = BeautifulSoup(page.content, 'html.parser')
@@ -55,7 +52,7 @@ class News(App):
                             valid_link = False
 
                 if valid_link:
-                    item = {'title': str(title).strip(), 'url': BBN_URL + url}
+                    item = {'title': str(title).strip(), 'url': self.BBN_URL + url}
                     res.append(item)
         return res
 

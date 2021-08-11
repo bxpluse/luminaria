@@ -6,9 +6,10 @@ import requests
 from apps.baseapp import App
 from common.enums import APP, Variant
 from common.messenger import Toast
-from constants import CONFIG_MAP, EXCHANGES_DIR, STATIC_DIR, ROOT_DIR
+from constants import EXCHANGES_DIR, STATIC_DIR, ROOT_DIR
+from database.config.global_config_model import GlobalConfigModel
 
-USER_AGENT = CONFIG_MAP['USER_AGENT']
+USER_AGENT = GlobalConfigModel.retrieve('USER_AGENT')
 
 
 class ExchangeUpdater(App):

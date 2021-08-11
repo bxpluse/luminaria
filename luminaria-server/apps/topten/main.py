@@ -5,7 +5,7 @@ from apps.baseapp import App
 from common.cache import Cache
 from common.enums import APP
 from common.timeless import prev_day, is_weekend, day_of_week
-from constants import CONFIG_MAP
+from database.config.local_config_model import LocalConfigModel
 from database.stream.comment_frequency_model import CommentFrequencyModel
 
 
@@ -13,7 +13,7 @@ class TopTen(App):
     APP_ID = APP.TOP_TEN
 
     def __init__(self):
-        cache = Cache(CONFIG_MAP['TOPTEN_CACHE_DURATION_SECS'])
+        cache = Cache(LocalConfigModel.retrieve('TOPTEN_CACHE_DURATION_SECS'))
         super().__init__(cache=cache)
 
     @staticmethod

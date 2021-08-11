@@ -15,9 +15,8 @@ class GlobalConfigModel(ConfigModel):
         table_name = 'GLOBAL_CONFIG'
 
     @staticmethod
-    def retrieve(param):
-        res = GlobalConfigModel.get(GlobalConfigModel.parameter == param)
-        return type_transform(res.value, res.data_type)
+    def retrieve(param, default=None):
+        return ConfigModel.retrieve_config(GlobalConfigModel, param, default)
 
     @staticmethod
     def retrieve_all():

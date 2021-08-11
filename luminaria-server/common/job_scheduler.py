@@ -4,7 +4,7 @@ from enum import Enum
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from common.logger import log, LogLevel
-from constants import CONFIG_MAP
+from database.config.global_config_model import GlobalConfigModel
 from database.stream.executed_job_model import ExecutedJobModel
 
 
@@ -96,9 +96,10 @@ class Job:
 class JobScheduler:
 
     SCHEDULER_NUM = 1
+    SCHEDULER_TIME_ZONE = GlobalConfigModel.retrieve('SCHEDULER_TIME_ZONE')
 
     def __init__(self):
-        self.scheduler = BackgroundScheduler({'apscheduler.timezone': CONFIG_MAP['SCHEDULER_TIME_ZONE']})
+        self.scheduler = BackgroundScheduler({'apscheduler.timezone': JobScheduler.SCHEDULER_TIME_ZONE})
         self.scheduler_num = JobScheduler.SCHEDULER_NUM
         JobScheduler.SCHEDULER_NUM += 1
         self.scheduler.start()

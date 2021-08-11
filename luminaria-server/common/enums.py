@@ -26,6 +26,7 @@ class APP(Enum):
 class DEPENDENCY(Enum):
     BASE = 'base-dependency'
     OVERSEER = 'overseer'
+    CONFIGURATION = 'configuration'
 
 
 class APPTYPE(Enum):

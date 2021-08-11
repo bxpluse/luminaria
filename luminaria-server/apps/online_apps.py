@@ -1,4 +1,4 @@
-from apps.dbeditor.main import DBUtil
+from apps.dbutil.main import DBUtil
 from apps.feeds.main import Feeds
 from apps.finder.main import Finder
 from apps.graphy.main import Graphy

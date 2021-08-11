@@ -5,10 +5,10 @@ from flask_socketio import SocketIO
 from apps.app_manager import AppManager
 from common.logger import log
 from common.messenger import Messenger
-from constants import CONFIG_MAP
+from database.config.global_config_model import GlobalConfigModel
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = CONFIG_MAP['FLASK_SECRET_KEY']
+app.config['SECRET_KEY'] = GlobalConfigModel.retrieve('FLASK_SECRET_KEY')
 socketio = SocketIO(app, cors_allowed_origins="*", cookie=False)
 CORS(app)
 messenger = Messenger(socketio)

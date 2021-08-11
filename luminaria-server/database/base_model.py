@@ -2,6 +2,7 @@ from datetime import datetime
 
 from peewee import *
 
+from common.util import type_transform
 from constants import DB_CONFIG, DB_DYNAMIC, DB_STATIC, DB_STREAM
 
 
@@ -18,6 +19,20 @@ class ConfigModel(Model):
     def regenerate(cls):
         cls.drop_table([cls])
         cls.create_table([cls])
+
+    @staticmethod
+    def retrieve_config(model, param, default):
+        try:
+            res = model.get(model.parameter == param)
+            return type_transform(res.value, res.data_type)
+        except DoesNotExist:
+            if not default:
+                raise Exception('DoesNotExist')
+            return default
+        except OperationalError:
+            if not default:
+                raise Exception('OperationalError')
+            return default
 
 
 class DynamicModel(Model):

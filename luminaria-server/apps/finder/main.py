@@ -4,7 +4,6 @@ from apps.baseapp import App
 from common.abstract_classes.rule import Rule
 from common.cache import Cache
 from common.enums import APP, APPTYPE
-from constants import CONFIG_MAP
 from database.kostore.ko_store import KOStore
 
 
@@ -16,9 +15,9 @@ class Finder(App):
     def __init__(self):
         cache = Cache(30)
         super().__init__(app_type=APPTYPE.STREAMING, cache=cache)
-        auth = tweepy.AppAuthHandler(CONFIG_MAP['TWITTER_APP_KEY'], CONFIG_MAP['TWITTER_APP_SECRET'])
+        auth = tweepy.AppAuthHandler(self.configuration['TWITTER_APP_KEY'], self.configuration['TWITTER_APP_SECRET'])
         self.api = tweepy.API(auth)
-        self.users = CONFIG_MAP['TWITTER_USERS_TO_FETCH_SCHEDULE']
+        self.users = self.configuration['TWITTER_USERS_TO_FETCH_SCHEDULE']
 
         rule = Rule('Schedule Finder', alarmable=False)
         rule.description = 'Try to find a set of schedules'

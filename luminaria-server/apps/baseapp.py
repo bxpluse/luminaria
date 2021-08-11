@@ -4,12 +4,6 @@ from common.logger import LogLevel, log as log_to_db
 from constants import ENV
 
 
-def install_dependency(app_id):
-    if app_id in DEPENDENCY_LIST[DEPENDENCY.OVERSEER]:
-        return DEPENDENCIES[DEPENDENCY.OVERSEER]
-    return None
-
-
 class App:
     """
         Base class for all Apps to inherit from.
@@ -29,7 +23,13 @@ class App:
         self.cache = cache
 
         # Dependencies
-        self.overseer = install_dependency(self.APP_ID)
+        self.overseer = self.install_dependency(DEPENDENCY.OVERSEER)
+        self.configuration = self.install_dependency(DEPENDENCY.CONFIGURATION)
+
+    def install_dependency(self, dependency):
+        if self.APP_ID in DEPENDENCY_LIST[dependency]:
+            return DEPENDENCIES[dependency]
+        return None
 
     def start(self):
         """ Called when an App is run. """

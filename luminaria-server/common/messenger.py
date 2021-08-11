@@ -1,7 +1,8 @@
 from common.enums import Variant
-from constants import CONFIG_MAP
+from database.config.global_config_model import GlobalConfigModel
 
-DEFAULT_DURATION = CONFIG_MAP['MESSAGE_DEFAULT_DURATION']
+
+DEFAULT_DURATION = GlobalConfigModel.retrieve('MESSAGE_DEFAULT_DURATION')
 DEFAULT_VARIANT = Variant.INFO
 
 

@@ -9,7 +9,7 @@ from apps.baseapp import App
 from common.enums import APP, APPSTATUS, APPTYPE
 from common.symbols import load_symbols, load_blacklist, load_whitelist
 from common.util import parse_word
-from constants import CONFIG_MAP, STATIC_DIR, ROOT_DIR
+from constants import STATIC_DIR, ROOT_DIR
 from database.stream.comment_frequency_model import CommentFrequencyModel
 
 
@@ -23,14 +23,14 @@ class RCListener(App):
         self.SYMBOLS = set()
         self.INTERVAL = interval
         self.COMMENT_FREQUENCY_MODEL = CommentFrequencyModel()
-        self.SUBREDDITS = CONFIG_MAP['SUBREDDITS_TO_MONITOR']
-        self.REDDIT = praw.Reddit(client_id=CONFIG_MAP['CLIENT_ID'],
-                                  client_secret=CONFIG_MAP['CLIENT_SECRET'],
+        self.SUBREDDITS = self.configuration['SUBREDDITS_TO_MONITOR']
+        self.REDDIT = praw.Reddit(client_id=self.configuration['CLIENT_ID'],
+                                  client_secret=self.configuration['CLIENT_SECRET'],
                                   user_agent="Test Script")
         self.data = {}  # key=symbol, value=times_mentioned
         self.restore_from_file()
         self.load_preloader()
-        self.scheduler = BackgroundScheduler({'apscheduler.timezone': CONFIG_MAP['SCHEDULER_TIME_ZONE']})
+        self.scheduler = BackgroundScheduler({'apscheduler.timezone': self.configuration['SCHEDULER_TIME_ZONE']})
         self.scheduler.start()
 
     def run(self):
