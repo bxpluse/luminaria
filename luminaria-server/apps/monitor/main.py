@@ -20,6 +20,7 @@ class RCListener(App):
     def __init__(self, interval=15):
 
         super().__init__(app_type=APPTYPE.STREAMING)
+        self.first_start = True
         self.SYMBOLS = set()
         self.INTERVAL = interval
         self.COMMENT_FREQUENCY_MODEL = CommentFrequencyModel()
@@ -35,20 +36,19 @@ class RCListener(App):
 
     def run(self):
         super().start()
-        self.show_config()
         job = self.scheduler.add_job(self.commit_to_db, trigger='cron', minute='*/' + str(self.INTERVAL))
         if self.first_start:
             self.log('Stream starting up with schedule: ' + str(self.scheduler.get_jobs()))
+            self.show_config()
         try:
             self.stream()
         except Exception as e:
             self.status = APPSTATUS.ERROR
             self.first_start = False
             job.remove()
-            self.log("ERROR: " + (repr(e)))
-            self.log("Jobs after catching exception: " + str(self.scheduler.get_jobs()))
-            self.log("Restarting ...")
-            timer = threading.Timer(30, self.run)
+            self.log('ERROR: ' + (repr(e)))
+            self.log('Retrying in {0} secs'.format(str(self.configuration['RC_SECS_BEFORE_RETRY'])))
+            timer = threading.Timer(self.configuration['RC_SECS_BEFORE_RETRY'], self.run)
             timer.start()
 
     def show_config(self):
