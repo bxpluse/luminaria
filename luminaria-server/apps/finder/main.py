@@ -4,6 +4,8 @@ from apps.baseapp import App
 from common.abstract_classes.rule import Rule
 from common.cache import Cache
 from common.enums import APP, APPTYPE
+from common.logger import LogLevel
+from common.ocr import image_to_text
 from database.kostore.ko_store import KOStore
 
 
@@ -47,6 +49,11 @@ class Finder(App):
         if 'schedules' not in obj:
             obj['schedules'] = {}
 
+        checked_url_key = Finder.KO_KEY_VTB_SCH + '>' + 'CHECKED_URLS'
+        checked_urls_obj = KOStore.get(checked_url_key)
+        if 'checked' not in checked_urls_obj:
+            checked_urls_obj['checked'] = {}
+
         tweets = self.api.user_timeline(screen_name=user,
                                         count=200,
                                         tweet_mode='extended',
@@ -54,13 +61,25 @@ class Finder(App):
                                         exclude_replies=True,
                                         )
         for tweet in tweets:
-            if 'schedule' in tweet.full_text.lower():
-                if 'media' in tweet.entities:
-                    media_urls = []
-                    for image in tweet.entities['media']:
-                        media_urls.append(image['media_url'])
+            if 'media' in tweet.entities:
+                media_urls = []
+                for image in tweet.entities['media']:
+                    media_urls.append(image['media_url'])
+                if 'schedule' in tweet.full_text.lower():
                     obj['schedules'][tweet.id] = {'tweet_created_at': tweet.created_at, 'media_urls': media_urls}
+                else:
+                    for url in media_urls:
+                        if url not in checked_urls_obj['checked']:
+                            try:
+                                text = image_to_text(url + ':small')
+                                if ('PST' in text or 'PDT' in text) and 'JST' in text:
+                                    obj['schedules'][tweet.id] = {'tweet_created_at': tweet.created_at,
+                                                                  'media_urls': media_urls}
+                                checked_urls_obj['checked'][url] = 1
+                            except Exception as e:
+                                self.log('Error: ' + str(e), level=LogLevel.ERROR)
 
+        KOStore.put(checked_url_key, checked_urls_obj)
         KOStore.put(key, obj)
 
     def execute(self, command, **kwargs):
