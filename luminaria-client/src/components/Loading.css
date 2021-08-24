@@ -1,0 +1,9 @@
+.loading-div {
+    position: relative;
+}
+
+.loading-spinner {
+    position: absolute;
+    top: 60px;
+    left: 125px;
+}

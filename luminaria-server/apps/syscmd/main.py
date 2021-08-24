@@ -20,6 +20,10 @@ class Syscmd(App):
         if command == 'refresh-apps':
             self.refresh_apps()
             return {'<TOAST>': Toast('Apps Refreshed', duration=2.5, variant=Variant.SUCCESS)}
-        if command == 'refresh-config':
+        elif command == 'refresh-config':
             self.configuration.refresh_config_map()
             return {'<TOAST>': Toast('Config Refreshed', duration=2.5, variant=Variant.SUCCESS)}
+        elif command == 'fetch-url':
+            url = kwargs.get('url')
+            if url == 'LOADING_SPINNER_URL':
+                return {'url': self.configuration[url]}
