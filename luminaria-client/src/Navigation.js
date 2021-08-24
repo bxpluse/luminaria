@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import {BrowserRouter as Router, Link, Route, Switch, useHistory, useLocation} from 'react-router-dom';
+import {BrowserRouter as Router, Link, Redirect, Route, Switch, useHistory, useLocation} from 'react-router-dom';
 import Select from 'react-select'
 import DBUtil from './apps/dbutil/DBUtil';
 import Feeds from "./apps/feeds/Feeds";
@@ -22,10 +22,12 @@ import Updater from './apps/updater/Updater';
 import GearLink from './components/GearLink';
 import Graph from './components/Graph';
 import Socket from './components/Socket';
+import NotFound404 from './pages/404';
 import Header from './pages/Header';
 import Home from './pages/Home';
 import Request from './Requests';
 import AppUtil from './util/AppUtil';
+
 
 function Paths() {
 
@@ -39,7 +41,7 @@ function Paths() {
                 for (const [, app] of Object.entries(data)) {
                     applications.push(app);
                 }
-                applications.sort(function(a, b){
+                applications.sort(function (a, b) {
                     return a.order - b.order;
                 });
                 setApps(applications);
@@ -61,56 +63,60 @@ function Paths() {
             <div className='content py-5 bg-light'>
                 <Switch>
                     <Route path='/graph'>
-                        <Graph />
+                        <Graph/>
                     </Route>
                     <Route path='/updater'>
-                        <Updater />
+                        <Updater/>
                     </Route>
                     <Route path='/logs'>
-                        <LogViewer apps={apps} />
+                        <LogViewer apps={apps}/>
                     </Route>
                     <Route path='/rc-streamer'>
-                        <RCStreamer />
+                        <RCStreamer/>
                     </Route>
                     <Route path='/dbutil'>
-                        <DBUtil />
+                        <DBUtil/>
                     </Route>
                     <Route path='/ipos'>
-                        <IPOStatus />
+                        <IPOStatus/>
                     </Route>
                     <Route path='/top-ten'>
-                        <TopTen />
+                        <TopTen/>
                     </Route>
                     <Route path='/news'>
-                        <News />
+                        <News/>
                     </Route>
                     <Route path='/notes'>
-                        <Notes />
+                        <Notes/>
                     </Route>
                     <Route path='/pool'>
-                        <Pool />
+                        <Pool/>
                     </Route>
                     <Route path='/health-check'>
-                        <HealthCheck />
+                        <HealthCheck/>
                     </Route>
                     <Route path='/signal'>
-                        <Signal />
+                        <Signal/>
                     </Route>
                     <Route path='/graphy'>
-                        <Graphy />
+                        <Graphy/>
                     </Route>
                     <Route path='/syscmd'>
-                        <Syscmd />
+                        <Syscmd/>
                     </Route>
                     <Route path='/feeds'>
-                        <Feeds />
+                        <Feeds/>
                     </Route>
                     <Route path='/finder'>
-                        <Finder />
+                        <Finder/>
                     </Route>
-                    <Route path='/'>
-                        <Home apps={apps} />
+                    <Route exact path='/'>
+                        <Home apps={apps}/>
                     </Route>
+                    <Route path='/404'>
+                        <NotFound404/>
+                    </Route>
+                    <Redirect to='/404'/>
                 </Switch>
             </div>
         </>
@@ -128,7 +134,8 @@ function Navigation() {
 function CustomNavBar(props) {
 
     const [fireworks, setFireworks] = useState({
-        fire() {}
+        fire() {
+        }
     });
 
     useEffect(() => {
@@ -138,10 +145,10 @@ function CustomNavBar(props) {
     }, []);
 
     const links = [];
-    for(let i = 0; i < props.apps.length; i++){
+    for (let i = 0; i < props.apps.length; i++) {
         const app = props.apps[i];
         const is_link = app.url.includes('https');
-        if(is_link){
+        if (is_link) {
             links.push(
                 <NavDropdown.Item
                     key={'item_' + i}
@@ -154,7 +161,7 @@ function CustomNavBar(props) {
             )
         }
     }
-    if(links.length > 0){
+    if (links.length > 0) {
         links.pop();
     }
 
@@ -168,12 +175,13 @@ function CustomNavBar(props) {
             <Nav>
                 <Nav.Link
                     onClick={() => {
-                        for(let i = 0; i < 6; i++){
+                        for (let i = 0; i < 6; i++) {
                             setTimeout(
                                 () => fireworks.fire(),
                                 Math.random() * 750
                             );
-                        }}
+                        }
+                    }
                     }>Festival
                 </Nav.Link>
             </Nav>
@@ -199,15 +207,15 @@ function Search(props) {
     const [selectValue, setSelectValue] = useState(null);
     const history = useHistory();
     const options = [];
-    for(let i = 0; i < props.apps.length; i++){
+    for (let i = 0; i < props.apps.length; i++) {
         const app = props.apps[i];
         options.push(
-            { value: app.name, label: app.name, url: app['link_to'] || app.url, is_link: app.url.includes('https')}
+            {value: app.name, label: app.name, url: app['link_to'] || app.url, is_link: app.url.includes('https')}
         )
     }
 
     const handleChange = (option) => {
-        if(option.is_link) {
+        if (option.is_link) {
             window.open(option.url);
         } else {
             history.push(option.url);
@@ -217,7 +225,7 @@ function Search(props) {
 
     return (
         <div style={{width: '200px'}}>
-            <Select value={selectValue} options={options} onChange={handleChange} width='250px' />
+            <Select value={selectValue} options={options} onChange={handleChange} width='250px'/>
         </div>
     );
 }
