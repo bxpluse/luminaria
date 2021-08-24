@@ -3,9 +3,10 @@ from common.enums import APP, Variant
 from common.messenger import Toast
 from database.config.apps_model import AppsModel
 
+ALLOWED_URLS = ['LOADING_SPINNER_URL', '404_IMAGE_URL']
+
 
 class Syscmd(App):
-
     APP_ID = APP.SYSCMD
 
     def __init__(self):
@@ -25,5 +26,5 @@ class Syscmd(App):
             return {'<TOAST>': Toast('Config Refreshed', duration=2.5, variant=Variant.SUCCESS)}
         elif command == 'fetch-url':
             url = kwargs.get('url')
-            if url == 'LOADING_SPINNER_URL':
+            if url in set(ALLOWED_URLS):
                 return {'url': self.configuration[url]}
