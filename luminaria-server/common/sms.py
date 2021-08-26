@@ -35,9 +35,12 @@ def send(msg, requester=None, when=When.NOW):
             send_sms(msg)
             log_sms('SENT', log_message)
         elif when == When.NEXT:
+            log(app_name='sms', message='NEXT msg: {0}; batch: {1}; batch size: {2}'
+                .format(msg, str(batch_messages), str(len(batch_messages))), level=LogLevel.DEBUG)
             if len(batch_messages) == 0:
                 secs = LocalConfigModel.retrieve('SMS_BATCH_WAIT_SECS', default=60)
                 Timer(secs, send, ('', None, When.BATCH)).start()
+                log(app_name='sms', message='NEXT starting timer in {0} secs'.format(str(secs)), level=LogLevel.DEBUG)
             batch_messages.append(msg)
         elif when == When.BATCH:
             concat_msg = ''

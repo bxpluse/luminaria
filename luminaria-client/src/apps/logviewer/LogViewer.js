@@ -3,28 +3,28 @@ import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/Col'
 import Container from "react-bootstrap/Container";
 import Form from 'react-bootstrap/Form'
-import Jumbotron from "react-bootstrap/Jumbotron";
+import Jumbotron from 'react-bootstrap/Jumbotron';
 import Row from 'react-bootstrap/Row'
 import Tab from 'react-bootstrap/Tab'
 import Tabs from 'react-bootstrap/Tabs'
-import MyButton from "../../components/MyButton";
-import Request from "../../Requests";
-import JobUtil from "./JobUtil";
+import MyButton from '../../components/MyButton';
+import Request from '../../Requests';
+import JobUtil from './JobUtil';
 import './LogViewer.css'
 
 
 function LogViewer(props) {
     return (
-            <Container id='log-viewer'>
-                <Tabs defaultActiveKey="Logs">
-                    <Tab eventKey="Logs" title="Logs">
-                        <LogTab apps={props.apps}/>
-                    </Tab>
-                    <Tab eventKey="Jobs" title="Jobs">
-                        <JobTab apps={props.apps}/>
-                    </Tab>
-                </Tabs>
-            </Container>
+        <Container id='log-viewer'>
+            <Tabs defaultActiveKey='Logs'>
+                <Tab eventKey='Logs' title='Logs'>
+                    <LogTab apps={props.apps}/>
+                </Tab>
+                <Tab eventKey="Jobs" title="Jobs">
+                    <JobTab apps={props.apps}/>
+                </Tab>
+            </Tabs>
+        </Container>
     );
 }
 
@@ -37,7 +37,8 @@ function LogTab(props) {
     const [checkedState, setCheckedState] = useState(
         new Array(MAX_APPS).fill(true)
     );
-    const apps = ['Flask'];
+    const apps = ['Flask', 'sms'];
+    const numInitialApps = apps.length;
     const links = new Set();
 
     const [selectedLogLevel, setSelectedLogLevel] = useState(2);
@@ -60,7 +61,7 @@ function LogTab(props) {
         } else {
             getLogs(Array.from(appsToSearch), selectedLogLevel).then(lines => {
                 setLogs(lines);
-                scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+                scrollRef.current.scrollIntoView({behavior: 'smooth'});
                 scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
             });
         }
@@ -83,19 +84,26 @@ function LogTab(props) {
     }
 
     const checkboxes = [];
-    checkboxes.push(
-        <Form.Check key="FLASK" className="ml-3" type="checkbox" name="FLASK"
-                    label="FLASK" checked={checkedState[0]} onChange={() => handleOnChange(0)}/>
-    )
-    for(let i = 0; i < props.apps.length; i++){
+    for (let i = 0; i < apps.length; i++) {
+        const app = apps[i];
+        checkboxes.push(
+            <Form.Check key={app} className='ml-3' type='checkbox' name={app}
+                        label={app} checked={checkedState[i]} onChange={() => handleOnChange(i)}
+            />
+        )
+    }
+
+    for (let i = 0; i < props.apps.length; i++) {
         const app = props.apps[i];
         const is_link = app.url.includes('https');
-        const stateIdx = i + 1;
+        const stateIdx = i + numInitialApps;
         apps.push(app.id);
-        if(!is_link){
+        if (!is_link) {
             checkboxes.push(
-                <Form.Check key={app.id} className="ml-3" type="checkbox" name={app.id}
-                            label={app.name} checked={checkedState[stateIdx]} onChange={() => handleOnChange(stateIdx)}/>
+                <Form.Check key={app.id} className='ml-3' type='checkbox' name={app.id}
+                            label={app.name}
+                            checked={checkedState[stateIdx]} onChange={() => handleOnChange(stateIdx)}
+                />
             )
         } else {
             links.add(stateIdx);
@@ -105,14 +113,14 @@ function LogTab(props) {
     return (
         <Jumbotron>
             <h3>Logviewer</h3>
-            <br />
+            <br/>
             <Container>
                 <MyButton text='Toggle' variant='secondary' onClick={() => onToggle()}/>
                 <Row>
                     {checkboxes}
                 </Row>
-                <br />
-                <Form.Group  as={Row}>
+                <br/>
+                <Form.Group as={Row}>
                     <Form.Label column>
                         Log Level >=
                     </Form.Label>
@@ -127,13 +135,13 @@ function LogTab(props) {
                     </Col>
                 </Form.Group>
             </Container>
-            <br />
-            <Button onClick={onClick} variant="info">Tail 100</Button>
+            <br/>
+            <Button onClick={onClick} variant='info'>Tail 100</Button>
             <br/> <br/> <br/>
-            <Form className={'shadow-sm'}>
+            <Form className='shadow-sm'>
                 <Form.Group>
                     <Form.Label>Log.txt</Form.Label>
-                    <Form.Control ref={scrollRef} as="textarea" rows="16" readOnly={true} value={logs}/>
+                    <Form.Control ref={scrollRef} as='textarea' rows='16' readOnly={true} value={logs}/>
                 </Form.Group>
             </Form>
         </Jumbotron>
@@ -153,8 +161,8 @@ function JobTab() {
     return (
         <Jumbotron>
             <h3>Jobs</h3>
-            <br />
-            <Button onClick={onClick} variant="info">Tail 100</Button>
+            <br/>
+            <Button onClick={onClick} variant='info'>Tail 100</Button>
             <br/> <br/> <br/>
             {JobUtil.convertJobRowsToTable(executedJobs)}
         </Jumbotron>
@@ -163,7 +171,7 @@ function JobTab() {
 
 async function getLogs(appsToSearch, selectedLogLevel) {
     const levels = [];
-    for(let i = selectedLogLevel; i <= 5; i++){
+    for (let i = selectedLogLevel; i <= 5; i++) {
         levels.push(i);
     }
     const body = {numLines: 100, apps: appsToSearch, levels: levels};
