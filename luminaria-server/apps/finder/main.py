@@ -68,16 +68,17 @@ class Finder(App):
                 if 'schedule' in tweet.full_text.lower():
                     obj['schedules'][tweet.id] = {'tweet_created_at': tweet.created_at, 'media_urls': media_urls}
                 else:
-                    for url in media_urls:
-                        if url not in checked_urls_obj['checked']:
-                            try:
-                                text = image_to_text(url + ':small')
-                                if ('PST' in text or 'PDT' in text) and 'JST' in text:
-                                    obj['schedules'][tweet.id] = {'tweet_created_at': tweet.created_at,
-                                                                  'media_urls': media_urls}
-                                checked_urls_obj['checked'][url] = 1
-                            except Exception as e:
-                                self.log('Error: ' + str(e), level=LogLevel.ERROR)
+                    if self.configuration['FINDER_PIC_IDENTIFIER']:
+                        for url in media_urls:
+                            if url not in checked_urls_obj['checked']:
+                                try:
+                                    text = image_to_text(url + ':small')
+                                    if ('PST' in text or 'PDT' in text) and 'JST' in text:
+                                        obj['schedules'][tweet.id] = {'tweet_created_at': tweet.created_at,
+                                                                      'media_urls': media_urls}
+                                    checked_urls_obj['checked'][url] = 1
+                                except Exception as e:
+                                    self.log('Error: ' + str(e), level=LogLevel.ERROR)
 
         KOStore.put(checked_url_key, checked_urls_obj)
         KOStore.put(key, obj)

@@ -17,7 +17,7 @@ def str_to_float(num: str):
     return float("{:.4f}".format(float(num)))
 
 
-def flaot_to_float(num: float):
+def float_to_float(num: float):
     return float("{:.4f}".format(num))
 
 
@@ -27,7 +27,10 @@ def type_transform(val, data_type):
     elif data_type == 'float':
         val = float(val)
     elif data_type == 'bool':
-        val = bool(val)
+        if val.upper() in {'TRUE', '1'}:
+            val = True
+        else:
+            val = False
     elif data_type == 'list':
         val = eval(val)
     return val

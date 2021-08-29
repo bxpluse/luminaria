@@ -3,8 +3,9 @@ from enum import Enum
 
 import requests
 
-from common.util import str_to_float, flaot_to_float
-from constants import CONFIG_MAP, DB_CONFIG
+from common.util import str_to_float, float_to_float
+from constants import DB_CONFIG
+from database.config.global_config_model import GlobalConfigModel
 from database.timeseries.daily_adjusted_model import TimeSeriesDailyAdjustedModel
 
 
@@ -27,7 +28,7 @@ def time_series_adjusted_download(symbol, update=False):
     url = 'https://www.alphavantage.co/query?' \
           'function=TIME_SERIES_DAILY_ADJUSTED&' \
           'symbol={0}&outputsize={1}&datatype={2}&apikey={3}' \
-        .format(symbol, outputsize, datatype, CONFIG_MAP['ALPHA_VANTAGE_KEY'])
+        .format(symbol, outputsize, datatype, GlobalConfigModel.retrieve('ALPHA_VANTAGE_KEY'))
 
     r = requests.get(url)
 
@@ -53,9 +54,9 @@ def time_series_adjusted_download(symbol, update=False):
                 low=low,
                 close=close,
 
-                adjusted_open=flaot_to_float(m_open * percent),
-                adjusted_high=flaot_to_float(high * percent),
-                adjusted_low=flaot_to_float(low * percent),
+                adjusted_open=float_to_float(m_open * percent),
+                adjusted_high=float_to_float(high * percent),
+                adjusted_low=float_to_float(low * percent),
                 adjusted_close=adjusted_close,
 
                 volume=int(value['6. volume']),
