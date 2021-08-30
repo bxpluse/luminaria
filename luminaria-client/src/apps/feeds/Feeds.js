@@ -34,9 +34,8 @@ function Feeds() {
         });
     }
 
-    let entryCard = [];
 
-    function dismiss(key){
+    function dismiss(key) {
         Request.POST_JSON('/exec/feeds/dismiss', {id: key}).then(data => {
             setEntries(data['entries']);
         });
@@ -50,25 +49,36 @@ function Feeds() {
         </Tooltip>
     );
 
-    for (const entry of entries){
-        if (entry.show) {
-            entryCard.push(
-                <Card key={entry.link}>
-                    <Card.Body>
-                        <Card.Title>
+    const entryCards = entries.map(entry => {
+        const metadata = JSON.parse(entry.metadata);
+        let extra;
+        extra = 'Comments: ' + metadata['num_comments']
+            + ' | Score: ' + metadata['score']
+            + ' | Ratio: ' + metadata['upvote_ratio'];
+        return (
+            <Card key={entry.link}>
+                <Card.Body>
+                    <Card.Title>
+                        <span>
+                            [{StringUtil.capitalize(entry.site)}] &nbsp;
                             <a href={entry.link}>{StringUtil.stripPeriod(entry.title)}</a>
-                            <DismissButton onClick={() => dismiss(entry.id)}/>
-                        </Card.Title>
-                        <Card.Subtitle className='mb-2 text-muted'>
-                            {DateUtil.parse(entry['published_datetime'])} &nbsp;
-                            <InfoSymbol onHover={renderTooltip(entry)}/>
-                        </Card.Subtitle>
-                        <Card.Text>{entry.summary}</Card.Text>
-                    </Card.Body>
-                </Card>
-            );
-        }
-    }
+                        </span>
+                        <DismissButton onClick={() => dismiss(entry.id)}/>
+                    </Card.Title>
+                    <Card.Subtitle className='mb-2 text-muted'>
+                        {DateUtil.parse(entry['published_datetime'])} &nbsp;
+                        <InfoSymbol onHover={renderTooltip(entry)}/>
+                    </Card.Subtitle>
+                    {Object.keys(metadata).length > 0 ?
+                        <Card.Subtitle className='mt-2 mb-2 text-muted'>
+                            {extra}
+                        </Card.Subtitle> : null
+                    }
+                    <Card.Text>{entry.summary}</Card.Text>
+                </Card.Body>
+            </Card>
+        )
+    }) ?? [];
 
     return (
         <Container>
@@ -78,7 +88,7 @@ function Feeds() {
                 columnClassName='masonry-grid_column'>
                 <MyButton text='Update Feeds' onClick={() => updateFeeds()}/>
                 <br/><br/>
-                {entryCard.length === 0 && pageLoaded ? <h2>No Unread Feeds</h2> : entryCard}
+                {entryCards.length === 0 && pageLoaded ? <h2>No Unread Feeds</h2> : entryCards}
             </Masonry>
         </Container>
     );

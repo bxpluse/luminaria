@@ -27,6 +27,7 @@ class DEPENDENCY(Enum):
     BASE = 'base-dependency'
     OVERSEER = 'overseer'
     CONFIGURATION = 'configuration'
+    PRAW_WRAPPER = 'praw-wrapper'
 
 
 class APPTYPE(Enum):

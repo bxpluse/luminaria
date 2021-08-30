@@ -25,6 +25,7 @@ class App:
         # Dependencies
         self.overseer = self.install_dependency(DEPENDENCY.OVERSEER)
         self.configuration = self.install_dependency(DEPENDENCY.CONFIGURATION)
+        self.praw_wrapper = self.install_dependency(DEPENDENCY.PRAW_WRAPPER)
 
     def install_dependency(self, dependency):
         if self.APP_ID in DEPENDENCY_LIST[dependency]:

@@ -1,8 +1,12 @@
+import json
 import os
 
 from peewee import SqliteDatabase
 
 from common.enums import ENVIRONMENT
+
+# Consts
+EMPTY_JSON_DICT = json.dumps({})
 
 # Directories
 STATIC_DIR = 'static'
