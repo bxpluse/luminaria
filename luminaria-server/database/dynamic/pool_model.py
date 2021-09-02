@@ -6,7 +6,7 @@ from playhouse.shortcuts import model_to_dict
 from common.transformer import model_to_dict_wrapper
 from database.base_model import DynamicModel
 
-DATETIME_KEYS = ['datetime_created', 'date', 'time', 'expiry_date']
+DATETIME_KEYS = ['date', 'time', 'expiry_date']
 
 
 class PoolModel(DynamicModel):

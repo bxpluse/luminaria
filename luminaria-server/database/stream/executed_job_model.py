@@ -35,7 +35,7 @@ class ExecutedJobModel(StreamModel):
         query = ExecutedJobModel.select() \
             .order_by(ExecutedJobModel.datetime_created.desc()) \
             .limit(num_lines)
-        return [model_to_dict_wrapper(line, keys=['datetime_created']) for line in query]
+        return [model_to_dict_wrapper(line) for line in query]
 
     @staticmethod
     def tail_by_name(name, num_lines):
@@ -43,7 +43,7 @@ class ExecutedJobModel(StreamModel):
             .where(ExecutedJobModel.name == name) \
             .order_by(ExecutedJobModel.datetime_created.desc()) \
             .limit(num_lines)
-        return [model_to_dict_wrapper(line, keys=['datetime_created']) for line in query]
+        return [model_to_dict_wrapper(line) for line in query]
 
 
 if __name__ == "__main__":

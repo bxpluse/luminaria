@@ -28,7 +28,7 @@ class FeedEntryModel(DynamicModel):
             .where(FeedEntryModel.show) \
             .limit(100) \
             .order_by(FeedEntryModel.published_datetime.asc())
-        return [augment(model_to_dict_wrapper(item, keys=['datetime_created'])) for item in query]
+        return [augment(model_to_dict_wrapper(item)) for item in query]
 
     @staticmethod
     def dismiss(id_):

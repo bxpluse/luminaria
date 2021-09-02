@@ -16,9 +16,9 @@ class Notes(App):
         NoteModel.save_note(content)
 
     @staticmethod
-    def load():
-        content = str(NoteModel.load_note())
-        return content
+    def load(offset):
+        note = NoteModel.load_notes(offset)
+        return note
 
     def execute(self, command, **kwargs):
         if command == 'save':
@@ -27,4 +27,5 @@ class Notes(App):
             self.save(content)
             return {}
         elif command == 'load':
-            return {'content': self.load()}
+            offset = kwargs.get('offset')
+            return {'note': self.load(offset)}
