@@ -82,6 +82,7 @@ class Finder(App):
 
         KOStore.put(checked_url_key, checked_urls_obj)
         KOStore.put(key, obj)
+        return 'Success'
 
     def execute(self, command, **kwargs):
         if command == 'fetch-schedules':

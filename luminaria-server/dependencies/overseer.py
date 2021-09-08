@@ -1,6 +1,7 @@
 from common.enums import DEPENDENCY
-from dependencies.base_dependency import Dependency
+from common.logger import log
 from common.util import gen_id
+from dependencies.base_dependency import Dependency
 
 
 class Overseer(Dependency):
@@ -15,6 +16,9 @@ class Overseer(Dependency):
         rule.id = gen_id()
         self.rules.append(rule)
         self.rules_map[rule.id] = rule
+        subrules = rule.scheduler.get_str_jobs()
+        log('overseer', 'Running rule id: [{0}] name: [{1}] with [{2}] subrules. Subrules: {3}'
+            .format(rule.id, rule.name, len(subrules), subrules))
 
     def suppress(self, rule_id, is_suppressed):
         self.rules_map[rule_id].suppressed = is_suppressed

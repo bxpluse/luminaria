@@ -37,7 +37,7 @@ function LogTab(props) {
     const [checkedState, setCheckedState] = useState(
         new Array(MAX_APPS).fill(true)
     );
-    const apps = ['Flask', 'sms'];
+    const apps = ['Flask', 'sms', 'overseer'];
     const numInitialApps = apps.length;
     const links = new Set();
 
