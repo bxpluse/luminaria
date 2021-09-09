@@ -1,9 +1,12 @@
+import json
 import os
 from datetime import date, datetime
 
 from apps.baseapp import App
 from common.enums import APP
+from common.logger import LogLevel
 from constants import ROOT_DIR
+from database.kostore.ko_store import KOStore
 
 
 class DBUtil(App):
@@ -27,3 +30,16 @@ class DBUtil(App):
         if command == 'file-name':
             db_name = kwargs['dbName']
             return {'filename': self.get_copy_name(db_name)}
+        elif command == 'fetch-all-ko-md':
+            return {'metadatas': KOStore.get_all_metadata()}
+        elif command == 'put-ko-md':
+            key = kwargs['key']
+            value = kwargs['value']
+            try:
+                dict_value = json.loads(value)
+                KOStore.update_metadata(key, dict_value)
+                return {'success': True}
+            except json.decoder.JSONDecodeError:
+                self.log('KO metadata update failed for key [{0}] value [{1}]'
+                         .format(key, value), level=LogLevel.ERROR)
+                return {'success': False}

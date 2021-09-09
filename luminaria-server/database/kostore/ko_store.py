@@ -8,7 +8,6 @@ from database.kostore.ko_store_model import KOStoreModel
 
 
 class KOStore:
-
     METADATA = '<!METADATA>'
 
     def __init__(self):
@@ -57,7 +56,29 @@ class KOStore:
         try:
             query = KOStoreModel.get(KOStoreModel.key == key)
             d = model_to_dict_unstringify(query, keys=['datetime_created', 'datetime_updated'])
-            metadata = {KOStore.METADATA : d['metadata']}
+            metadata = {KOStore.METADATA: d['metadata']}
             return {**d['value'], **metadata}
         except DoesNotExist:
             return {}
+
+    @staticmethod
+    def get_all_metadata():
+        query = KOStoreModel.select()
+        metadatas = [model_to_dict_unstringify(row, keys=['datetime_created', 'datetime_updated']) for row in query]
+        for md in metadatas:
+            del md['value']
+        return metadatas
+
+    @staticmethod
+    def update_metadata(key, value):
+        if type(value) == str:
+            try:
+                value = json.loads(value)
+            except json.decoder.JSONDecodeError:
+                raise 'Error: KOStore update_metadata failed due to invalid json'
+        if type(value) == dict:
+            value = json.dumps(value)
+        query = (KOStoreModel
+                 .update({KOStoreModel.metadata: value})
+                 .where(KOStoreModel.key == key))
+        query.execute()
