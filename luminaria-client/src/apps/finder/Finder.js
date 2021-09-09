@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
+import {Tabs} from 'react-bootstrap';
 import Card from 'react-bootstrap/Card'
 import Container from 'react-bootstrap/Container';
+import Tab from 'react-bootstrap/Tab';
 import Masonry from 'react-masonry-css';
 import ExternalLink from '../../components/ExternalLink';
 import Request from '../../Requests';
@@ -16,37 +18,45 @@ function Finder() {
         });
     }, []);
 
-
-    let schedulesCard = [];
-    for (const schedule of schedules){
-        if (schedule === undefined || schedule['schedules'] === undefined) {
+    const scheduleTabs = {};
+    for (const schedule of schedules) {
+        if (schedule === undefined || schedule['latest'] === undefined) {
             continue;
         }
 
-        let maxKey = '0';
-        let maxUrl = '';
+        const latest = schedule['latest'];
+        const metadata = schedule['<!METADATA>'];
+        const tweetId = latest['tweet_id'];
+        const url = latest['media_urls'][0];
 
-        for (const [key, value] of Object.entries(schedule['schedules'])) {
-            if (key > maxKey) {
-                maxKey = key;
-                maxUrl = value['media_urls'][0];
-            }
+        const tab = metadata['tab'] || 'Unknown';
+        if (!(tab in scheduleTabs)) {
+            scheduleTabs[tab] = [];
         }
 
-        schedulesCard.push(
+        scheduleTabs[tab].push(
             <Card key={schedule.name}>
                 <Card.Body>
                     <Card.Title>
                         <span>
-                            <ExternalLink symbol={schedule.name} link={schedule['<!METADATA>']['slink']}/>
-                            <ExternalLink symbol='🔗' link={'https://twitter.com/i/status/' + maxKey}/>
+                            <ExternalLink symbol={schedule.name} link={metadata['slink']}/>
+                            <ExternalLink symbol='🔗' link={'https://twitter.com/i/status/' + tweetId}/>
                         </span>
                     </Card.Title>
-                    <Card.Img variant='bottom' src={maxUrl}/>
+                    <Card.Img variant='bottom' src={url}/>
                 </Card.Body>
             </Card>
         );
     }
+
+    const tabs = [];
+    Object.entries(scheduleTabs).forEach(([key, value]) => {
+        tabs.push(
+            <Tab key={key} eventKey={key} title={key}>
+                {value}
+            </Tab>
+        );
+    })
 
     return (
         <Container>
@@ -54,7 +64,9 @@ function Finder() {
                 breakpointCols={1}
                 className='masonry-grid masonry-grid-extra-margin'
                 columnClassName='masonry-grid_column'>
-                {schedulesCard}
+                <Tabs>
+                    {tabs}
+                </Tabs>
             </Masonry>
         </Container>
     );

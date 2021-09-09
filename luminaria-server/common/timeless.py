@@ -6,6 +6,35 @@ TIME_FORMAT = '%H:%M:%S'
 DATETIME_FORMAT = '{0} {1}'.format(DATE_FORMAT, TIME_FORMAT)
 
 
+class Interval:
+
+    def __init__(self, second=-1, minute=-1, hour=-1):
+        self.second = int(second)
+        self.minute = int(minute)
+        self.hour = int(hour)
+
+    def increment_15_mins(self):
+        """
+        :return: Increment interval by 15 mins
+        """
+        if self.hour < 0 or self.minute < 0:
+            raise Exception('Interval input is incorrect.')
+
+        self.minute += 15
+        if self.minute >= 60:
+            self.minute -= 60
+            self.hour += 1
+
+        if self.hour >= 24:
+            self.hour -= 24
+
+    def __eq__(self, other):
+        return self.second == other.second and self.minute == other.minute and self.hour == other.hour
+
+    def __str__(self):
+        return 'Interval(hour={0}, minute={1}, second={2})'.format(self.hour, self.minute, self.second)
+
+
 def months_diff(from_date, to_date):
     """
     Returns the number of months bewterrn from and to.
