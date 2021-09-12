@@ -6,7 +6,7 @@ import Tab from 'react-bootstrap/Tab';
 import Masonry from 'react-masonry-css';
 import ExternalLink from '../../components/ExternalLink';
 import Request from '../../Requests';
-
+import DictUtil from '../../util/DictUtil';
 
 function Finder() {
 
@@ -50,7 +50,7 @@ function Finder() {
     }
 
     const tabs = [];
-    Object.entries(scheduleTabs).forEach(([key, value]) => {
+    Object.entries(DictUtil.sort(scheduleTabs)).forEach(([key, value]) => {
         tabs.push(
             <Tab key={key} eventKey={key} title={key}>
                 {value}

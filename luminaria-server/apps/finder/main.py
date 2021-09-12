@@ -15,7 +15,7 @@ class Finder(App):
     KO_KEY_VTB_SCH = 'VTB_SCH'
 
     def __init__(self):
-        cache = Cache(30)
+        cache = Cache(60)
         super().__init__(app_type=APPTYPE.STREAMING, cache=cache)
         auth = tweepy.AppAuthHandler(self.configuration['TWITTER_APP_KEY'], self.configuration['TWITTER_APP_SECRET'])
         self.api = tweepy.API(auth)
@@ -96,16 +96,24 @@ class Finder(App):
 
     def execute(self, command, **kwargs):
         if command == 'fetch-schedules':
+            keys = [Finder.KO_KEY_VTB_SCH + ':' + user for user in self.users]
             list_of_schedules = []
-            for user in self.users:
-                res = KOStore.get(Finder.KO_KEY_VTB_SCH + ':' + user)
-                if len(res) < 3:
+            res = KOStore.get_vals(keys)
+            for key, value in res.items():
+                # Allow only non-empty values through
+                if len(value) < 3:
                     continue
-                if 'schedules' in res:
-                    del res['schedules']
-                list_of_schedules.append(res)
-                res['latest']['tweet_id'] = str(res['latest']['tweet_id'])
+                # Remove schedules as it grows to infinity
+                if 'schedules' in value:
+                    del value['schedules']
+                # Convert tweet_id from int to string to prevent floating point error
+                value['latest']['tweet_id'] = str(value['latest']['tweet_id'])
+                list_of_schedules.append(value)
+
+            # Sort by order if the key exists
+            list_of_schedules = sorted(list_of_schedules, key=lambda k: (k[KOStore.METADATA].get('order', 9999)))
             return {'schedules': list_of_schedules}
+
         elif command == 'force-update-schedules':
             for user in self.users:
                 self.get_schedule(user)

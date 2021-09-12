@@ -62,6 +62,19 @@ class KOStore:
             return {}
 
     @staticmethod
+    def get_vals(input_keys):
+        keys = [key.upper() for key in input_keys]
+        query = KOStoreModel.select().where(KOStoreModel.key << keys)
+        res = {}
+        for row in query:
+            d = model_to_dict_unstringify(row, keys=['datetime_created', 'datetime_updated'])
+            metadata = {KOStore.METADATA: d['metadata']}
+            k = d['key']
+            d = {**d['value'], **metadata}
+            res[k] = d
+        return res
+
+    @staticmethod
     def get_all_metadata():
         query = KOStoreModel.select()
         metadatas = [model_to_dict_unstringify(row, keys=['datetime_created', 'datetime_updated']) for row in query]
