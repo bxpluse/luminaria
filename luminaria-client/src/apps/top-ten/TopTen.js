@@ -11,7 +11,7 @@ function TopTen() {
     const [top, setTop] = useState({});
 
     useEffect(() => {
-        Request.POST_JSON('/exec/top-ten/absolute_top', {}).then(data => {
+        Request.EXEC('/top-ten/absolute_top', {}).then(data => {
             setTop(data['absolute_top']);
         });
     }, []);

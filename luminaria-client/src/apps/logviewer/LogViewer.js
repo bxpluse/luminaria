@@ -175,13 +175,13 @@ async function getLogs(appsToSearch, selectedLogLevel) {
         levels.push(i);
     }
     const body = {numLines: 100, apps: appsToSearch, levels: levels};
-    return await Request.POST_JSON('/exec/log-viewer/tail', body).then(data => {
+    return await Request.EXEC('/log-viewer/tail', body).then(data => {
         return data.lines;
     });
 }
 
 async function getJobs() {
-    return await Request.POST_JSON('/exec/log-viewer/tail-jobs', {}).then(data => {
+    return await Request.EXEC('/log-viewer/tail-jobs', {}).then(data => {
         return data.lines;
     });
 }

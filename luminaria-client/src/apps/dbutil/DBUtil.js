@@ -36,7 +36,7 @@ function KOEditor() {
     const [rows, setRows] = useState([]);
 
     useEffect(() => {
-        Request.GET_JSON('/get/dbutil/fetch-all-ko-md').then(res => {
+        Request.GET('/dbutil/fetch-all-ko-md').then(res => {
             setRows(res['metadatas']);
         });
     }, []);
@@ -80,7 +80,7 @@ function KORow(props) {
             setReadOnly(false);
         } else {
             const body = {key: row['key'], value: metadata};
-            Request.POST_JSON('/exec/dbutil/put-ko-md', body).then(res => {
+            Request.EXEC('/dbutil/put-ko-md', body).then(res => {
                 if (res.success) {
                     setReadOnly(true);
                 }
@@ -122,9 +122,9 @@ function DownloadJumbo(props) {
 }
 
 function download(dbName) {
-    Request.POST_JSON('/exec/dbutil/file-name', {dbName: dbName}).then(data => {
+    Request.EXEC('/dbutil/file-name', {dbName: dbName}).then(data => {
         const filename = data['filename'];
-        Request.GET_FILE('/blob/dbutil/download', {dbName: dbName}).then(blob => {
+        Request.BLOB('/blob/dbutil/download', {dbName: dbName}).then(blob => {
             saveAs(blob, filename);
         });
     });

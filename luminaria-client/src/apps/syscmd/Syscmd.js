@@ -12,8 +12,8 @@ function Syscmd() {
 
     return (
         <Container>
-            <SimpleRequestBtn text='Refresh Apps' endpoint='/get/syscmd/refresh-apps'/>
-            <SimpleRequestBtn text='Refresh Config' endpoint='/get/syscmd/refresh-config'/>
+            <SimpleRequestBtn text='Refresh Apps' endpoint='/syscmd/refresh-apps'/>
+            <SimpleRequestBtn text='Refresh Config' endpoint='/syscmd/refresh-config'/>
         </Container>
     );
 }
@@ -22,7 +22,7 @@ function SimpleRequestBtn(props) {
     return (
         <Container>
             <MyButton text={props.text} onClick={() => {
-                Request.GET_JSON(props.endpoint).then();
+                Request.GET(props.endpoint).then();
             }}/>
             <br/><br/>
         </Container>

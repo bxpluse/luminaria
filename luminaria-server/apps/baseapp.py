@@ -75,11 +75,23 @@ class App:
         elif ENV == ENVIRONMENT.DEV:
             print('[{0}][{1}]'.format(self.APP_ID.value, level), message)
 
+    def run(self, **kwargs):
+        """
+        Runs a streamable app
+        """
+        pass
+
     def blob(self, command, data):
         """
         Returns an absolute path to a file.
         """
         return ''
+
+    def query(self, command, **kwargs):
+        """
+        Interface to execute a query.
+        """
+        return {}
 
     def execute(self, command, **kwargs):
         """

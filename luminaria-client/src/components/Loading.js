@@ -7,10 +7,11 @@ import './Loading.css';
 
 function Loading(props) {
 
+    const LOADING_SPINNER_URL = 'LOADING_SPINNER_URL';
     const [loadingImageUrl, setLoadingImageUrl] = useState(null);
 
     useEffect(() => {
-        setLoadingImageUrl(localStorage.getItem('loadingImageUrl'));
+        setLoadingImageUrl(localStorage.getItem(LOADING_SPINNER_URL));
     }, []);
 
     if (!(props.isLoading)) {
@@ -18,9 +19,9 @@ function Loading(props) {
     }
 
     if (!loadingImageUrl) {
-        Request.POST_JSON('/exec/syscmd/fetch-url', {url: 'LOADING_SPINNER_URL'}).then(data => {
+        Request.QUERY('/syscmd/fetch-url', {url: LOADING_SPINNER_URL}).then(data => {
             setLoadingImageUrl(data.url);
-            localStorage.setItem('loadingImageUrl', data.url);
+            localStorage.setItem(LOADING_SPINNER_URL, data.url);
         });
     }
 
@@ -28,9 +29,9 @@ function Loading(props) {
 
     return (
         <div className='loading-div'>
-            <Image className={className} src={loadingImageUrl} rounded />
-            {props.extraSpinner !== undefined ?
-                <Spinner className='loading-spinner' animation='grow' variant='dark'/> : null
+            <Image className={className} src={loadingImageUrl} rounded/>
+            {props.extraSpinner &&
+            <Spinner className='loading-spinner' animation='grow' variant='dark'/>
             }
         </div>
     );

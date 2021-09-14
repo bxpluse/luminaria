@@ -15,7 +15,7 @@ function IPOStatus() {
     const [sites, setSites] = useState([]);
 
     useEffect(() => {
-        Request.POST_JSON('/status/ipo-listener', {}).then(data => {
+        Request.STATUS('/ipo-listener').then(data => {
             if(data['status'] === STATUS.READY || data['status'] === STATUS.STOPPED){
                 setReady(true);
             } else {
@@ -96,7 +96,7 @@ function IPOStatus() {
     const handleSubmit = (evt) => {
         const string = company.trim();
         if(string !== ''){
-            Request.POST_JSON('/exec/ipo-listener/add', {string: string}).then(() => {
+            Request.EXEC('/ipo-listener/add', {string: string}).then(() => {
                 refresh();
             });
         }
@@ -161,27 +161,27 @@ function IPOStatus() {
     );
 
     function refresh(){
-        Request.POST_JSON('/exec/ipo-listener/data', {}).then(data => {
+        Request.EXEC('/ipo-listener/data', {}).then(data => {
             setStrings(data['res']);
             setSites(data['sites']);
         });
     }
 
     function remove(string){
-        Request.POST_JSON('/exec/ipo-listener/remove', {string: string}).then(() => {
+        Request.EXEC('/ipo-listener/remove', {string: string}).then(() => {
             refresh();
         });
     }
 
     function dismiss(string){
-        Request.POST_JSON('/exec/ipo-listener/dismiss', {string: string}).then(() => {
+        Request.EXEC('/ipo-listener/dismiss', {string: string}).then(() => {
             refresh();
         });
     }
 }
 
 function start(){
-    Request.POST_JSON('/exec/ipo-listener/run', {}).then(() => {});
+    Request.EXEC('/ipo-listener/run', {}).then(() => {});
 }
 
 

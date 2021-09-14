@@ -13,7 +13,7 @@ function Finder() {
     const [schedules, setSchedules] = useState([]);
 
     useEffect(() => {
-        Request.GET_JSON('/get/finder/fetch-schedules').then(data => {
+        Request.GET('/finder/fetch-schedules').then(data => {
             setSchedules(data['schedules']);
         });
     }, []);

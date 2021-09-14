@@ -130,20 +130,20 @@ function RuleCard(props) {
 }
 
 async function fetchRules() {
-    return await Request.POST_JSON('/exec/signal/fetch-all-rules', {}).then(data => {
+    return await Request.EXEC('/signal/fetch-all-rules', {}).then(data => {
         return data.rules;
     });
 }
 
 async function updateRunStatus(id, isAlarmRunning) {
     const suppressed = !isAlarmRunning;
-    return await Request.POST_JSON('/exec/signal/update-rule-suppressed',
+    return await Request.EXEC('/signal/update-rule-suppressed',
         {'id': id, 'suppressed': suppressed}
     )
 }
 
 async function tailJobsByName(name) {
-    return await Request.POST_JSON('/exec/log-viewer/tail-jobs', {'name': name})
+    return await Request.EXEC('/log-viewer/tail-jobs', {'name': name})
         .then(data => {
             return data.lines;
         });

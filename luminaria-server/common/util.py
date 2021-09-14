@@ -1,6 +1,7 @@
 import random
 import string
 
+import bcrypt
 from tldextract import extract
 
 
@@ -43,3 +44,10 @@ def gen_id(length=8):
 def extract_domain(url):
     tsd, domain, tsu = extract(url)
     return domain
+
+
+def hash_pw(password):
+    password = password.encode('ascii')
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password, salt)
+    return hashed

@@ -30,7 +30,7 @@ class AppManager:
                     app_entry['status'] = APPSTATUS.LINK.value
         return online_apps
 
-    def get_app_status(self, app_id):
+    def status(self, app_id):
         app = self.apps[APP(app_id)]
         base_data = {'status': app.status.value, 'debugging': app.debugging}
         additional_data = app.get_data()
@@ -40,6 +40,10 @@ class AppManager:
         app = self.apps[APP(app_id)]
         file_path = app.blob(command, **data)
         return file_path
+
+    def query(self, app_id, command, data):
+        app = self.apps[APP(app_id)]
+        return app.query(command, **data)
 
     def execute(self, app_id, command, data):
         app = self.apps[APP(app_id)]

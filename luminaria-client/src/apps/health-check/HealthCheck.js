@@ -50,7 +50,7 @@ function HealthCard(props) {
 
 
 async function checkHealth() {
-    return await Request.POST_JSON('/exec/health-check/checkup', {}).then(data => {
+    return await Request.EXEC('/health-check/checkup', {}).then(data => {
         return data;
     });
 }

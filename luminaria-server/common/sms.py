@@ -44,8 +44,10 @@ def send(msg, requester=None, when=When.NOW):
             batch_messages.append(msg)
         elif when == When.BATCH:
             concat_msg = ''
+            log_sms('Preparing ... SEND {0} BATCH'.format(len(batch_messages)), str(batch_messages))
             for msg in batch_messages:
                 concat_msg += msg + ' | '
+            log_sms('Before send_sms len {0}'.format(len(batch_messages)), concat_msg)
             send_sms(concat_msg)
             log_sms('SENT {0} BATCH'.format(len(batch_messages)), concat_msg)
             batch_messages.clear()

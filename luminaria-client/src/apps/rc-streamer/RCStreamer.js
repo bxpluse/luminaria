@@ -17,7 +17,7 @@ function RCStreamer() {
     const [ram, setRam] = useState({});
 
     useEffect(() => {
-        Request.POST_JSON('/status/rc-streamer', {}).then(data => {
+        Request.STATUS('/rc-streamer').then(data => {
             if(data['status'] === STATUS.READY || data['status'] === STATUS.STOPPED){
                 setReady(true);
             } else {
@@ -82,15 +82,15 @@ function RCStreamer() {
 }
 
 function start(){
-    Request.POST_JSON('/exec/rc-streamer/run', {}).then(() => {});
+    Request.EXEC('/rc-streamer/run', {}).then(() => {});
 }
 
 function dump(){
-    Request.POST_JSON('/exec/rc-streamer/dump-to-file', {}).then(() => {});
+    Request.EXEC('/rc-streamer/dump-to-file', {}).then(() => {});
 }
 
 function toggleDebug(isDebug){
-    Request.POST_JSON('/exec/rc-streamer/debug', {isDebug: isDebug}).then(() => {});
+    Request.EXEC('/rc-streamer/debug', {isDebug: isDebug}).then(() => {});
 }
 
 

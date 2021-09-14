@@ -3,7 +3,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import {BrowserRouter as Router, Link, Redirect, Route, Switch, useHistory, useLocation} from 'react-router-dom';
-import Select from 'react-select'
+import Select from 'react-select';
 import DBUtil from './apps/dbutil/DBUtil';
 import Feeds from "./apps/feeds/Feeds";
 import Finder from './apps/finder/Finder';
@@ -22,9 +22,11 @@ import Updater from './apps/updater/Updater';
 import GearLink from './components/GearLink';
 import Graph from './components/Graph';
 import Socket from './components/Socket';
-import NotFound404 from './pages/404';
+import Error from './pages/errors/Error';
+import ErrorCode from "./pages/errors/ErrorCodes";
 import Header from './pages/Header';
 import Home from './pages/Home';
+import Login from './pages/Login';
 import Request from './Requests';
 import AppUtil from './util/AppUtil';
 
@@ -33,10 +35,11 @@ function Paths() {
 
     const [apps, setApps] = useState([]);
     const location = useLocation();
+    const headlessApps = new Set(['graph', 'login']);
 
     useEffect(() => {
         if (location.pathname === '/') {
-            Request.POST_JSON('/get-all-apps', {}).then(data => {
+            Request.RAW('/get-all-apps', {}).then(data => {
                 const applications = [];
                 for (const [, app] of Object.entries(data)) {
                     applications.push(app);
@@ -52,16 +55,18 @@ function Paths() {
     return (
         <>
             {
-                AppUtil.getCurrentApp() !== 'graph' ?
+                headlessApps.has(AppUtil.getCurrentApp()) ? null :
                     <>
                         <Header/>
                         <CustomNavBar apps={apps}/>
                     </>
-                    : null
             }
             <Socket/>
             <div className='content py-5 bg-light'>
                 <Switch>
+                    <Route path='/login'>
+                        <Login/>
+                    </Route>
                     <Route path='/graph'>
                         <Graph/>
                     </Route>
@@ -113,8 +118,11 @@ function Paths() {
                     <Route exact path='/'>
                         <Home apps={apps}/>
                     </Route>
+                    <Route path='/401'>
+                        <Error errorCode={ErrorCode.ERROR_STATUS_401}/>
+                    </Route>
                     <Route path='/404'>
-                        <NotFound404/>
+                        <Error errorCode={ErrorCode.ERROR_STATUS_404}/>
                     </Route>
                     <Redirect to='/404'/>
                 </Switch>
@@ -168,7 +176,7 @@ function CustomNavBar(props) {
     return (
         <Navbar className={'custom-nav-bar navbar-expand-lg navbar-dark bg-dark'} bg='light' variant='light'>
 
-            <Link to="/">
+            <Link to='/'>
                 <Navbar.Brand>Home</Navbar.Brand>
             </Link>
 

@@ -18,7 +18,7 @@ function Feeds() {
     const [pageLoaded, setPageLoaded] = useState(false);
 
     useEffect(() => {
-        Request.GET_JSON('/get/feeds/entries').then(data => {
+        Request.GET('/feeds/entries').then(data => {
             setEntries(data['entries']);
         });
         setTimeout(() => {
@@ -27,8 +27,8 @@ function Feeds() {
     }, []);
 
     function updateFeeds() {
-        Request.GET_JSON('/get/feeds/force-fetch-feed').then(() => {
-            Request.GET_JSON('/get/feeds/entries').then(data => {
+        Request.GET('/force-fetch-feed').then(() => {
+            Request.GET('/feeds/entries').then(data => {
                 setEntries(data['entries']);
             })
         });
@@ -36,7 +36,7 @@ function Feeds() {
 
 
     function dismiss(key) {
-        Request.POST_JSON('/exec/feeds/dismiss', {id: key}).then(data => {
+        Request.EXEC('/feeds/dismiss', {id: key}).then(data => {
             setEntries(data['entries']);
         });
     }

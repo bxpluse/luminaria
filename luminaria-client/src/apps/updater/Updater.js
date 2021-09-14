@@ -30,7 +30,7 @@ function UpdateCard(props) {
 
     function updateExchange(exchange) {
         setStatus(STATUS.INPROGRESS);
-        Request.POST_JSON('/exec/updater/update', {exchange: exchange}).then(() => {
+        Request.EXEC('/updater/update', {exchange: exchange}).then(() => {
             setStatus(STATUS.READY);
         });
     }

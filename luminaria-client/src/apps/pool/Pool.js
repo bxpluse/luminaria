@@ -24,7 +24,7 @@ function Pool() {
     const DASHBOARD = "Dashboard";
 
     useEffect(() => {
-        Request.POST_JSON('/exec/pool/fetchAllPoolNames', {}).then(res => {
+        Request.EXEC('/pool/fetchAllPoolNames', {}).then(res => {
             setPools(res['pools']);
         });
     }, []);
@@ -32,7 +32,7 @@ function Pool() {
     async function handleSelect(poolName) {
         if(poolName !== DASHBOARD){
             const body = {poolName: poolName};
-            await Request.POST_JSON('/exec/pool/fetchPoolEntriesByName', body).then(data => {
+            await Request.EXEC('/pool/fetchPoolEntriesByName', body).then(data => {
                 setEntries((prevDivState) => {
                     return { ...prevDivState, [poolName]: data.entries };
                 });
@@ -263,7 +263,7 @@ function CreateEntry(props) {
         const body = {poolName: props.poolName, instrument: entryType, entryType: entryType,
             action: action, amount: amount, symbol: symbol, price: price, date: date, time: time,
             spot: spot, strike: strike, expiryDate: expiryDate, note: note};
-        await Request.POST_JSON('/exec/pool/saveEntryByName', body).then(() => {
+        await Request.EXEC('/pool/saveEntryByName', body).then(() => {
             props.rerender(props.poolName);
         });
     }
@@ -396,7 +396,7 @@ function CreateEntry(props) {
                             </Form.Row>
                             <Accordion>
                                 <Accordion.Toggle as={NoteLinkButton} eventKey='0'>
-                                    > Note
+                                    {'> Note'}
                                 </Accordion.Toggle>
                                 <Accordion.Collapse eventKey='0'>
                                     <FormGroup row label='Note' value={note} func={setNote}/>
@@ -408,9 +408,9 @@ function CreateEntry(props) {
                         <MyButton text="Save"
                                   disabled={saveDisabled}
                                   onClick={() => {
-                            saveEntry(action, amount, symbol, price, date, time, spot, strike, expiryDate, note)
-                                .then(() => reset())
-                        }}
+                                      saveEntry(action, amount, symbol, price, date, time, spot, strike, expiryDate, note)
+                                          .then(() => reset())
+                                  }}
                         />
                     </Jumbotron>
                 </div>
@@ -500,7 +500,7 @@ async function savePool(poolName, description, initialFund) {
     const parsedInitialFund = parseInt(initialFund);
     if (MathUtil.isPositiveInt(parsedInitialFund)){
         const body = {poolName: poolName, description: description, initialFund: initialFund};
-        await Request.POST_JSON('/exec/pool/createPool', body);
+        await Request.EXEC('/pool/createPool', body);
         window.location.reload(false);
     }
 }

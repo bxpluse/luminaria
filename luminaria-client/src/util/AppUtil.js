@@ -19,6 +19,10 @@ const AppUtil = {
     isDevEnv: function () {
         return process.env.NODE_ENV === 'development';
     },
+
+    goTo: function (link) {
+        window.location.replace(link);
+    },
 };
 
 

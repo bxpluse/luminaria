@@ -46,7 +46,7 @@ function CustomEditor() {
     }, []);
 
     function fetch_note(offset) {
-        Request.POST_JSON('/exec/notes/load', {'offset': offset}).then(data => {
+        Request.EXEC('/notes/load', {'offset': offset}).then(data => {
             const note = data['note'];
             const contentState = convertFromRaw(JSON.parse(note['content']));
             const editorStateTemp = EditorState.createWithContent(contentState);
@@ -75,7 +75,7 @@ function CustomEditor() {
 
     async function save(content) {
         const body = {content: content};
-        await Request.POST_JSON('/exec/notes/save', body);
+        await Request.EXEC('/notes/save', body);
         setSaveDisabled(true);
         setPreviousContent(stateToString(editorState));
         fetch_note(0);

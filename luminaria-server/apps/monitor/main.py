@@ -34,7 +34,7 @@ class RCListener(App):
         self.scheduler = BackgroundScheduler({'apscheduler.timezone': self.configuration['SCHEDULER_TIME_ZONE']})
         self.scheduler.start()
 
-    def run(self):
+    def run(self, **kwargs):
         super().start()
         job = self.scheduler.add_job(self.commit_to_db, trigger='cron', minute='*/' + str(self.INTERVAL))
         if self.first_start:
