@@ -1,9 +1,9 @@
 import bcrypt
 
-
 from database.config.global_config_model import GlobalConfigModel
 
 MASTER_SESSION_ID = GlobalConfigModel.retrieve('SESSION_ID').encode()
+ALLOWED_SESSIONS = set()
 
 
 def authenticate(func):
@@ -15,9 +15,10 @@ def authenticate(func):
             return {'error': 'No session id'}, 401
 
         # Validate session id is correct
-        if not bcrypt.checkpw(session_id.encode(), MASTER_SESSION_ID):
-            return {'error': 'Session id incorrect'}, 401
-
+        if session_id not in ALLOWED_SESSIONS:
+            if not bcrypt.checkpw(session_id.encode(), MASTER_SESSION_ID):
+                return {'error': 'Session id incorrect'}, 401
+            ALLOWED_SESSIONS.add(session_id)
         return func(*args, **kwargs)
 
     return inner
