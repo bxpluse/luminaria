@@ -10,11 +10,12 @@ import Jumbotron from "react-bootstrap/Jumbotron";
 import Tab from 'react-bootstrap/Tab'
 import Table from 'react-bootstrap/Table'
 import Tabs from 'react-bootstrap/Tabs'
-import MyButton from "../../components/MyButton";
-import MyModal from "../../components/MyModal";
-import Request from "../../Requests";
-import DateUtil from "../../util/DateUtil";
+import MyButton from '../../components/MyButton';
+import MyModal from '../../components/MyModal';
+import Request from '../../Requests';
+import DateUtil from '../../util/DateUtil';
 import MathUtil from '../../util/MathUtil'
+import StringUtil from '../../util/StringUtil';
 import './Pool.css';
 
 function Pool() {
@@ -30,18 +31,18 @@ function Pool() {
     }, []);
 
     async function handleSelect(poolName) {
-        if(poolName !== DASHBOARD){
+        if (poolName !== DASHBOARD) {
             const body = {poolName: poolName};
             await Request.EXEC('/pool/fetchPoolEntriesByName', body).then(data => {
                 setEntries((prevDivState) => {
-                    return { ...prevDivState, [poolName]: data.entries };
+                    return {...prevDivState, [poolName]: data.entries};
                 });
             });
         }
     }
 
     let poolTabs = [];
-    for(let i = 0; i < pools.length; i++){
+    for (let i = 0; i < pools.length; i++) {
         const poolItem = pools[i];
         poolTabs.push(
             <Tab key={poolItem['pool_name']} eventKey={poolItem['pool_name']} title={poolItem['pool_name']}>
@@ -80,11 +81,11 @@ function SinglePool(props) {
 
     let history = [];
 
-    if (entries !== undefined){
-        for(let i = 0; i < entries.length; i++){
+    if (entries !== undefined) {
+        for (let i = 0; i < entries.length; i++) {
             let divider = stockRowNum;
             const entry = entries[i];
-            const multiplier = entry['instrument'] === 'OPTION'? 100 : 1;
+            const multiplier = entry['instrument'] === 'OPTION' ? 100 : 1;
             if (entry['instrument'] !== 'STOCK') {
                 divider = optionRowNum
             }
@@ -95,24 +96,27 @@ function SinglePool(props) {
                     <tr key={i}>
                         <td colSpan={colSpan} className='align-center'>
                             {entry['action']}&nbsp;
-                            {entry['note'] !== ''?
-                                <Badge onClick={() => {handleShow(); setBody(entry['note'])}}
+                            {entry['note'] !== '' ?
+                                <Badge onClick={() => {
+                                    handleShow();
+                                    setBody(entry['note'])
+                                }}
                                        variant="info">Note
-                                </Badge>: undefined
+                                </Badge> : undefined
                             }
                         </td>
                         <td colSpan={colSpan} className='align-right'> {entry['amount']}</td>
                         <td colSpan={colSpan} className='align-center'>{entry['symbol']}</td>
                         <td colSpan={colSpan} className='align-right'>
-                            ${entry['price'].toFixed(2)}   |
+                            ${entry['price'].toFixed(2)} |
                             ${(entry['amount'] * entry['price'] * multiplier).toFixed(2)}
                         </td>
                         <td colSpan={colSpan} className='align-center'>{entry['date'] + ' ' + entry['time']}</td>
-                        {entry['strike'] !== null?
+                        {entry['strike'] !== null ?
                             <td colSpan={colSpan} className='align-center'>Spot: {entry['spot']}
-                                Strike: {entry['strike']} </td>: undefined}
-                        {entry['expiry_date'] !== null? <td
-                            colSpan={colSpan} className='align-center'>{entry['expiry_date']}</td>: undefined}
+                                Strike: {entry['strike']} </td> : undefined}
+                        {entry['expiry_date'] !== null ? <td
+                            colSpan={colSpan} className='align-center'>{entry['expiry_date']}</td> : undefined}
                     </tr>
                 );
             } else {
@@ -176,7 +180,7 @@ function SinglePoolSummary(props) {
                     const symbol = entry.symbol;
                     const amount = entry.amount;
                     const price = entry.price;
-                    const multiplier = entry.instrument === 'OPTION'? 100 : 1;
+                    const multiplier = entry.instrument === 'OPTION' ? 100 : 1;
                     const cost = amount * price * multiplier;
 
                     if (entry.action === 'BUY') {
@@ -215,23 +219,23 @@ function SinglePoolSummary(props) {
     }, [entries, setNetLiquidationVal]);
 
 
-    return(
+    return (
         <Jumbotron>
             <h4>Summary</h4>
             <div>
                 <Form>
                     <Form.Row>
-                        <FormGroup label='Pool Name'     value={pool['pool_name']} disabled/>
-                        <FormGroup label='Created on'    value={pool['datetime_created']} disabled/>
+                        <FormGroup label='Pool Name' value={pool['pool_name']} disabled/>
+                        <FormGroup label='Created on' value={pool['datetime_created']} disabled/>
                     </Form.Row>
                     <Form.Row>
                         <FormGroup label='Est. Net Liq.' value={netLiquidationVal.toFixed(2).toString()}
                                    prepend='$' disabled/>
                         <FormGroup label='Open Pos. Val' value={openPositionsVal.toFixed(2).toString()}
                                    prepend='$' disabled/>
-                        <FormGroup label='Avl. Cash'     value={availableCash.toFixed(2).toString()}
+                        <FormGroup label='Avl. Cash' value={availableCash.toFixed(2).toString()}
                                    prepend='$' disabled/>
-                        <FormGroup label='Rlz. Profit'   value={profit.toFixed(2).toString()}
+                        <FormGroup label='Rlz. Profit' value={profit.toFixed(2).toString()}
                                    prepend='$' disabled/>
                     </Form.Row>
                     <FormGroup row label='Description' as="textarea" rows={3} value={pool['description']} disabled/>
@@ -247,28 +251,30 @@ function CreateEntry(props) {
     const [entryType, setEntryType] = useState('stock');
     const [saveDisabled, setSaveDisabled] = useState(true)
 
-    const [action, setAction]           = useState('');
-    const [amount, setAmount]           = useState('');
-    const [symbol, setSymbol]           = useState('');
-    const [price, setPrice]             = useState('');
-    const [date, setDate]               = useState('');
-    const [time, setTime]               = useState('');
-    const [spot, setSpot]               = useState('');
-    const [strike, setStrike]           = useState('');
-    const [expiryDate, setExpiryDate]   = useState('');
-    const [note, setNote]               = useState('');
-    const [parserText, setParserText]   = useState('');
+    const [action, setAction] = useState('');
+    const [amount, setAmount] = useState('');
+    const [symbol, setSymbol] = useState('');
+    const [price, setPrice] = useState('');
+    const [date, setDate] = useState('');
+    const [time, setTime] = useState('');
+    const [spot, setSpot] = useState('');
+    const [strike, setStrike] = useState('');
+    const [expiryDate, setExpiryDate] = useState('');
+    const [note, setNote] = useState('');
+    const [parserText, setParserText] = useState('');
 
     async function saveEntry(action, amount, symbol, price, date, time, spot, strike, expiryDate, note) {
-        const body = {poolName: props.poolName, instrument: entryType, entryType: entryType,
+        const body = {
+            poolName: props.poolName, instrument: entryType, entryType: entryType,
             action: action, amount: amount, symbol: symbol, price: price, date: date, time: time,
-            spot: spot, strike: strike, expiryDate: expiryDate, note: note};
+            spot: spot, strike: strike, expiryDate: expiryDate, note: note
+        };
         await Request.EXEC('/pool/saveEntryByName', body).then(() => {
             props.rerender(props.poolName);
         });
     }
 
-    function reset(){
+    function reset() {
         setAmount('');
         setSymbol('');
         setPrice('');
@@ -312,41 +318,35 @@ function CreateEntry(props) {
             return /\S/.test(x);
         });
 
-        if (arr[0] !== 'BOT' && arr[0] !== 'SLD' && arr[0] !== 'BUY' && arr[0] !== 'SELL') {
-            return
-        }
-        if (!MathUtil.isPositiveInt(arr[1])) {
-            return
-        }
-        if (!MathUtil.isPositiveInt(arr[3])) {
-            return
-        }
+        setDate(DateUtil.getCurrentDate);
+        let symbolCounter = 0;
+        for (const item of arr) {
 
-        const symbolArr = arr[2].split(',');
-        let datetimeArr;
-        if (arr[0] === 'BOT' || arr[0] === 'SLD') {
-            datetimeArr = arr[5].split(' ');
-        } else {
-            datetimeArr = arr[arr.length - 2].split(' ');
+            if (item === 'BUY' || item === 'BOT') {
+                setAction('BUY');
+            } else if (item === 'SELL' || item === 'SLD') {
+                setAction('SELL');
+            }
+
+            if (StringUtil.isAllCaps(item)) {
+                symbolCounter += 1;
+                if (symbolCounter === 3) {
+                    setSymbol(item)
+                }
+            }
+
+            if (MathUtil.isInt(item)) {
+                setAmount(item);
+            }
+
+            if (MathUtil.isFloat(item) && parseFloat(item) > 1.01) {
+                setPrice(item);
+            }
+
+            if (item.includes(':')) {
+                setTime(item);
+            }
         }
-
-        const date = datetimeArr[4];
-        const time = datetimeArr[0];
-
-        setAction(arr[0] === 'BOT' || arr[0] === 'BUY' ? 'BUY' : 'SELL');
-        setAmount(arr[1]);
-        setSymbol(symbolArr[0]);
-        setPrice(arr[3]);
-
-        if (date === undefined) {
-            setDate(DateUtil.getCurrentDate);
-        } else {
-            const dateFormatted = date.substring(0, 4).concat('-')
-                .concat(date.substring(4, 6)).concat('-')
-                .concat(date.substring(6, 8));
-            setDate(dateFormatted);
-        }
-        setTime(time);
     }
 
     return (
@@ -383,15 +383,15 @@ function CreateEntry(props) {
                                 </Form.Group>
                                 <FormGroup label='Amount' value={amount} func={setAmount}/>
                                 <FormGroup label='Symbol' value={symbol} func={setSymbol} prepend={''}/>
-                                <FormGroup label='Price'  value={price}  func={setPrice}  prepend={'$'}/>
-                                <FormGroup label='Date'   value={date}   func={setDate}   type={'date'}/>
-                                <FormGroup label='Time'   value={time}   func={setTime}   type={'time'}/>
-                                { entryType === 'option' ?
+                                <FormGroup label='Price' value={price} func={setPrice} prepend={'$'}/>
+                                <FormGroup label='Date' value={date} func={setDate} type={'date'}/>
+                                <FormGroup label='Time' value={time} func={setTime} type={'time'}/>
+                                {entryType === 'option' ?
                                     <>
-                                        <FormGroup label='Spot'   value={spot}       func={setSpot}/>
-                                        <FormGroup label='Strike' value={strike}     func={setStrike}/>
+                                        <FormGroup label='Spot' value={spot} func={setSpot}/>
+                                        <FormGroup label='Strike' value={strike} func={setStrike}/>
                                         <FormGroup label='Expiry' value={expiryDate} func={setExpiryDate} type='date'/>
-                                    </>: null
+                                    </> : null
                                 }
                             </Form.Row>
                             <Accordion>
@@ -442,7 +442,7 @@ function CreatePool() {
                             <FormGroup label='Description' value={createPoolDescription}
                                        func={setCreatePoolDescription} as='textarea' rows={3}/>
                         </Form>
-                        <MyButton text='Save'  onClick={() =>
+                        <MyButton text='Save' onClick={() =>
                             savePool(createPoolName, createPoolDescription, createPoolInitialFund)}/>
                     </Jumbotron>
                 </div>
@@ -455,27 +455,27 @@ function CreatePool() {
 function FormGroup(props) {
     return (
         <React.Fragment>
-            <Form.Group as={props.row !== undefined ? undefined: Col} >
+            <Form.Group as={props.row !== undefined ? undefined : Col}>
                 <Form.Label>{props.label}</Form.Label>
                 <InputGroup>
-                    { props.prepend !== undefined ?
+                    {props.prepend !== undefined ?
                         <InputGroup.Prepend>
                             <InputGroup.Text>{props.prepend}</InputGroup.Text>
                         </InputGroup.Prepend> : null
                     }
-                    { props.as === 'textarea' ?
+                    {props.as === 'textarea' ?
                         <Form.Control as="textarea" rows={props.rows}
-                                      style={props.disabled ? {backgroundColor: 'white'}: undefined}
+                                      style={props.disabled ? {backgroundColor: 'white'} : undefined}
                                       disabled={props.disabled}
-                                      value={props.value ? props.value: undefined}
+                                      value={props.value ? props.value : undefined}
                                       onChange={props.func ? e => props.func(e.target.value) : null}
                         />
                         :
                         <Form.Control type={props.type}
-                                      style={props.disabled ? {backgroundColor: 'white'}: undefined}
+                                      style={props.disabled ? {backgroundColor: 'white'} : undefined}
                                       disabled={props.disabled}
                                       placeholder={props.placeholder}
-                                      value={props.value ? props.value: ''}
+                                      value={props.value ? props.value : ''}
                                       onChange={props.func ? e => props.func(e.target.value) : null}
                         />
                     }
@@ -488,7 +488,9 @@ function FormGroup(props) {
 function NoteLinkButton(props) {
     return (
         <MyButton
-            onClick={() => {props.onClick();}}
+            onClick={() => {
+                props.onClick();
+            }}
             variant='link'
             text='>Notes'
         >
@@ -498,7 +500,7 @@ function NoteLinkButton(props) {
 
 async function savePool(poolName, description, initialFund) {
     const parsedInitialFund = parseInt(initialFund);
-    if (MathUtil.isPositiveInt(parsedInitialFund)){
+    if (MathUtil.isPositiveInt(parsedInitialFund)) {
         const body = {poolName: poolName, description: description, initialFund: initialFund};
         await Request.EXEC('/pool/createPool', body);
         window.location.reload(false);

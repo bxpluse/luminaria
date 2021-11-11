@@ -1,14 +1,27 @@
+const FLOAT_REGEX = /^-?\d+(?:[.,]\d*?)?$/;
+
 const MathUtil = {
+
     isPositiveInt: function(num){
+        return this.isInt(num) >= 0;
+    },
+
+    isInt: function(num){
+        if (!FLOAT_REGEX.test(num)) {
+            return false;
+        }
         if (typeof num === 'string') {
-            num = parseInt(num);
+            num = parseFloat(num);
         }
-        if (Number.isInteger(num)){
-            if (num > 0){
-                return true;
-            }
+        return Number.isInteger(num);
+    },
+
+    isFloat: function(num){
+        if (!FLOAT_REGEX.test(num)) {
+            return false;
         }
-        return false;
+        num = parseFloat(num);
+        return !isNaN(num);
     },
 };
 

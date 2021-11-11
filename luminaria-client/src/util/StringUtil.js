@@ -26,7 +26,12 @@ const StringUtil = {
         for (let i = 0; i < args.length; i++)
             string = string.replace('{' + i + '}', args[i]);
         return string;
-    }
+    },
+
+    isAllCaps: function (string) {
+        return string === string.toUpperCase();
+    },
+
 };
 
 export default StringUtil;
