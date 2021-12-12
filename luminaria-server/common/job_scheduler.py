@@ -1,7 +1,6 @@
 import threading
 from datetime import datetime
 from enum import Enum
-from zoneinfo import ZoneInfo
 
 from apscheduler.jobstores.base import JobLookupError
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -10,13 +9,11 @@ from common.logger import log, LogLevel
 from database.config.global_config_model import GlobalConfigModel
 from database.stream.executed_job_model import ExecutedJobModel
 
-ZONE_INFO = ZoneInfo(GlobalConfigModel.retrieve('SCHEDULER_TIME_ZONE'))
-
 
 class OnError(Enum):
-    CANCEL = 'CANCEL'    # Cancel the job
+    CANCEL = 'CANCEL'  # Cancel the job
     RESTART = 'RESTART'  # Restart the scheduled job and wait until next scheduled run
-    RETRY = 'RETRY'      # Retry once instantly, then restart the job
+    RETRY = 'RETRY'  # Retry once instantly, then restart the job
 
 
 class Job:
@@ -122,7 +119,7 @@ class Job:
     def get_info(self):
         expired = True
         if self.scheduler_job.next_run_time is not None:
-            expired = self.scheduler_job.next_run_time < datetime.now(ZONE_INFO)
+            expired = self.scheduler_job.next_run_time < datetime.now(self.scheduler_job.next_run_time.tzinfo)
         d = {'name': self.name,
              'func': self.func.__name__,
              'args': str(self.args),

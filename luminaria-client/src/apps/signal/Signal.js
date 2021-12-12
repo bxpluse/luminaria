@@ -10,6 +10,7 @@ import InfoSymbol from '../../components/InfoSymbol';
 import MyModal from '../../components/MyModal';
 import Request from '../../Requests';
 import AppUtil from '../../util/AppUtil';
+import DateUtil from '../../util/DateUtil';
 import JobUtil from '../logviewer/JobUtil';
 import './Signal.css'
 
@@ -69,7 +70,7 @@ function RuleCard(props) {
             {props['hour'] && <><br/>Hour: {props['hour']}</>}
             {props['minute'] && <><br/>Minute: {props['minute']}</>}
             {props['second'] && <><br/>Second: {props['second']}</>}
-            {props['end_date'] && <><br/>End Date: {props['end_date']}</>}
+            {props['end_date'] && <><br/>End Date: {DateUtil.parse(props['end_date'])}</>}
         </Tooltip>
     );
 
