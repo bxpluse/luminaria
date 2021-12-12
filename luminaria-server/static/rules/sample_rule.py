@@ -6,7 +6,7 @@ rule.description = 'This is a sample template on creating a rule'
 
 def run():
     rule.create_subrule(
-        name='subrule1',
+        subrule_name='subrule1',
         func=dummy,
         args='param',
         triggers={
@@ -16,7 +16,7 @@ def run():
     )
 
     rule.create_subrule(
-        name='subrule2',
+        subrule_name='subrule2',
         func=dummy,
         triggers={
             'day_of_week': 'tue,thu',

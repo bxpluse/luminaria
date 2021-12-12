@@ -21,6 +21,8 @@ class Messenger:
 
 class Toast:
 
+    IDENTIFIER = '<TOAST>'
+
     def __init__(self, message, duration=DEFAULT_DURATION, variant=DEFAULT_VARIANT):
         self.message = message
         self.duration = duration

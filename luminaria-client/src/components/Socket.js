@@ -1,8 +1,8 @@
 import React, {useEffect} from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import openSocket  from "socket.io-client";
+import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import CONFIG from "../Config";
+import openSocket from 'socket.io-client';
+import CONFIG from '../Config';
 
 
 function Socket() {
@@ -49,7 +49,7 @@ function Socket() {
     return (
         <div>
             <ToastContainer
-                position="top-right"
+                position='top-right'
                 autoClose={5000}
                 hideProgressBar={false}
                 newestOnTop={false}

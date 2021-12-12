@@ -15,6 +15,9 @@ class YCandle(Candle):
     def get_close(self):
         return round(float(self.dataframe.iloc[0]['CLOSE']), 4)
 
+    def get_last(self):
+        return self.get_close()
+
     def get_date(self):
         return self.datetime_index.strftime(DATE_FORMAT)[0]
 
@@ -22,17 +25,9 @@ class YCandle(Candle):
         return self.datetime_index.strftime(TIME_FORMAT)[0]
 
 
-def get_close(symbol):
+def get_candle(symbol: str, period='1d', interval='30m') -> Candle:
     ticker = yf.Ticker(symbol)
-    hist = ticker.history(period='1d', interval='30m')
-    last_row = hist.tail(1)
-    candle = YCandle(last_row)
-    return candle
-
-
-def get_current(symbol):
-    ticker = yf.Ticker(symbol)
-    hist = ticker.history(period='1d', interval='1m')
+    hist = ticker.history(period=period, interval=interval)
     last_row = hist.tail(1)
     candle = YCandle(last_row)
     return candle

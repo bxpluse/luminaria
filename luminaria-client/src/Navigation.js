@@ -4,8 +4,9 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import {BrowserRouter as Router, Link, Redirect, Route, Switch, useHistory, useLocation} from 'react-router-dom';
 import Select from 'react-select';
+import Bells from './apps/bells/Bells';
 import DBUtil from './apps/dbutil/DBUtil';
-import Feeds from "./apps/feeds/Feeds";
+import Feeds from './apps/feeds/Feeds';
 import Finder from './apps/finder/Finder';
 import Graphy from './apps/graphy/Graphy';
 import HealthCheck from './apps/health-check/HealthCheck';
@@ -114,6 +115,9 @@ function Paths() {
                     </Route>
                     <Route path='/finder'>
                         <Finder/>
+                    </Route>
+                    <Route path='/bells'>
+                        <Bells/>
                     </Route>
                     <Route exact path='/'>
                         <Home apps={apps}/>

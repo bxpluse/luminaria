@@ -80,7 +80,7 @@ class Feeds(App):
         rule.app_id = self.APP_ID
         for url in urls:
             rule.create_subrule(
-                name=extract_domain(url) + '_feed',
+                subrule_name=extract_domain(url) + '_feed',
                 func=get_feed,
                 args=url,
                 triggers={
@@ -96,7 +96,7 @@ class Feeds(App):
         rule.app_id = self.APP_ID
         for sub_name in subs:
             rule.create_subrule(
-                name=sub_name + '_feed',
+                subrule_name=sub_name + '_feed',
                 func=self.get_submissions,
                 args=sub_name,
                 triggers={

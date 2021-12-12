@@ -1,3 +1,4 @@
+from apps.bells.main import Bells
 from apps.dbutil.main import DBUtil
 from apps.feeds.main import Feeds
 from apps.finder.main import Finder
@@ -32,5 +33,6 @@ APPS = {
     APP.RESEARCH: Research(),
     APP.SYSCMD: Syscmd(),
     APP.FEEDS: Feeds(),
-    APP.FINDER: Finder()
+    APP.FINDER: Finder(),
+    APP.BELLS: Bells()
 }

@@ -3,7 +3,17 @@ const FLOAT_REGEX = /^-?\d+(?:[.,]\d*?)?$/;
 const MathUtil = {
 
     isPositiveInt: function(num){
-        return this.isInt(num) >= 0;
+        if (this.isInt(num)) {
+            return num >= 0;
+        }
+        return false;
+    },
+
+    isPositiveFloat: function(num){
+        if (this.isFloat(num)) {
+            return num >= 0;
+        }
+        return false;
     },
 
     isInt: function(num){

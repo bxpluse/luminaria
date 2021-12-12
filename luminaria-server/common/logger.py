@@ -30,3 +30,7 @@ def log(app_name, message, level=LogLevel.INFO):
         LogModel.log_message(app_name, message, level.value)
     except Exception as exception:
         log_to_file(app_name, 'Logging to file because exception: {0} Message: {1}'.format(str(exception), message))
+
+
+def panic(app_name, message):
+    log(app_name, message, LogLevel.FATAL)

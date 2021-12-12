@@ -1,11 +1,16 @@
 import threading
+from datetime import datetime
 from enum import Enum
+from zoneinfo import ZoneInfo
 
+from apscheduler.jobstores.base import JobLookupError
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from common.logger import log, LogLevel
 from database.config.global_config_model import GlobalConfigModel
 from database.stream.executed_job_model import ExecutedJobModel
+
+ZONE_INFO = ZoneInfo(GlobalConfigModel.retrieve('SCHEDULER_TIME_ZONE'))
 
 
 class OnError(Enum):
@@ -20,7 +25,7 @@ class Job:
     SECS_BEFORE_RESTART = 30
     LOG_LEVEL_WARN = LogLevel.WARN
 
-    def __init__(self, name, app_id, func, triggers, scheduler_num, on_error, scheduler, args=None):
+    def __init__(self, name, app_id, func, triggers, scheduler_num, on_error, scheduler, metadata, args=None):
         self.name = str(name)
         self.app_id = app_id.value
         self.func = func
@@ -30,6 +35,9 @@ class Job:
         self.scheduler_job = None
         self.triggers = triggers
         self.scheduler_num = scheduler_num
+        self.metadata = metadata
+        self.start_date = triggers.get('start_date', None)
+        self.end_date = triggers.get('end_date', None)
         self.hour = triggers.get('hour', None)
         self.minute = triggers.get('minute', None)
         self.second = triggers.get('second', None)
@@ -38,8 +46,17 @@ class Job:
 
     def run(self):
         self.scheduler_job = self.scheduler.add_job(self.execute_job, args=self.args, trigger='cron',
+                                                    start_date=self.start_date, end_date=self.end_date,
                                                     hour=self.hour, second=self.second, minute=self.minute,
                                                     day_of_week=self.day_of_week)
+
+    def remove(self):
+        # Try removing the job id it hasn't been automatically cleaned up
+        if self.scheduler_job is not None:
+            try:
+                self.scheduler_job.remove()
+            except JobLookupError:
+                pass
 
     def execute_job(self, *args):
         try:
@@ -47,7 +64,7 @@ class Job:
         except Exception as exception:
             log(self.app_id, 'Job [{0}] encountered error on execute: {1}'
                 .format(self.name, str(exception)), level=self.LOG_LEVEL_WARN)
-            self.scheduler_job.remove()
+            self.remove()
             if self.on_error == OnError.RESTART:
                 timer = threading.Timer(Job.SECS_BEFORE_RESTART, self.run)
                 timer.start()
@@ -103,11 +120,16 @@ class Job:
         )
 
     def get_info(self):
+        expired = True
+        if self.scheduler_job.next_run_time is not None:
+            expired = self.scheduler_job.next_run_time < datetime.now(ZONE_INFO)
         d = {'name': self.name,
              'func': self.func.__name__,
-             'args': self.args,
+             'args': str(self.args),
              'on_error': self.on_error.value,
-             'triggers': self.triggers
+             'triggers': self.triggers,
+             'expired': expired,
+             'metadata': self.metadata
              }
         return d
 
@@ -123,12 +145,20 @@ class JobScheduler:
         self.scheduler.start()
         self.jobs = {}
 
-    def create_job(self, name, app_id, func, triggers, args=None, on_error=OnError.RETRY):
+    def create_job(self, name, app_id, func, triggers, metadata, args=None, on_error=OnError.RETRY):
         if name not in self.jobs:
-            job = Job(name, app_id, func, triggers, self.scheduler_num,
-                      args=args, on_error=on_error, scheduler=self.scheduler)
+            job = Job(name=name, app_id=app_id, func=func, triggers=triggers, scheduler_num=self.scheduler_num,
+                      args=args, on_error=on_error, scheduler=self.scheduler, metadata=metadata)
             self.jobs[name] = job
             job.run()
+            return True
+        return False
+
+    def remove_job(self, name):
+        if name in self.jobs:
+            job = self.jobs[name]
+            job.remove()
+            del self.jobs[name]
 
     def get_str_jobs(self):
         return [job.get_info() for job in self.jobs.values()]

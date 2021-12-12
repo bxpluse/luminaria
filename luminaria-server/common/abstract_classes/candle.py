@@ -6,6 +6,9 @@ class Candle:
     def get_close(self):
         pass
 
+    def get_last(self):
+        pass
+
     def get_date(self):
         pass
 

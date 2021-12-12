@@ -23,6 +23,10 @@ const AppUtil = {
     goTo: function (link) {
         window.location.replace(link);
     },
+
+    refresh: function () {
+        window.location.reload(false);
+    }
 };
 
 

@@ -6,7 +6,7 @@ rule.description = 'Sample description 2'
 
 def run():
     rule.create_subrule(
-        name='subrule1',
+        subrule_name='subrule1',
         func=some_func,
         args=('param1', 'param2'),
         triggers={

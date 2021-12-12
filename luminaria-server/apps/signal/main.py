@@ -15,7 +15,6 @@ class Signal(App):
             module = self.engine.get(rule_name)
             rule = module.rule
             rule.app_id = self.APP_ID
-            rule.is_running = True
             module.run()
             self.overseer.add_rule(rule)
 
@@ -28,3 +27,7 @@ class Signal(App):
             rule_id = kwargs.get('id')
             suppressed = bool(kwargs.get('suppressed'))
             self.overseer.suppress(rule_id, suppressed)
+        elif command == 'dismiss-subrule':
+            rule_name = kwargs['ruleName']
+            subrule_name = kwargs['subruleName']
+            self.overseer.dismiss_subrule(rule_name, subrule_name)

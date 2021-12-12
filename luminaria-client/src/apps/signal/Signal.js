@@ -3,12 +3,14 @@ import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
-import Masonry from "react-masonry-css";
+import Masonry from 'react-masonry-css';
 import Switch from 'react-switch';
+import DismissButton from '../../components/DismissButton';
 import InfoSymbol from '../../components/InfoSymbol';
 import MyModal from '../../components/MyModal';
-import Request from "../../Requests";
-import JobUtil from "../logviewer/JobUtil";
+import Request from '../../Requests';
+import AppUtil from '../../util/AppUtil';
+import JobUtil from '../logviewer/JobUtil';
 import './Signal.css'
 
 
@@ -55,22 +57,33 @@ function RuleCard(props) {
         setShowModal(true);
     }
 
+    function dismiss(subruleName) {
+        Request.EXEC('/signal/dismiss-subrule', {'ruleName': rule['id'], 'subruleName': subruleName})
+            .then(() => AppUtil.refresh())
+    }
+
+    console.log(rule);
     const renderTooltip = (props) => (
         <Tooltip id="button-tooltip" {...props}>
-            {props['day_of_week'] !== undefined ? <><br/>Day of Week: {props['day_of_week']}</> : null}
-            {props['hour'] !== undefined ? <><br/>Hour: {props['hour']}</> : null}
-            {props['minute'] !== undefined ? <><br/>Minute: {props['minute']}</> : null}
-            {props['second'] !== undefined ? <><br/>Second: {props['second']}</> : null}
+            {props['day_of_week'] && <><br/>Day of Week: {props['day_of_week']}</>}
+            {props['hour'] && <><br/>Hour: {props['hour']}</>}
+            {props['minute'] && <><br/>Minute: {props['minute']}</>}
+            {props['second'] && <><br/>Second: {props['second']}</>}
+            {props['end_date'] && <><br/>End Date: {props['end_date']}</>}
         </Tooltip>
     );
 
     const jobs = [];
     for (let i = 0; i < rule['jobs'].length; i++) {
         const job = rule['jobs'][i];
-        jobs.push(<Card.Text key={i}>
-            Job {i}:
+        const subruleName = job['name'];
+        const isExpired = job['expired'];
+        const expiredClassName = isExpired && 'expired';
+        jobs.push(<Card.Text key={i} className={expiredClassName}>
+            Job {i} {isExpired && '[EXPIRED]'}:
+            {isExpired && <DismissButton onClick={() => dismiss(subruleName)}/>}
             <span onClick={() => handleShowModal(job['name'])}>
-                <br/>&nbsp;&nbsp;&nbsp;&nbsp; Subrule Name: {job['name']} <InfoSymbol/>
+                <br/>&nbsp;&nbsp;&nbsp;&nbsp; Subrule Name: {subruleName} <InfoSymbol/>
             </span>
             <br/>&nbsp;&nbsp;&nbsp;&nbsp; Func: {job['func']}
             {job['args'] !== null ? <><br/>&nbsp;&nbsp;&nbsp;&nbsp; Args: {job['args']} </> : null}
@@ -78,10 +91,12 @@ function RuleCard(props) {
             <span> &nbsp;&nbsp;
                 <OverlayTrigger
                     placement="right"
-                    delay={{ show: 250, hide: 400 }}
+                    delay={{show: 250, hide: 400}}
                     overlay={renderTooltip(job['triggers'])}
                 >
-                    <Button className='trigger-button' variant='link'>Triggers <InfoSymbol/> </Button>
+                    <Button className={'trigger-button ' + expiredClassName} variant='link'>
+                        Triggers <InfoSymbol/>
+                    </Button>
                 </OverlayTrigger>
             </span>
         </Card.Text>)
@@ -97,7 +112,7 @@ function RuleCard(props) {
     }
 
     return (
-        <Card style={{ width: '24rem' }}>
+        <Card style={{width: '24rem'}}>
             <MyModal wide show={showModal} onHide={handleCloseModal} title='Job History'
                      component={JobUtil.convertJobRowsToTable(modalJobs)}
             />

@@ -29,7 +29,7 @@ class Finder(App):
 
         for user in self.users:
             rule.create_subrule(
-                name=user + ':sch',
+                subrule_name=user + ':sch',
                 func=self.get_schedule,
                 args=user,
                 triggers={
