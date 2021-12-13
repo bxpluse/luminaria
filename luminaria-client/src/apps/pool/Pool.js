@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {Col} from 'react-bootstrap';
+import React, {useEffect, useState} from 'react';
+import {Col, Pagination} from 'react-bootstrap';
 import Accordion from 'react-bootstrap/Accordion'
 import Badge from 'react-bootstrap/Badge'
 import Collapse from 'react-bootstrap/Collapse'
@@ -66,11 +66,18 @@ function Pool() {
 }
 
 function SinglePool(props) {
+
+    const ENTRIES_PER_PAGE = 10;
+
     const setTrade = new Set(['BUY', 'SELL']);
     const [show, setShow] = useState(false);
     const [body, setBody] = useState('');
+    const [page, setPage] = useState(1);
+    const [visibleHistory, setVisibleHistory] = useState([]);
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const bottomRef = React.useRef();
 
     const pool = props.pool;
     const entries = props.entries;
@@ -81,6 +88,17 @@ function SinglePool(props) {
     const totalSpan = stockRowNum * optionRowNum * transactionRowNum;
 
     let history = [];
+    let NUM_PAGES = 0;
+
+    function switchPage(pageNum) {
+        if (!(pageNum < 1 || pageNum > NUM_PAGES)) {
+            const startIndex = pageNum * ENTRIES_PER_PAGE - ENTRIES_PER_PAGE;
+            const endIndex = Math.min(pageNum * ENTRIES_PER_PAGE, history.length);
+            setVisibleHistory(history.slice(startIndex, endIndex));
+            setPage(pageNum);
+            bottomRef.current.scrollIntoView();
+        }
+    }
 
     if (entries !== undefined) {
         for (let i = 0; i < entries.length; i++) {
@@ -131,7 +149,20 @@ function SinglePool(props) {
                 );
             }
         }
+        NUM_PAGES = Math.ceil(history.length / ENTRIES_PER_PAGE);
+        if (visibleHistory.length === 0) {
+            switchPage(NUM_PAGES);
+        }
     }
+
+    const items = Array.from({length: NUM_PAGES},
+        (_, i) => i + 1).map(number => {
+        return (
+            <Pagination.Item key={number} active={number === page} onClick={() => switchPage(number)}>
+                {number}
+            </Pagination.Item>
+        )
+    }) ?? [];
 
     return (
         <div>
@@ -145,9 +176,17 @@ function SinglePool(props) {
                 </tr>
                 </thead>
                 <tbody>
-                {history}
+                {visibleHistory}
                 </tbody>
             </Table>
+            <Pagination>
+                <Pagination.First onClick={() => switchPage(1)}/>
+                <Pagination.Prev onClick={() => switchPage(page - 1)}/>
+                {items}
+                <Pagination.Next onClick={() => switchPage(page + 1)}/>
+                <Pagination.Last onClick={() => switchPage(NUM_PAGES)}/>
+            </Pagination>
+            <div ref={bottomRef}/>
         </div>
     );
 }
@@ -374,7 +413,7 @@ function CreateEntry(props) {
                             <Form.Row>
                                 <Form.Group as={Col}>
                                     <Form.Label>Action</Form.Label>
-                                    <Form.Control value={action} as='select' defaultValue='...'
+                                    <Form.Control value={action} as='select'
                                                   onChange={e => setAction(e.target.value)}
                                     >
                                         <option>...</option>
