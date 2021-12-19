@@ -73,6 +73,7 @@ function SinglePool(props) {
     const [show, setShow] = useState(false);
     const [body, setBody] = useState('');
     const [page, setPage] = useState(1);
+    const [totalEntries, setTotalEntries] = useState(0);
     const [visibleHistory, setVisibleHistory] = useState([]);
 
     const handleClose = () => setShow(false);
@@ -90,13 +91,15 @@ function SinglePool(props) {
     let history = [];
     let NUM_PAGES = 0;
 
-    function switchPage(pageNum) {
+    function switchPage(pageNum, disableScroll) {
         if (!(pageNum < 1 || pageNum > NUM_PAGES)) {
             const startIndex = pageNum * ENTRIES_PER_PAGE - ENTRIES_PER_PAGE;
             const endIndex = Math.min(pageNum * ENTRIES_PER_PAGE, history.length);
             setVisibleHistory(history.slice(startIndex, endIndex));
             setPage(pageNum);
-            bottomRef.current.scrollIntoView();
+            if (!disableScroll) {
+                bottomRef.current.scrollIntoView();
+            }
         }
     }
 
@@ -150,9 +153,6 @@ function SinglePool(props) {
             }
         }
         NUM_PAGES = Math.ceil(history.length / ENTRIES_PER_PAGE);
-        if (visibleHistory.length === 0) {
-            switchPage(NUM_PAGES);
-        }
     }
 
     const items = Array.from({length: NUM_PAGES},
@@ -163,6 +163,11 @@ function SinglePool(props) {
             </Pagination.Item>
         )
     }) ?? [];
+
+    if(history.length > totalEntries) {
+        switchPage(NUM_PAGES, true);
+        setTotalEntries(history.length);
+    }
 
     return (
         <div>
@@ -421,8 +426,8 @@ function CreateEntry(props) {
                                         <option>SELL</option>
                                     </Form.Control>
                                 </Form.Group>
-                                <FormGroup label='Amount' value={amount} func={setAmount}/>
                                 <FormGroup label='Symbol' value={symbol} func={setSymbol} prepend={''}/>
+                                <FormGroup label='Amount' value={amount} func={setAmount}/>
                                 <FormGroup label='Price' value={price} func={setPrice} prepend={'$'}/>
                                 <FormGroup label='Date' value={date} func={setDate} type={'date'}/>
                                 <FormGroup label='Time' value={time} func={setTime} type={'time'}/>
@@ -445,7 +450,7 @@ function CreateEntry(props) {
                             <FormGroup row placeholder='Auto Parser' value={parserText} func={parser}/>
                         </Form>
                         <br/>
-                        <MyButton text="Save"
+                        <MyButton text='Save'
                                   disabled={saveDisabled}
                                   onClick={() => {
                                       saveEntry(action, amount, symbol, price, date, time, spot, strike, expiryDate, note)
