@@ -27,7 +27,7 @@ function Feeds() {
     }, []);
 
     function updateFeeds() {
-        Request.GET('/force-fetch-feed').then(() => {
+        Request.GET('/feeds/force-fetch-feed').then(() => {
             Request.GET('/feeds/entries').then(data => {
                 setEntries(data['entries']);
             })
