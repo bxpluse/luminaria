@@ -9,7 +9,7 @@ function DismissButton(props) {
     }
 
     return (
-        <span onClick={handleClick} className='dismiss-btn'> ⓧ</span>
+        <span onClick={handleClick} className='emoji-btn'> ⓧ</span>
     );
 }
 

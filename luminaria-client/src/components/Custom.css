@@ -19,10 +19,11 @@ html {
     max-width: 75% !important;
 }
 
-.dismiss-btn {
-    position: absolute;
-    right: 15px;
+.emoji-btn {
     cursor: pointer;
+    float: right;
+    padding-left: 4px;
+    padding-right: 4px;
 }
 
 .external-link {

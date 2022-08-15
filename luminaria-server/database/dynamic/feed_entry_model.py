@@ -18,6 +18,7 @@ class FeedEntryModel(DynamicModel):
     type = CharField()
     metadata = CharField()
     show = BooleanField(default=True)
+    points = IntegerField(default=0)
 
     class Meta:
         table_name = 'FEED_ENTRY'
@@ -33,6 +34,11 @@ class FeedEntryModel(DynamicModel):
     @staticmethod
     def dismiss(id_):
         query = FeedEntryModel.update(show=False).where(FeedEntryModel.id == id_)
+        query.execute()
+
+    @staticmethod
+    def vote(id_, points):
+        query = FeedEntryModel.update(points=points).where(FeedEntryModel.id == id_)
         query.execute()
 
 

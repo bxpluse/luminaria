@@ -6,6 +6,7 @@ import Masonry from "react-masonry-css";
 import DismissButton from '../../components/DismissButton';
 import InfoSymbol from '../../components/InfoSymbol';
 import MyButton from '../../components/MyButton';
+import ThumbsUpButton from '../../components/ThumbsUpButton';
 import Request from '../../Requests';
 import DateUtil from '../../util/DateUtil';
 import StringUtil from '../../util/StringUtil';
@@ -34,9 +35,14 @@ function Feeds() {
         });
     }
 
-
     function dismiss(key) {
         Request.EXEC('/feeds/dismiss', {id: key}).then(data => {
+            setEntries(data['entries']);
+        });
+    }
+
+    function vote(key, points) {
+        Request.EXEC('/feeds/vote', {id: key, points: points}).then(data => {
             setEntries(data['entries']);
         });
     }
@@ -60,10 +66,13 @@ function Feeds() {
                 <Card.Body>
                     <Card.Title>
                         <span>
-                            [{StringUtil.capitalize(entry.site)}] &nbsp;
-                            <a href={entry.link}>{StringUtil.stripPeriod(entry.title)}</a>
+                            [{StringUtil.capitalize(entry.site)}]&nbsp;
+                            <a href={entry.link}>{StringUtil.stripPeriod(entry.title)}</a>&nbsp;
+
                         </span>
+                        {entry.points > 0 && <span>(+{entry.points})</span>}
                         <DismissButton onClick={() => dismiss(entry.id)}/>
+                        <ThumbsUpButton onClick={() => vote(entry.id, 1)}/>
                     </Card.Title>
                     <Card.Subtitle className='mb-2 text-muted'>
                         {DateUtil.parse(entry['published_datetime'])} &nbsp;

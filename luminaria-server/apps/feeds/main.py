@@ -9,7 +9,8 @@ from peewee import IntegrityError
 from apps.baseapp import App
 from common.abstract_classes.rule import Rule
 from common.cache import Cache
-from common.enums import APP, APPTYPE
+from common.enums import APP, APPTYPE, Variant
+from common.messenger import Toast
 from common.timeless import DATETIME_FORMAT
 from common.util import extract_domain
 from constants import DB_DYNAMIC, EMPTY_JSON_DICT
@@ -67,7 +68,7 @@ class Feeds(App):
     APP_ID = APP.FEEDS
 
     def __init__(self):
-        cache = Cache(30, exclusion=('dismiss', 'force-fetch-feed'))
+        cache = Cache(30, exclusion=('dismiss', 'force-fetch-feed', 'vote'))
         super().__init__(app_type=APPTYPE.STREAMING, cache=cache)
         self.create_rss_feeds()
         self.create_subreddit_feeds()
@@ -142,6 +143,10 @@ class Feeds(App):
             self.cache.invalidate()
             FeedEntryModel.dismiss(kwargs['id'])
             return self.execute('entries')
+        elif command == 'vote':
+            self.cache.invalidate()
+            FeedEntryModel.vote(kwargs['id'], kwargs['points'])
+            return {**self.execute('entries'), **{Toast.IDENTIFIER: Toast('+1', variant=Variant.INFO, duration=1)}}
         elif command == 'force-fetch-feed':
             self.cache.invalidate()
             urls = self.configuration['RSS_FEED_SITES']

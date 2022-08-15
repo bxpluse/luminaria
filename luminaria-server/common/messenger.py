@@ -1,3 +1,4 @@
+from common import util
 from common.enums import Variant
 from database.config.global_config_model import GlobalConfigModel
 
@@ -14,7 +15,8 @@ class Messenger:
     def toast(self, toast):
         config = {'message': toast.message,
                   'duration': toast.duration,
-                  'variant': toast.variant
+                  'variant': toast.variant,
+                  'id': util.gen_id()
                   }
         self.socketio.emit('toast-message', config)
 
